@@ -331,6 +331,7 @@ oop:
 	$(SETENV) make $(MAKE_ARGS) -C cuda/oop/BFSV
 	$(SETENV) make $(MAKE_ARGS) -C cuda/oop/CC
 	$(SETENV) make $(MAKE_ARGS) -C cuda/oop/CCV
+	$(SETENV) make $(MAKE_ARGS) noinline=$(noinline) -C cuda/oop/RAY
 
 clean_heterosync:
 	rm -rf cuda/heterosync

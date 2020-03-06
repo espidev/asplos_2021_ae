@@ -353,6 +353,8 @@ oop:
             - ./data/coAuthorsDBLP.graph 1
         - BFSV:
             - ./data/coAuthorsDBLP.graph 1
+        - RAY:
+            - 512 512 10000
 
 dragon-cdp:
     exec_dir: "../../benchmarks/src/cuda/dragon_li/cdp_bin/$CUDA_VERSION/"

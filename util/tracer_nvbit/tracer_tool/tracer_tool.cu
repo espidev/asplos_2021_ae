@@ -82,6 +82,7 @@ typedef struct {
 	int32_t width;
 	uint32_t active_mask;
 	uint32_t predicate_mask;
+    int32_t imm;
 
 } mem_access_t;
 
@@ -143,6 +144,7 @@ extern "C" __device__ __noinline__ void instrument_mem(int pred, int opcode_id, 
 	ma.active_mask = active_mask;
 	ma.predicate_mask = predicate_mask;
 	ma.sm_id =  get_smid();
+    ma.imm = imm;
 
 	/* first active lane pushes information on the channel */
 	if (first_laneid == laneid) {
@@ -734,6 +736,7 @@ void *recv_thread_fun(void *) {
 								fprintf(resultsFile, "0x%016lx ", ma->addrs[s]);
 						}
 					}
+                    fprintf(resultsFile, "%d ", ma->imm);
 				}
 				else
 				{

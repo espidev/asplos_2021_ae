@@ -325,6 +325,7 @@ heterosync:
 	mv cuda/heterosync/cuda/syncPrims/uvm/allSyncPrims-1kernel $(BINDIR)/$(BINSUBDIR)/
 
 oop:
+	mkdir -p $(BINDIR)/$(BINSUBDIR)/
 	$(SETENV) make $(MAKE_ARGS) -C cuda/oop/ubench
 	$(SETENV) make $(MAKE_ARGS) -C cuda/oop/PR
 	$(SETENV) make $(MAKE_ARGS) -C cuda/oop/PRV

@@ -58,12 +58,11 @@ for bench in benchmarks:
 
         if "dump" in cfgs:
             filename = "dump.log"
-            dump.dump(path, vfunc_inst_lists, filename)
-
+            dump.dump(run_dir, vfunc_inst_lists, filename)
 
         if "eliminate" in cfgs:
             output_dir = os.path.join(options.output, exe, common.get_argfoldername(args), "traces")
+            if not os.path.exists(output_dir):
+                os.makedirs(output_dir)
             print output_dir
-            #eliminate.eliminate(run_dir, vfunc_inst_lists, output_dir)
-
-
+            eliminate.eliminate(run_dir, vfunc_inst_lists, output_dir)

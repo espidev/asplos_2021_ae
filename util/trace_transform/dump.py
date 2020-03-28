@@ -13,7 +13,7 @@ def dump(path, vfc, output):
             print vfc_trace.func_list
 
             for lists in vfc_trace.func_list:
-                for num in reversed(lists):
+                for num in lists:
                     while sf.get_linenum() < num:
                         line = sf.readline()
                     out.writelines(line)

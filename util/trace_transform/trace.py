@@ -35,6 +35,9 @@ class traces:
             print "No next trace in traces"
             exit()
 
+    def get_vfc_number(self):
+        return len(self.trace_list[self.trace_idx].func_list)
+
     def has_next(self):
         if self.func_idx + 1 < len(self.trace_list[self.trace_idx].func_list):
             return True

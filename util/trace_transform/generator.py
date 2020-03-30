@@ -12,6 +12,7 @@ import yaml
 import search
 import dump
 import eliminate
+import replace
 
 # define parameters
 parser = OptionParser()
@@ -67,6 +68,13 @@ for bench in benchmarks:
                 os.makedirs(output_dir)
             print output_dir
             eliminate.eliminate(run_dir, vfunc_inst_lists, output_dir)
+
+        if "replace" in cfgs:
+            output_dir = os.path.join(options.output, exe, common.get_argfoldername(args), "traces")
+            if not os.path.exists(output_dir):
+                os.makedirs(output_dir)
+            print output_dir
+            replace.replace(run_dir, vfunc_inst_lists, output_dir)
 
         if "copy_list" in cfgs:
             output_dir = os.path.join(options.output, exe, common.get_argfoldername(args), "traces")

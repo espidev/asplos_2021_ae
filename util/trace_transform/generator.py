@@ -7,6 +7,7 @@ import sys
 sys.path.insert(0,os.path.join(this_directory,"..","job_launching"))
 import common
 import re
+import shutil
 import yaml
 import search
 import dump
@@ -66,3 +67,12 @@ for bench in benchmarks:
                 os.makedirs(output_dir)
             print output_dir
             eliminate.eliminate(run_dir, vfunc_inst_lists, output_dir)
+
+        if "copy_list" in cfgs:
+            output_dir = os.path.join(options.output, exe, common.get_argfoldername(args), "traces")
+            if not os.path.exists(output_dir):
+                os.makedirs(output_dir)
+            new_file = os.path.join(output_dir, "kernelslist.g")
+            if os.path.isfile(new_file):
+                os.remove(new_file)
+            shutil.copyfile(listname, new_file)

@@ -335,6 +335,37 @@ oop:
 	$(SETENV) make $(MAKE_ARGS) -C cuda/oop/CCV
 	$(SETENV) make $(MAKE_ARGS) noinline=$(noinline) -C cuda/oop/RAY
 
+oop-coal:
+	mkdir -p $(BINDIR)/$(BINSUBDIR)/
+	$(SETENV) make $(MAKE_ARGS) -C cuda/oop-coal/ubench
+	$(SETENV) make $(MAKE_ARGS) -C cuda/oop-coal/PR
+	$(SETENV) make $(MAKE_ARGS) -C cuda/oop-coal/PRV
+	$(SETENV) make $(MAKE_ARGS) -C cuda/oop-coal/BFS
+	$(SETENV) make $(MAKE_ARGS) -C cuda/oop-coal/BFSV
+	$(SETENV) make $(MAKE_ARGS) -C cuda/oop-coal/CC
+	$(SETENV) make $(MAKE_ARGS) -C cuda/oop-coal/CCV
+	$(SETENV) make $(MAKE_ARGS) noinline=$(noinline) -C cuda/oop-coal/RAY
+
+clean_oop-coal:
+	$(SETENV) make $(MAKE_ARGS) clean -C cuda/oop-coal/ubench
+	$(SETENV) make $(MAKE_ARGS) clean -C cuda/oop-coal/PR
+	$(SETENV) make $(MAKE_ARGS) clean -C cuda/oop-coal/PRV
+	$(SETENV) make $(MAKE_ARGS) clean -C cuda/oop-coal/BFS
+	$(SETENV) make $(MAKE_ARGS) clean -C cuda/oop-coal/BFSV
+	$(SETENV) make $(MAKE_ARGS) clean -C cuda/oop-coal/CC
+	$(SETENV) make $(MAKE_ARGS) clean -C cuda/oop-coal/CCV
+	$(SETENV) make $(MAKE_ARGS) clean noinline=$(noinline) -C cuda/oop-coal/RAY
+
+clean_oop:
+	$(SETENV) make $(MAKE_ARGS) clean -C cuda/oop/ubench
+	$(SETENV) make $(MAKE_ARGS) clean -C cuda/oop/PR
+	$(SETENV) make $(MAKE_ARGS) clean -C cuda/oop/PRV
+	$(SETENV) make $(MAKE_ARGS) clean -C cuda/oop/BFS
+	$(SETENV) make $(MAKE_ARGS) clean -C cuda/oop/BFSV
+	$(SETENV) make $(MAKE_ARGS) clean -C cuda/oop/CC
+	$(SETENV) make $(MAKE_ARGS) clean -C cuda/oop/CCV
+	$(SETENV) make $(MAKE_ARGS) clean noinline=$(noinline) -C cuda/oop/RAY
+
 clean_heterosync:
 	rm -rf cuda/heterosync
 

@@ -346,6 +346,27 @@ oop-coal:
 	$(SETENV) make $(MAKE_ARGS) -C cuda/oop-coal/CCV
 	$(SETENV) make $(MAKE_ARGS) noinline=$(noinline) -C cuda/oop-coal/RAY
 
+oop-ideal:
+	mkdir -p $(BINDIR)/$(BINSUBDIR)/
+	$(SETENV) make $(MAKE_ARGS) -C cuda/oop-ideal/ubench
+	$(SETENV) make $(MAKE_ARGS) -C cuda/oop-ideal/PR
+	$(SETENV) make $(MAKE_ARGS) -C cuda/oop-ideal/PRV
+	$(SETENV) make $(MAKE_ARGS) -C cuda/oop-ideal/BFS
+	$(SETENV) make $(MAKE_ARGS) -C cuda/oop-ideal/BFSV
+	$(SETENV) make $(MAKE_ARGS) -C cuda/oop-ideal/CC
+	$(SETENV) make $(MAKE_ARGS) -C cuda/oop-ideal/CCV
+	$(SETENV) make $(MAKE_ARGS) noinline=$(noinline) -C cuda/oop-ideal/RAY
+
+clean_oop-ideal:
+	$(SETENV) make $(MAKE_ARGS) clean -C cuda/oop-ideal/ubench
+	$(SETENV) make $(MAKE_ARGS) clean -C cuda/oop-ideal/PR
+	$(SETENV) make $(MAKE_ARGS) clean -C cuda/oop-ideal/PRV
+	$(SETENV) make $(MAKE_ARGS) clean -C cuda/oop-ideal/BFS
+	$(SETENV) make $(MAKE_ARGS) clean -C cuda/oop-ideal/BFSV
+	$(SETENV) make $(MAKE_ARGS) clean -C cuda/oop-ideal/CC
+	$(SETENV) make $(MAKE_ARGS) clean -C cuda/oop-ideal/CCV
+	$(SETENV) make $(MAKE_ARGS) clean noinline=$(noinline) -C cuda/oop-ideal/RAY
+
 clean_oop-coal:
 	$(SETENV) make $(MAKE_ARGS) clean -C cuda/oop-coal/ubench
 	$(SETENV) make $(MAKE_ARGS) clean -C cuda/oop-coal/PR

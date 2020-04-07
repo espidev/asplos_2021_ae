@@ -228,7 +228,7 @@ int main(int argc, char **argv)
     // Run PageRank for some iter. TO: convergence determination
     for (int i = 0; i < ITER; i++) {
 	printf("Start PageRank\n");
-        PageRank<<<grid, threads>>>(vertex, context);
+        PageRank<<<grid, threads>>>(vertex, context, i);
 	printf("Finish PageRank\n");
 	cudaDeviceSynchronize();
 	err = cudaGetLastError();

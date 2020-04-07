@@ -66,7 +66,7 @@
 #include "kernel.cu"
 
 // Iteration count
-#define ITER 20
+#define ITER 1
 
 void print_vectorf(int *vector, int num);
 
@@ -228,7 +228,7 @@ int main(int argc, char **argv)
     // Run BFS for some iter. TO: convergence determination
     for (int i = 0; i < ITER; i++) {
 	printf("Start BFS\n");
-        BFS<<<grid, threads>>>(vertex, context);
+        BFS<<<grid, threads>>>(vertex, context, i);
 	printf("Finish BFS\n");
 	cudaDeviceSynchronize();
 	err = cudaGetLastError();

@@ -54,22 +54,21 @@ __global__ void initOutEdge(ChiVertex<int, int> **vertex, GraphChiContext* conte
     }
 }
 
-__global__ void ConnectedComponent(ChiVertex<int, int> **vertex, GraphChiContext* context) {
+__global__ void ConnectedComponent(ChiVertex<int, int> **vertex, GraphChiContext* context, int iteration) {
     int tid = blockDim.x * blockIdx.x + threadIdx.x;
     if (tid < context->getNumVertices()) {
-	int iteration = context->getNumIterations();
-	int numEdges = vertex[tid]->numEdges();
-	if (iteration == 0) {
-	    vertex[tid]->setValue(vertex[tid]->getId());
-	}
-	int curMin = vertex[tid]->getValue();
+        int numEdges = vertex[tid]->numEdges();
+        if (iteration == 0) {
+            vertex[tid]->setValue(vertex[tid]->getId());
+        }
+        int curMin = vertex[tid]->getValue();
         for(int i=0; i < numEdges; i++) {
             int nbLabel = vertex[tid]->edge(i)->getValue();
             if (iteration == 0) nbLabel = vertex[tid]->edge(i)->getVertexId(); // Note!
             if (nbLabel < curMin) {
                 curMin = nbLabel;
             }
-	}
+        }
 
         /**
          * Set my new label
@@ -92,7 +91,6 @@ __global__ void ConnectedComponent(ChiVertex<int, int> **vertex, GraphChiContext
                 vertex[tid]->getOutEdge(i)->setValue(label);
             }
         }
-	context->setNumIterations(context->getNumIterations() + 1);
     }
 }
 

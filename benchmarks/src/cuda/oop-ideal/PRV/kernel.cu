@@ -67,33 +67,32 @@ __global__ void initOutEdge(VirtVertex<float, float> **vertex, GraphChiContext* 
     }
 }
 
-__global__ void PageRank(VirtVertex<float, float> **vertex, GraphChiContext* context) {
+__global__ void PageRank(VirtVertex<float, float> **vertex, GraphChiContext* context, int iteration) {
     int tid = blockDim.x * blockIdx.x + threadIdx.x;
     if (tid < context->getNumVertices()) {
-	if (context->getNumIterations() == 0) {
-	    ((ChiVertex<float, float> *)vertex[tid])->setValueConcrete(1.0f);
-	} else {
-	    float sum = 0.0f;
-	    int numInEdge;
-	    numInEdge = ((ChiVertex<float, float> *)vertex[tid])->numInEdgesConcrete();
-	    for (int i = 0; i < numInEdge; i++) {
-		ChiEdge<float> * inEdge;
-		inEdge = ((ChiVertex<float, float> *)vertex[tid])->getInEdgeConcrete(i);
-		sum+= ((Edge<float> *)inEdge)->getValueConcrete();
-	    }
-	    ((ChiVertex<float, float> *)vertex[tid])->setValueConcrete(0.15f + 0.85f * sum);
+        if (iteration == 0) {
+            vertex[tid]->setValue(1.0f);
+        } else {
+            float sum = 0.0f;
+            int numInEdge;
+            numInEdge = vertex[tid]->numInEdges();
+            for (int i = 0; i < numInEdge; i++) {
+                ChiEdge<float> * inEdge;
+                inEdge = vertex[tid]->getInEdge(i);
+                sum+= inEdge->getValue();
+            }
+            vertex[tid]->setValue(0.15f + 0.85f * sum);
 
-	    /* Write my value (divided by my out-degree) to my out-edges so neighbors can read it. */
-	    int numOutEdge;
-	    numOutEdge = ((ChiVertex<float, float> *)vertex[tid])->numOutEdgesConcrete();
-	    float outValue = ((ChiVertex<float, float> *)vertex[tid])->getValueConcrete() / numOutEdge;
-	    for(int i=0; i<numOutEdge; i++) {
-		ChiEdge<float> * outEdge;
-		outEdge = ((ChiVertex<float, float> *)vertex[tid])->getOutEdgeConcrete(i);
-		((Edge<float> *)outEdge)->setValueConcrete(outValue);
-	    }
-	}
-	context->setNumIterations(context->getNumIterations() + 1);
+            /* Write my value (divided by my out-degree) to my out-edges so neighbors can read it. */
+            int numOutEdge;
+            numOutEdge = vertex[tid]->numOutEdges();
+            float outValue = vertex[tid]->getValue() / numOutEdge;
+            for(int i=0; i<numOutEdge; i++) {
+                ChiEdge<float> * outEdge;
+                outEdge = vertex[tid]->getOutEdge(i);
+                outEdge->setValue(outValue);
+            }
+        }
     }
 }
 

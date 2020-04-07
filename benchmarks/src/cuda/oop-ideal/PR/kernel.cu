@@ -67,25 +67,24 @@ __global__ void initOutEdge(ChiVertex<float, float> **vertex, GraphChiContext* c
     }
 }
 
-__global__ void PageRank(ChiVertex<float, float> **vertex, GraphChiContext* context) {
+__global__ void PageRank(ChiVertex<float, float> **vertex, GraphChiContext* context, int iteration) {
     int tid = blockDim.x * blockIdx.x + threadIdx.x;
     if (tid < context->getNumVertices()) {
-	if (context->getNumIterations() == 0) {
-	    vertex[tid]->setValue(1.0f);
-	} else {
-	    float sum = 0.0f;
-	    for (int i = 0; i < vertex[tid]->numInEdges(); i++) {
-		sum+= ((Edge<float> *)vertex[tid]->getInEdge(i))->getValueConcrete();
-	    }
-	    vertex[tid]->setValue(0.15f + 0.85f * sum);
+        if (iteration == 0) {
+            vertex[tid]->setValue(1.0f);
+        } else {
+            float sum = 0.0f;
+            for (int i = 0; i < vertex[tid]->numInEdges(); i++) {
+                sum+= vertex[tid]->getInEdge(i)->getValue();
+            }
+            vertex[tid]->setValue(0.15f + 0.85f * sum);
 
-	    /* Write my value (divided by my out-degree) to my out-edges so neighbors can read it. */
-	    float outValue = vertex[tid]->getValue() / vertex[tid]->numOutEdges();
-	    for(int i=0; i<vertex[tid]->numOutEdges(); i++) {
-		((Edge<float> *)vertex[tid]->getOutEdge(i))->setValueConcrete(outValue);
-	    }
-	}
-	context->setNumIterations(context->getNumIterations() + 1);
+            /* Write my value (divided by my out-degree) to my out-edges so neighbors can read it. */
+            float outValue = vertex[tid]->getValue() / vertex[tid]->numOutEdges();
+            for(int i=0; i<vertex[tid]->numOutEdges(); i++) {
+                vertex[tid]->getOutEdge(i)->setValue(outValue);
+            }
+        }
     }
 }
 

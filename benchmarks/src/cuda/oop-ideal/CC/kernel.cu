@@ -54,22 +54,21 @@ __global__ void initOutEdge(ChiVertex<int, int> **vertex, GraphChiContext* conte
     }
 }
 
-__global__ void ConnectedComponent(ChiVertex<int, int> **vertex, GraphChiContext* context) {
+__global__ void ConnectedComponent(ChiVertex<int, int> **vertex, GraphChiContext* context, int iteration) {
     int tid = blockDim.x * blockIdx.x + threadIdx.x;
     if (tid < context->getNumVertices()) {
-	int iteration = context->getNumIterations();
-	int numEdges = vertex[tid]->numEdges();
-	if (iteration == 0) {
-	    vertex[tid]->setValue(vertex[tid]->getId());
-	}
-	int curMin = vertex[tid]->getValue();
+        int numEdges = vertex[tid]->numEdges();
+        if (iteration == 0) {
+            vertex[tid]->setValue(vertex[tid]->getId());
+        }
+        int curMin = vertex[tid]->getValue();
         for(int i=0; i < numEdges; i++) {
-            int nbLabel = ((Edge<float> *)vertex[tid]->edge(i))->getValueConcrete();
-            if (iteration == 0) nbLabel = ((Edge<float> *)vertex[tid]->edge(i))->getVertexIdConcrete(); // Note!
+            int nbLabel = vertex[tid]->edge(i)->getValue();
+            if (iteration == 0) nbLabel = vertex[tid]->edge(i)->getVertexId(); // Note!
             if (nbLabel < curMin) {
                 curMin = nbLabel;
             }
-	}
+        }
 
         /**
          * Set my new label
@@ -82,17 +81,16 @@ __global__ void ConnectedComponent(ChiVertex<int, int> **vertex, GraphChiContext
          */
         if (iteration > 0) {
             for(int i=0; i < numEdges; i++) {
-                if (((Edge<float> *)vertex[tid]->edge(i))->getValueConcrete() > label) {
-                    ((Edge<float> *)vertex[tid]->edge(i))->setValueConcrete(label);
+                if (vertex[tid]->edge(i)->getValue() > label) {
+                    vertex[tid]->edge(i)->setValue(label);
                 }
             }
         } else {
             // Special case for first iteration to avoid overwriting
             for(int i=0; i < vertex[tid]->numOutEdges(); i++) {
-                ((Edge<float> *)vertex[tid]->getOutEdge(i))->setValueConcrete(label);
+                vertex[tid]->getOutEdge(i)->setValue(label);
             }
         }
-	context->setNumIterations(context->getNumIterations() + 1);
     }
 }
 

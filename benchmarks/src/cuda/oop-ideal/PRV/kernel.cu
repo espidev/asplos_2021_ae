@@ -71,26 +71,26 @@ __global__ void PageRank(VirtVertex<float, float> **vertex, GraphChiContext* con
     int tid = blockDim.x * blockIdx.x + threadIdx.x;
     if (tid < context->getNumVertices()) {
         if (iteration == 0) {
-            vertex[tid]->setValue(1.0f);
+            ((ChiVertex<float, float> *)vertex[tid])->setValueConcrete(1.0f);
         } else {
             float sum = 0.0f;
             int numInEdge;
-            numInEdge = vertex[tid]->numInEdges();
+            numInEdge = ((ChiVertex<float, float> *)vertex[tid])->numInEdgesConcrete();
             for (int i = 0; i < numInEdge; i++) {
                 ChiEdge<float> * inEdge;
-                inEdge = vertex[tid]->getInEdge(i);
-                sum+= inEdge->getValue();
+                inEdge = ((ChiVertex<float, float> *)vertex[tid])->getInEdgeConcrete(i);
+                sum+= ((Edge<float> *)inEdge)->getValueConcrete();
             }
-            vertex[tid]->setValue(0.15f + 0.85f * sum);
+            ((ChiVertex<float, float> *)vertex[tid])->setValueConcrete(0.15f + 0.85f * sum);
 
             /* Write my value (divided by my out-degree) to my out-edges so neighbors can read it. */
             int numOutEdge;
-            numOutEdge = vertex[tid]->numOutEdges();
-            float outValue = vertex[tid]->getValue() / numOutEdge;
+            numOutEdge = ((ChiVertex<float, float> *)vertex[tid])->numOutEdgesConcrete();
+            float outValue = ((ChiVertex<float, float> *)vertex[tid])->getValueConcrete() / numOutEdge;
             for(int i=0; i<numOutEdge; i++) {
                 ChiEdge<float> * outEdge;
-                outEdge = vertex[tid]->getOutEdge(i);
-                outEdge->setValue(outValue);
+                outEdge = ((ChiVertex<float, float> *)vertex[tid])->getOutEdgeConcrete(i);
+                ((Edge<float> *)outEdge)->setValueConcrete(outValue);
             }
         }
     }

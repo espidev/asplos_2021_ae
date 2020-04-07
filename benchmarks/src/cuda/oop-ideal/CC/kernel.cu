@@ -63,8 +63,8 @@ __global__ void ConnectedComponent(ChiVertex<int, int> **vertex, GraphChiContext
         }
         int curMin = vertex[tid]->getValue();
         for(int i=0; i < numEdges; i++) {
-            int nbLabel = vertex[tid]->edge(i)->getValue();
-            if (iteration == 0) nbLabel = vertex[tid]->edge(i)->getVertexId(); // Note!
+            int nbLabel = ((Edge<float> *)vertex[tid]->edge(i))->getValueConcrete();
+            if (iteration == 0) nbLabel = ((Edge<float> *)vertex[tid]->edge(i))->getVertexIdConcrete(); // Note!
             if (nbLabel < curMin) {
                 curMin = nbLabel;
             }
@@ -81,14 +81,14 @@ __global__ void ConnectedComponent(ChiVertex<int, int> **vertex, GraphChiContext
          */
         if (iteration > 0) {
             for(int i=0; i < numEdges; i++) {
-                if (vertex[tid]->edge(i)->getValue() > label) {
-                    vertex[tid]->edge(i)->setValue(label);
+                if (((Edge<float> *)vertex[tid]->edge(i))->getValueConcrete() > label) {
+                    ((Edge<float> *)vertex[tid]->edge(i))->setValueConcrete(label);
                 }
             }
         } else {
             // Special case for first iteration to avoid overwriting
             for(int i=0; i < vertex[tid]->numOutEdges(); i++) {
-                vertex[tid]->getOutEdge(i)->setValue(label);
+                ((Edge<float> *)vertex[tid]->getOutEdge(i))->setValueConcrete(label);
             }
         }
     }

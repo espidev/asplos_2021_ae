@@ -58,20 +58,20 @@ __global__ void ConnectedComponent(VirtVertex<int, int> **vertex, GraphChiContex
     int tid = blockDim.x * blockIdx.x + threadIdx.x;
     if (tid < context->getNumVertices()) {
         int numEdges;
-        numEdges = vertex[tid]->numEdges();
+        numEdges = ((ChiVertex<int, int> *)vertex[tid])->numEdgesConcrete();
         if (iteration == 0) {
-            int vid = vertex[tid]->getId();
-            vertex[tid]->setValue(vid);
+            int vid = ((ChiVertex<int, int> *)vertex[tid])->getIdConcrete();
+            ((ChiVertex<int, int> *)vertex[tid])->setValueConcrete(vid);
         }
         int curMin;
-        curMin = vertex[tid]->getValue();
+        curMin = ((ChiVertex<int, int> *)vertex[tid])->getValueConcrete();
         for(int i=0; i < numEdges; i++) {
             ChiEdge<int> * edge;
-            edge = vertex[tid]->edge(i); 
+            edge = ((ChiVertex<int, int> *)vertex[tid])->edgeConcrete(i); 
             int nbLabel;
-            nbLabel = edge->getValue();
+            nbLabel = ((Edge<int> *)edge)->getValueConcrete();
             if (iteration == 0) {
-                nbLabel = edge->getVertexId(); // Note!
+                nbLabel = ((Edge<int> *)edge)->getVertexIdConcrete(); // Note!
             }
             if (nbLabel < curMin) {
                 curMin = nbLabel;
@@ -81,7 +81,7 @@ __global__ void ConnectedComponent(VirtVertex<int, int> **vertex, GraphChiContex
         /**
          * Set my new label
          */
-        vertex[tid]->setValue(curMin);
+        ((ChiVertex<int, int> *)vertex[tid])->setValue(curMin);
         int label = curMin;
 
         /**
@@ -90,21 +90,21 @@ __global__ void ConnectedComponent(VirtVertex<int, int> **vertex, GraphChiContex
         if (iteration > 0) {
             for(int i=0; i < numEdges; i++) {
                 ChiEdge<int> * edge;
-                edge = vertex[tid]->edge(i);
+                edge = ((ChiVertex<int, int> *)vertex[tid])->edgeConcrete(i);
                 int edgeValue;
-                edgeValue = edge->getValue();	
+                edgeValue = ((Edge<int> *)edge)->getValueConcrete();
                 if (edgeValue > label) {
-                    edge->setValue(label);
+                    ((Edge<int> *)edge)->setValueConcrete(label);
                 }
             }
         } else {
             // Special case for first iteration to avoid overwriting
             int numOutEdge;
-            numOutEdge = vertex[tid]->numOutEdges();
+            numOutEdge = ((ChiVertex<int, int> *)vertex[tid])->numOutEdgesConcrete();
             for(int i=0; i < numOutEdge; i++) {
                 ChiEdge<int> * outEdge;
-                outEdge = vertex[tid]->getOutEdge(i);
-                outEdge->setValue(label);
+                outEdge = ((ChiVertex<int, int> *)vertex[tid])->getOutEdgeConcrete(i);
+                ((Edge<int> *)outEdge)->setValueConcrete(label);
             }
         }
     }

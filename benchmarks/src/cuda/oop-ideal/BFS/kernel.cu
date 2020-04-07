@@ -75,19 +75,19 @@ __global__ void BFS(ChiVertex<int, int> **vertex, GraphChiContext* context, int 
             if (tid == 0) {
                 vertex[tid]->setValue(0);
                 for (int i = 0; i < vertex[tid]->numOutEdges(); i++) {
-                    vertex[tid]->getOutEdge(i)->setValue(1);
+                    ((Edge<int> *)vertex[tid]->getOutEdge(i))->setValueConcrete(1);
                 }
             }
         } else {
             int curmin = vertex[tid]->getValue();
             for (int i = 0; i < vertex[tid]->numInEdges(); i++) {
-                curmin = min(curmin, vertex[tid]->getInEdge(i)->getValue());
+                curmin = min(curmin, ((Edge<int> *)vertex[tid]->getInEdge(i))->getValueConcrete());
             }
             if (curmin < vertex[tid]->getValue()) {
                 vertex[tid]->setValue(curmin);
                 for (int i = 0; i < vertex[tid]->numOutEdges(); i++) {
-                    if (vertex[tid]->getOutEdge(i)->getValue() > curmin + 1){
-                        vertex[tid]->getOutEdge(i)->setValue(curmin + 1);
+                    if (((Edge<int> *)vertex[tid]->getOutEdge(i))->getValueConcrete() > curmin + 1){
+                        ((Edge<int> *)vertex[tid]->getOutEdge(i))->setValueConcrete(curmin + 1);
                     }
                 }
             }

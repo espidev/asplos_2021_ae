@@ -66,7 +66,7 @@
 #include "kernel.cu"
 
 // Iteration count
-#define ITER 1
+#define ITER 20
 
 void print_vectorf(int *vector, int num);
 

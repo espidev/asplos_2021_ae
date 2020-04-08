@@ -7,7 +7,9 @@
 #include <cstring>
 #include <cmath>
 #include "makebmp.h"
+#include <new>
 
+#include "../mem_alloc/mem_alloc_2.h"
 #include <cutil.h>
 #include <helper_timer.h>
 #include <rayTracing_kernel.cu>
@@ -81,7 +83,8 @@ void initPixelBuffer()
 void render(Object** objList, int n)
 {
     sdkStartTimer(&timer); 
-    render<<<gridSize, blockSize>>>(d_output, objList, width, height, obs.getDistance(), n);
+    //render<<<gridSize, blockSize>>>(d_output, objList, width, height, obs.getDistance(), n);
+    render_vptr <<<gridSize, blockSize>>>(d_output, objList, width, height, obs.getDistance(), n);
     CUDA_SAFE_CALL( cudaDeviceSynchronize() );
     sdkStopTimer(&timer);
 
@@ -122,6 +125,8 @@ int main( int argc, char** argv)
 {
   // initialise card and timer
   int deviceCount;
+  mem_alloc shared_mem(4ULL * 1024 * 1024 * 1024);
+  obj_alloc my_obj_alloc(&shared_mem);
   CUDA_SAFE_CALL(cudaGetDeviceCount(&deviceCount));
   if (deviceCount == 0) {
       fprintf(stderr, "There is no device.\n");
@@ -173,7 +178,7 @@ int main( int argc, char** argv)
     float* A;
     float* d_A;
     A = (float *)malloc(n * 8 * sizeof(float));
-    cudaMalloc(&d_A, n * 8 * sizeof(float));
+    d_A = (float *)my_obj_alloc.calloc<float>(n * 8);
     srand(47);
     A[0] = 0.0f; A[1] = 1.0f; A[2] = 1.0f; A[3] = 1.0f; A[4] = 0.0f; A[5] = -1.5f; A[6] = -0.0f; A[7] = 0.5f;
     A[8] = 1.0f; A[8 + 1] = 0.0f; A[8 + 2] = 0.0f; A[8 + 3] = 1.0f; A[8 + 4] = -1.0f; A[8 + 5] = 0.0f; A[8 + 6] = -1.0f; A[8 + 7] = 0.5f;
@@ -189,10 +194,14 @@ int main( int argc, char** argv)
         A[i * 8] = r; A[i * 8 + 1] = v; A[i * 8 + 2] = b; A[i * 8 + 3] = 1.0f;
     }
     cudaMemcpy(d_A, A, n * 8 * sizeof(float), cudaMemcpyHostToDevice);
-    cudaMalloc(&objList, sizeof(Object *) * n);
+    objList = (Object **)my_obj_alloc.calloc<Object *>(n);
     int threadsPerBlock = 256;
     int blocksPerGrid =(n + threadsPerBlock - 1) / threadsPerBlock;
-    initObject <<<blocksPerGrid,threadsPerBlock>>>(objList, d_A, n);
+    initObject(objList, d_A, n,&my_obj_alloc);
+    initObject_kern<<<blocksPerGrid, threadsPerBlock>>>(objList, d_A, n);
+    my_obj_alloc.create_tree();
+    range_tree = my_obj_alloc.get_range_tree();
+    tree_size_g = my_obj_alloc.get_tree_size();
     cudaDeviceSynchronize();
     c_output = (uint*) calloc(width*height, sizeof(uint));
     CUDA_SAFE_CALL( cudaMalloc( (void**)&d_output, width*height*sizeof(uint)));

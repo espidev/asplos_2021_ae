@@ -60,6 +60,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/time.h>
+#include "../mem_alloc/mem_alloc_2.h"
 #include "../graph_parser/parse.h"
 #include "parse_oo.h"
 #include "../graph_parser/util.h"
@@ -80,7 +81,8 @@ int main(int argc, char **argv)
     bool directed = 0;
 
     cudaError_t err = cudaSuccess;
-
+    mem_alloc shared_mem(4ULL * 1024 * 1024 * 1024);
+    obj_alloc my_obj_alloc(&shared_mem);
     if (argc == 3) {
         tmpchar = argv[1]; // Graph inputfile
         file_format = atoi(argv[2]); // File format
@@ -187,48 +189,61 @@ int main(int argc, char **argv)
 
     ChiVertex<int, int> **vertex;
     GraphChiContext* context;
-    err = cudaMalloc(&vertex, num_nodes * sizeof(ChiVertex<int, int>*));
-    if (err != cudaSuccess) {
-        fprintf(stderr, "ERROR: cudaMalloc vertex (size:%d) => %s\n",  num_edges, cudaGetErrorString(err));
-        return -1;
-    }
-    err = cudaMalloc(&context, sizeof(GraphChiContext));
-    if (err != cudaSuccess) {
-        fprintf(stderr, "ERROR: cudaMalloc context (size:%d) => %s\n",  num_edges, cudaGetErrorString(err));
-        return -1;
-    }
-    printf("Start initCtx\n");
-    initContext<<<1, 1>>>(context, num_nodes, num_edges);
-    cudaDeviceSynchronize();
-    err = cudaGetLastError();
-    if (err != cudaSuccess) {
-        fprintf(stderr, "ERROR: initCtx failed (%s)\n", cudaGetErrorString(err));
-        return -1;
-    }
+    // err = cudaMalloc(&vertex, num_nodes * sizeof(ChiVertex<int, int>*));
+    // if (err != cudaSuccess) {
+    //     fprintf(stderr, "ERROR: cudaMalloc vertex (size:%d) => %s\n",  num_edges, cudaGetErrorString(err));
+    //     return -1;
+    // }
+    // err = cudaMalloc(&context, sizeof(GraphChiContext));
+    // if (err != cudaSuccess) {
+    //     fprintf(stderr, "ERROR: cudaMalloc context (size:%d) => %s\n",  num_edges, cudaGetErrorString(err));
+    //     return -1;
+    // }
+    vertex = (ChiVertex<int, int> **)my_obj_alloc.calloc<ChiVertex<int, int>*>(
+        num_nodes);
+    context = (GraphChiContext *)my_obj_alloc.calloc<GraphChiContext>(1);
+  
 
+    printf("Start initCtx\n");
+    initContext(context, num_nodes, num_edges);
 
     printf("Start initObj\n");
-    initObject<<<grid, threads>>>(vertex, context, row_d, col_d, inrow_d, incol_d);
+    part0_initObject(vertex, context, row_d, col_d, inrow_d, incol_d,&my_obj_alloc);
+    part_kern0_initObject<<<grid, threads>>>(vertex, context, row_d, col_d,inrow_d, incol_d);
+    cudaDeviceSynchronize();
+    part1_initObject(vertex, context, row_d, col_d, inrow_d, incol_d,&my_obj_alloc);
+    part_kern1_initObject<<<grid, threads>>>(vertex, context, row_d, col_d,inrow_d, incol_d);
     cudaDeviceSynchronize();
     err = cudaGetLastError();
     if (err != cudaSuccess) {
-        fprintf(stderr, "ERROR: initObject failed (%s)\n", cudaGetErrorString(err));
-        return -1;
+      fprintf(stderr, "ERROR: initObject failed (%s)\n", cudaGetErrorString(err));
+      return -1;
     }
-
+  
     printf("Start initOutEdge\n");
-    initOutEdge<<<grid, threads>>>(vertex, context, row_d, col_d);
+    kern_initOutEdge<<<grid, threads>>>(vertex, context, row_d, col_d);
     cudaDeviceSynchronize();
     err = cudaGetLastError();
     if (err != cudaSuccess) {
-        fprintf(stderr, "ERROR: initOutEdge failed (%s)\n", cudaGetErrorString(err));
-        return -1;
+      fprintf(stderr, "ERROR: initOutEdge failed (%s)\n",
+              cudaGetErrorString(err));
+      return -1;
     }
+    double timer5 = gettime();
+    printf("init time = %lf ms\n", (timer5 - timer3) * 1000);
+    printf("Fixing pointers \n");
+  
+    my_obj_alloc.create_tree();
+    range_tree = my_obj_alloc.get_range_tree();
+    tree_size_g = my_obj_alloc.get_tree_size();
 
+   
     // Run BFS for some iter. TO: convergence determination
+    double timer6 = gettime();
     for (int i = 0; i < ITER; i++) {
 	printf("Start BFS\n");
         BFS<<<grid, threads>>>(vertex, context, i);
+        //BFS_vptr<<<grid, threads>>>(vertex, context,i);
 	printf("Finish BFS\n");
 	cudaDeviceSynchronize();
 	err = cudaGetLastError();
@@ -241,7 +256,7 @@ int main(int argc, char **argv)
     cudaDeviceSynchronize();
 
     double timer4 = gettime();
-
+    printf("kernel time = %lf ms\n", (timer4 - timer6) * 1000);
     printf("Start Copyback\n");
     copyBack <<<grid, threads>>>(vertex, context, index_d);
     printf("End Copyback\n");
@@ -289,7 +304,7 @@ int main(int argc, char **argv)
 
 void print_vectorf(int *vector, int num)
 {
-    FILE * fp = fopen("result.out", "w");
+    FILE * fp = fopen("result_BFS.out", "w");
     if (!fp) {
         printf("ERROR: unable to open result.txt\n");
     }

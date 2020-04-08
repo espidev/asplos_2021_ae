@@ -5,27 +5,31 @@ class ChiEdge {
 	ALL virtual int getVertexId() = 0;
 	ALL virtual EdgeData getValue() = 0;
 	ALL virtual void setValue(EdgeData x) = 0;
+ 	ALL ChiEdge() {}
+  	ALL ChiEdge(int id, int value) {}
+	    
+	EdgeData edgeValue;
+	int vertexId;
 };
 
 template <typename EdgeValue>
 class Edge : public ChiEdge<EdgeValue> {
     public:
+	  ALL Edge() {}
 	ALL Edge(int id, int value) {
-	    vertexId = id;
-	    edgeValue = value;
+	    this->vertexId = id;
+	    this->edgeValue = value;
 	}
 	ALL int getVertexId() {
-	    return vertexId;
+	    return this->vertexId;
 	}
 	ALL EdgeValue getValue() {
-	    return edgeValue;
+	    return this->edgeValue;
 	}
 	ALL void setValue(EdgeValue x) {
-	    edgeValue = x;
+	    this->edgeValue = x;
 	}
-    private:
-	EdgeValue edgeValue;
-	int vertexId;
+
 };
 
 template <typename VertexValue, typename EdgeValue>
@@ -42,82 +46,113 @@ class VirtVertex {
 	ALL virtual int numEdges() = 0;
 	ALL virtual int numInEdges() = 0;
 	ALL virtual int numOutEdges() = 0;
-	ALL virtual ChiEdge<EdgeValue>* edge(int i) = 0;
+	
 	ALL virtual ChiEdge<EdgeValue>* getInEdge(int i) = 0;
 	ALL virtual ChiEdge<EdgeValue>* getOutEdge(int i) = 0;
 	ALL virtual void setInEdge(int idx, int vertexId, EdgeValue value) = 0;
 	ALL virtual void setOutEdge(VirtVertex<VertexValue, EdgeValue> **vertex, int src, int idx, int vertexId, EdgeValue value) = 0;
-    //private:
-	//int id;
-	//int nInedges;
-	//int nOutedges;
-	//VertexValue value;
-	//ChiEdge<EdgeValue>** inEdgeDataArray;
-	//ChiEdge<EdgeValue>** outEdgeDataArray;
+    ALL virtual ChiEdge<EdgeValue>* edge(int i) = 0;
+	void set_in_out(obj_alloc *alloc) {
+    this->inEdgeDataArray =
+        (ChiEdge<EdgeValue> **)alloc->calloc<Edge<EdgeValue> *>(this->nInedges);
+    this->outEdgeDataArray =
+        (ChiEdge<EdgeValue> **)alloc->calloc<Edge<EdgeValue> *>(
+            this->nOutedges);
+    for (int i = 0; i < this->nInedges; i++) {
+      this->inEdgeDataArray[i] = (Edge<EdgeValue> *)alloc->my_new<Edge<EdgeValue>>();
+    }
+  };
+  ALL VirtVertex() {}
+  ALL VirtVertex(int id, int inDegree, int outDegree, obj_alloc *alloc) {}
+  ALL VirtVertex(int id, int inDegree, int outDegree) {}
+  int id;
+  int nInedges;
+  int nOutedges;
+  VertexValue value;
+  ChiEdge<EdgeValue> **inEdgeDataArray;
+  ChiEdge<EdgeValue> **outEdgeDataArray;
+
 };
 
 template <typename VertexValue, typename EdgeValue>
 class ChiVertex : public VirtVertex<VertexValue, EdgeValue> {
     public:
 	// init functions
-	ALL ChiVertex(int id, int inDegree, int outDegree) {
+	  ALL ChiVertex() {}
+  ChiVertex(int id, int inDegree, int outDegree, obj_alloc *alloc)
+      : VirtVertex<VertexValue, EdgeValue>(id, inDegree, outDegree, alloc) {
+    this->id = id;
+    this->nInedges = inDegree;
+    this->nOutedges = outDegree;
+    this->inEdgeDataArray =
+        (ChiEdge<EdgeValue> **)alloc->my_new<Edge<EdgeValue>>(inDegree);
+    this->outEdgeDataArray =
+        (ChiEdge<EdgeValue> **)alloc->my_new<Edge<EdgeValue>>(outDegree);
+  }
+  void set_in_out(obj_alloc *alloc) {
+    this->inEdgeDataArray =
+        (ChiEdge<EdgeValue> **)alloc->calloc<ChiEdge<EdgeValue>*>(this->nInedges);
+    this->outEdgeDataArray =
+        (ChiEdge<EdgeValue> **)alloc->calloc<ChiEdge<EdgeValue> *>(
+            this->nOutedges);
+    for (int i = 0; i < this->nInedges; i++) {
+      this->inEdgeDataArray[i] = alloc->my_new<Edge<EdgeValue>>();
+    }
+  }
+ALL ChiVertex(int id, int inDegree, int outDegree)
+      : VirtVertex<VertexValue, EdgeValue>(id, inDegree, outDegree) {
 	    this->id = id;
-	    nInedges =  inDegree;
-	    nOutedges = outDegree;
-	    inEdgeDataArray = (ChiEdge<EdgeValue>**)malloc(sizeof(ChiEdge<EdgeValue>*)*inDegree);
-	    outEdgeDataArray = (ChiEdge<EdgeValue>**)malloc(sizeof(ChiEdge<EdgeValue>*)*outDegree);
+	    this->nInedges =  inDegree;
+	    this->nOutedges = outDegree;
+	    //inEdgeDataArray = (ChiEdge<EdgeValue>**)malloc(sizeof(ChiEdge<EdgeValue>*)*inDegree);
+	    //outEdgeDataArray = (ChiEdge<EdgeValue>**)malloc(sizeof(ChiEdge<EdgeValue>*)*outDegree);
 	}
 	// operation functions
 	ALL int getId() {
-	    return id;
+	    return this->id;
 	}
 	ALL void setId(int x) {
-	    id = x;
+	    this->id = x;
 	}
 	ALL VertexValue getValue() {
-	    return value;
+	    return this->value;
 	}
 	ALL void setValue(VertexValue x) {
-	    value = x;
+	    this->value = x;
 	}
 	ALL int numEdges() {
-	    return nInedges + nOutedges;
+	    return this->nInedges + this->nOutedges;
 	}
 	ALL int numInEdges() {
-	    return nInedges;
+	    return this->nInedges;
 	}
 	ALL int numOutEdges() {
-	    return nOutedges;
+	    return this->nOutedges;
 	}
 	ALL ChiEdge<EdgeValue>* edge(int i) {
-	    if (i < nInedges) return inEdgeDataArray[i];
-	    else return inEdgeDataArray[i - nInedges];
+	    if (i < this->nInedges) return this->inEdgeDataArray[i];
+	    else return this->inEdgeDataArray[i - this->nInedges];
 	}
 	ALL ChiEdge<EdgeValue>* getInEdge(int i) {
-	    return inEdgeDataArray[i];
+	    return this->inEdgeDataArray[i];
 	}
 	ALL ChiEdge<EdgeValue>* getOutEdge(int i) {
-	    return outEdgeDataArray[i];
+	    return this->outEdgeDataArray[i];
 	}
 	ALL void setInEdge(int idx, int vertexId, EdgeValue value) {
-	    inEdgeDataArray[idx] = new Edge<EdgeValue>(vertexId, value);
+		new (this->inEdgeDataArray[idx]) Edge<EdgeValue>(vertexId, value);
+	    //inEdgeDataArray[idx] = new Edge<EdgeValue>(vertexId, value);
 	}
 	ALL void setOutEdge(VirtVertex<VertexValue, EdgeValue> **vertex, int src, int idx, int vertexId, EdgeValue value) {
 	    //outEdgeDataArray[idx] = new Edge<EdgeValue>(vertexId, value);
 	    for (int i = 0; i < vertex[vertexId]->numInEdges(); i++) {
 	        if (vertex[vertexId]->getInEdge(i)->getVertexId() == src) {
-	            outEdgeDataArray[idx] = vertex[vertexId]->getInEdge(i);
+	            this->outEdgeDataArray[idx] = vertex[vertexId]->getInEdge(i);
 	            break;
 	        }
 	    }
 	}
-    private:
-	int id;
-	int nInedges;
-	int nOutedges;
-	VertexValue value;
-	ChiEdge<EdgeValue>** inEdgeDataArray;
-	ChiEdge<EdgeValue>** outEdgeDataArray;
+
 };
 
 class GraphChiContext  {

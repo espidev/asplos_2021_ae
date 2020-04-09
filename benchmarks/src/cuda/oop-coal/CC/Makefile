@@ -24,7 +24,9 @@ OBJS = $(notdir $(CPPSRC:.cpp=.o))
 
 all: $(OBJS)
 	nvcc --keep  $(NVOPTS) $(OPTS) $(CUOPTS) $(CUSRC) *.o $(INC) -o $(EXECUTABLE) $(LIBS) 
-
+	cp cc.ptx_vptr cc.ptx
+	sh dryrun.sh
+	rm -f *.o *.cu.cpp
 $(OBJS):
 	g++ -c $(CPPSRC) $(OPTS)
 

@@ -242,8 +242,8 @@ int main(int argc, char **argv)
     double timer6 = gettime();
     for (int i = 0; i < ITER; i++) {
 	printf("Start BFS\n");
-        BFS<<<grid, threads>>>(vertex, context, i);
-        //BFS_vptr<<<grid, threads>>>(vertex, context,i);
+        //BFS<<<grid, threads>>>(vertex, context, i);
+        BFS_vptr<<<grid, threads>>>(vertex, context,i);
 	printf("Finish BFS\n");
 	cudaDeviceSynchronize();
 	err = cudaGetLastError();

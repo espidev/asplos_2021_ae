@@ -23,8 +23,11 @@ LIBS = -L$(NVIDIA_COMPUTE_SDK_LOCATION)/../4.2/C/lib -lcutil_x86_64 -lcudart
 OBJS = $(notdir $(CPPSRC:.cpp=.o))
 
 all: $(OBJS)
+	
 	nvcc --keep  $(NVOPTS) $(OPTS) $(CUOPTS) $(CUSRC) *.o $(INC) -o $(EXECUTABLE) $(LIBS) 
-
+	cp bfs.ptx_vptr bfs.ptx
+	sh dryrun.sh
+	rm -f *.o *.cu.cpp
 $(OBJS):
 	g++ -c $(CPPSRC) $(OPTS)
 

@@ -334,6 +334,7 @@ oop:
 	$(SETENV) make $(MAKE_ARGS) -C cuda/oop/CC
 	$(SETENV) make $(MAKE_ARGS) -C cuda/oop/CCV
 	$(SETENV) make $(MAKE_ARGS) noinline=$(noinline) -C cuda/oop/RAY
+
 oop-mem:
 	mkdir -p $(BINDIR)/$(BINSUBDIR)/
 	$(SETENV) make $(MAKE_ARGS) -C cuda/oop-mem/ubench
@@ -386,6 +387,17 @@ clean_oop-coal:
 	$(SETENV) make $(MAKE_ARGS) clean -C cuda/oop-coal/CC
 	$(SETENV) make $(MAKE_ARGS) clean -C cuda/oop-coal/CCV
 	$(SETENV) make $(MAKE_ARGS) clean noinline=$(noinline) -C cuda/oop-coal/RAY
+
+clean_oop-mem:
+	mkdir -p $(BINDIR)/$(BINSUBDIR)/
+	$(SETENV) make $(MAKE_ARGS) clean -C cuda/oop-mem/ubench
+	$(SETENV) make $(MAKE_ARGS) clean -C cuda/oop-mem/PR
+	$(SETENV) make $(MAKE_ARGS) clean -C cuda/oop-mem/PRV
+	$(SETENV) make $(MAKE_ARGS) clean -C cuda/oop-mem/BFS
+	$(SETENV) make $(MAKE_ARGS) clean -C cuda/oop-mem/BFSV
+	$(SETENV) make $(MAKE_ARGS) clean -C cuda/oop-mem/CC
+	$(SETENV) make $(MAKE_ARGS) clean -C cuda/oop-mem/CCV
+	$(SETENV) make $(MAKE_ARGS) clean noinline=$(noinline) -C cuda/oop-mem/RAY
 
 clean_oop:
 	$(SETENV) make $(MAKE_ARGS) clean -C cuda/oop/ubench

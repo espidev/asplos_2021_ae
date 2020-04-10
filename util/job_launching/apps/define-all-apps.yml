@@ -448,47 +448,43 @@ oop:
         - oop_ubench:
             - 10000 128 1 1
 
-oop-coal:
+oop_mem:
     exec_dir: "../../benchmarks/bin/$CUDA_VERSION/release/"
-    data_dirs: "../../benchmarks/data_dirs/oop/"
+    data_dirs: "../../benchmarks/data_dirs/oop-mem/"
     execs:
-        - PR:
+        - PR_MEM:
             - ./data/coAuthorsDBLP.graph 1
-        - PRV:
+        - PRV_MEM:
             - ./data/coAuthorsDBLP.graph 1
-        - CC:
+        - CC_MEM:
             - ./data/coAuthorsDBLP.graph 1
-        - CCV:
+        - CCV_MEM:
             - ./data/coAuthorsDBLP.graph 1
-        - BFS:
+        - BFS_MEM:
             - ./data/coAuthorsDBLP.graph 1
-        - BFSV:
+        - BFSV_MEM:
             - ./data/coAuthorsDBLP.graph 1
-        - RAY:
+        - RAY_MEM:
             - 512 512 100
-        - oop_ubench:
-            - 10000 128 1 1
 
-oop-ideal:
+oop_coal:
     exec_dir: "../../benchmarks/bin/$CUDA_VERSION/release/"
-    data_dirs: "../../benchmarks/data_dirs/oop/"
+    data_dirs: "../../benchmarks/data_dirs/oop-coal/"
     execs:
-        - PR_IDEAL:
+        - PR_COAL:
             - ./data/coAuthorsDBLP.graph 1
-        - PRV_IDEAL:
+        - PRV_COAL:
             - ./data/coAuthorsDBLP.graph 1
-        - CC_IDEAL:
+        - CC_COAL:
             - ./data/coAuthorsDBLP.graph 1
-        - CCV_IDEAL:
+        - CCV_COAL:
             - ./data/coAuthorsDBLP.graph 1
-        - BFS_IDEAL:
+        - BFS_COAL:
             - ./data/coAuthorsDBLP.graph 1
-        - BFSV_IDEAL:
+        - BFSV_COAL:
             - ./data/coAuthorsDBLP.graph 1
-        - RAY_IDEAL:
+        - RAY_COAL:
             - 512 512 100
-        - oop_ubench_IDEAL:
-            - 10000 128 1 1
 
 oop_trace:
     exec_dir: "../../benchmarks/bin/$CUDA_VERSION/release/"

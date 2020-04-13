@@ -8,30 +8,18 @@
 #GENCODE_SM62 ?= -gencode=arch=compute_62,code=\"sm_62,compute_62\"
 GENCODE_SM70 ?= -gencode=arch=compute_70,code=\"sm_70,compute_70\"
 
-CPPSRC = ../graph_parser/util.cpp ../graph_parser/parse.cpp
 CUSRC =
-BASEEXE = PR_COAL
-VARIANT ?= DEFAULT
+BASEEXE = oop_ubench_MEM
 # CUDA source files (compiled with cudacc)
 EXECUTABLE = $(BINDIR)/$(BINSUBDIR)/$(BASEEXE)
-CUSRC += pagerank.cu
+CUSRC += oo-vfunc-complete.cu
 OPTS = -O3
 CUOPTS = $(GENCODE_ARCH) $(GENCODE_SM20) $(GENCODE_SM30) $(GENCODE_SM35) $(GENCODE_SM50) $(GENCODE_SM60) $(GENCODE_SM62) $(GENCODE_SM70)
-INC = -I$(NVIDIA_COMPUTE_SDK_LOCATION)/../4.2/C/common/inc -I$(CUDA_INSTALL_PATH)/include
-LIBS = -L$(NVIDIA_COMPUTE_SDK_LOCATION)/../4.2/C/lib -lcutil_x86_64 -lcudart
+INC = -I$(CUDA_INSTALL_PATH)/include
+LIBS = -lcudart
 
-OBJS = $(notdir $(CPPSRC:.cpp=.o))
-
-all: $(OBJS)
-	nvcc --keep $(NVOPTS) $(OPTS) $(CUOPTS) $(CUSRC) *.o $(INC) -o $(EXECUTABLE) $(LIBS) 
-	cp pagerank.ptx_vptr pagerank.ptx
-	sh dryrun.sh
-	rm -f *.o *.cu.cpp
-$(OBJS):
-	g++ -c $(CPPSRC) $(OPTS)
+all:
+	nvcc $(NVOPTS) $(OPTS) $(CUOPTS) $(CUSRC) $(INC) -o $(EXECUTABLE) $(LIBS)
 
 clean:
-	rm -f $(EXECUTABLE) *cpp* *fatbin* *cudafe* *ptx *cubin* *.o *.module_id *dlink*
-
-cleancucpp:
-	rm -f *.cu.cpp
+	rm -f $(EXECUTABLE)

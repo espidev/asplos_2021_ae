@@ -51,4 +51,4 @@ OMIT_CUTIL_LIB=0
 # Rules and targets
 #LIB := 
 
-include common.mk
+include ../../common/common.mk

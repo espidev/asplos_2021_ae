@@ -32,7 +32,7 @@ $(OBJS):
 	g++ -c $(CPPSRC) $(OPTS)
 
 clean:
-	rm -f *.o *.cu.cpp $(EXECUTABLE)
+	rm -f $(EXECUTABLE) *cpp* *fatbin* *cudafe* *ptx *cubin* *.o *.module_id *dlink*
 
 cleancucpp:
 	rm -f *.cu.cpp

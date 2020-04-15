@@ -26,11 +26,12 @@
  public:
    virtual __device__ void doTheMath(float &c, float a, int numCompute) = 0;
  };
- 
+
  #define Derived(A)                                                             \
    class Class##A : public BaseClass {                                          \
    public:                                                                      \
      virtual __device__ void doTheMath(float &c, float a, int numCompute) {     \
+      for (int l = 0; l < numCompute; l++)                                     \
        for (int l = 0; l < numCompute; l++)                                     \
          c = c + a;                                                             \
      }                                                                          \
@@ -93,7 +94,7 @@ __managed__ void *temp_ubench;
    int threadIdx;
    BaseClass **array = pointerArray;
    for (i = 0; i < numElements; i++) {
-     threadIdx = i / threadsPerBlock;
+     threadIdx = i % threadsPerBlock;
      
      switch (threadIdx % numClasses) {
        ObjCase_cpu(0);
@@ -197,7 +198,7 @@ __managed__ void *temp_ubench;
  int main(int argc, char **argv) {
    // Error code to check return values for CUDA calls
    cudaError_t err = cudaSuccess;
-   mem_alloc shared_mem(4ULL * 1024 * 1024 * 1024);
+   mem_alloc shared_mem(10ULL * 1024 * 1024 * 1024);
    obj_alloc my_obj_alloc(&shared_mem);
    // Print the vector length to be used, and compute its size
    int numElements = atoi(argv[1]); // size of vector

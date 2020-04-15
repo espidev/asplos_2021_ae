@@ -13,12 +13,13 @@
 using namespace std::chrono;
 using namespace std;
 #define DEBUG 0
-#define CALLOC_NUM 2005352
+
+unsigned long long  CALLOC_NUM= 17*1048576;
 typedef char ALIGN[16];
 
 union header {
   struct {
-    size_t size;
+    unsigned long long size;
     unsigned is_free;
     union header *next;
     // char ALIGN[8];
@@ -34,7 +35,7 @@ class mem_alloc {
   header_t *head;
   header_t *tail;
   unsigned is_free;
-  unsigned remaining_size;
+  unsigned long long remaining_size;
 
 public:
   mem_alloc(unsigned long long _total_size) {
@@ -56,7 +57,7 @@ public:
     head->s.is_free = 1;
     head->s.next = NULL;
   }
-  header_t *get_free_block(size_t size) {
+  header_t *get_free_block(unsigned long long size) {
     header_t *curr = tail;
     while (curr) {
       /* see if there's a free block that can accomodate requested size */
@@ -74,7 +75,7 @@ public:
     }
     return NULL;
   }
-  void alloc_free_block(size_t size, header_t *block_ptr) {
+  void alloc_free_block(unsigned long long size, header_t *block_ptr) {
     header_t *next_block;
     block_ptr->s.is_free = 0;
     next_block = (header_t *)(((char *)block_ptr) + size + sizeof(header_t));
@@ -101,7 +102,7 @@ public:
     header->s.is_free = 1;
   }
 
-  void *custom_malloc(size_t size) {
+  void *custom_malloc(unsigned long long size) {
     // size_t total_size;
 
     header_t *header;
@@ -116,7 +117,7 @@ public:
       // printf("malloc:%p\n",(void *)(header + sizeof(header_t)));
       return (void *)((char *)header + sizeof(header_t));
     }
-    printf("RETNULL");
+    printf("RETURN NULL : %llu %llu \n",size, this->remaining_size);
     return NULL;
     /* We need to get memory to fit in the requested block and header from OS.
      */
@@ -310,7 +311,7 @@ public:
       list_ptr = type_map[x];
       bucket = list_ptr->front();
       if (bucket->is_full()) {
-        if (DEBUG)
+        if (1)
           printf("Class is full\n");
         bucket = new range_bucket(CALLOC_NUM, sizeof(myType),
                                   mem->calloc<myType>(CALLOC_NUM));

@@ -54,44 +54,62 @@ __global__ void initOutEdge(ChiVertex<int, int> **vertex, GraphChiContext* conte
     }
 }
 
-__global__ void ConnectedComponent(ChiVertex<int, int> **vertex, GraphChiContext* context, int iteration) {
-    int tid = blockDim.x * blockIdx.x + threadIdx.x;
-    if (tid < context->getNumVertices()) {
-        int numEdges = vertex[tid]->numEdges();
-        if (iteration == 0) {
-            vertex[tid]->setValue(vertex[tid]->getId());
-        }
-        int curMin = vertex[tid]->getValue();
-        for(int i=0; i < numEdges; i++) {
-            int nbLabel = vertex[tid]->edge(i)->getValue();
-            if (iteration == 0) nbLabel = vertex[tid]->edge(i)->getVertexId(); // Note!
-            if (nbLabel < curMin) {
-                curMin = nbLabel;
-            }
-        }
+__global__ void ConnectedComponent(ChiVertex<int, int> **vertex,
+                                   GraphChiContext *context, int iteration) {
+  int tid = blockDim.x * blockIdx.x + threadIdx.x;
+  if (tid < context->getNumVertices()) {
 
-        /**
-         * Set my new label
-         */
-        vertex[tid]->setValue(curMin);
-        int label = curMin;
-
-        /**
-         * Broadcast my value to neighbors by writing the value to my edges.
-         */
-        if (iteration > 0) {
-            for(int i=0; i < numEdges; i++) {
-                if (vertex[tid]->edge(i)->getValue() > label) {
-                    vertex[tid]->edge(i)->setValue(label);
-                }
-            }
-        } else {
-            // Special case for first iteration to avoid overwriting
-            for(int i=0; i < vertex[tid]->numOutEdges(); i++) {
-                vertex[tid]->getOutEdge(i)->setValue(label);
-            }
-        }
+    int numEdges;
+    numEdges = vertex[tid]->numEdges();
+    if (iteration == 0) {
+      int vid = vertex[tid]->getId();
+      vertex[tid]->setValue(vid);
     }
+    int curMin;
+    curMin = vertex[tid]->getValue();
+    for (int i = 0; i < numEdges; i++) {
+      ChiEdge<int> *edge;
+      edge = vertex[tid]->edge(i);
+      int nbLabel;
+      nbLabel = edge->getValue();
+      if (iteration == 0) {
+        nbLabel = edge->getVertexId(); // Note!
+      }
+      if (nbLabel < curMin) {
+        curMin = nbLabel;
+      }
+    }
+
+    /**
+     * Set my new label
+     */
+    vertex[tid]->setValue(curMin);
+    int label = curMin;
+
+    /**
+     * Broadcast my value to neighbors by writing the value to my edges.
+     */
+    if (iteration > 0) {
+      for (int i = 0; i < numEdges; i++) {
+        ChiEdge<int> *edge;
+        edge = vertex[tid]->edge(i);
+        int edgeValue;
+        edgeValue = edge->getValue();
+        if (edgeValue > label) {
+          edge->setValue(label);
+        }
+      }
+    } else {
+      // Special case for first iteration to avoid overwriting
+      int numOutEdge;
+      numOutEdge = vertex[tid]->numOutEdges();
+      for (int i = 0; i < numOutEdge; i++) {
+        ChiEdge<int> *outEdge;
+        outEdge = vertex[tid]->getOutEdge(i);
+        outEdge->setValue(label);
+      }
+    }
+  }
 }
 
 __global__ void copyBack(ChiVertex<int, int> **vertex, GraphChiContext* context,

@@ -67,27 +67,38 @@ __global__ void initOutEdge(ChiVertex<float, float> **vertex, GraphChiContext* c
     }
 }
 
-__global__ void PageRank(ChiVertex<float, float> **vertex, GraphChiContext* context, int iteration) {
-    int tid = blockDim.x * blockIdx.x + threadIdx.x;
-    if (tid < context->getNumVertices()) {
-        if (iteration == 0) {
-            vertex[tid]->setValue(1.0f);
-        } else {
-            float sum = 0.0f;
-            for (int i = 0; i < vertex[tid]->numInEdges(); i++) {
-                sum+= vertex[tid]->getInEdge(i)->getValue();
-            }
-            vertex[tid]->setValue(0.15f + 0.85f * sum);
-
-            /* Write my value (divided by my out-degree) to my out-edges so neighbors can read it. */
-            float outValue = vertex[tid]->getValue() / vertex[tid]->numOutEdges();
-            for(int i=0; i<vertex[tid]->numOutEdges(); i++) {
-                vertex[tid]->getOutEdge(i)->setValue(outValue);
-            }
-        }
-    }
-}
-
+  __global__ void PageRank(ChiVertex<float, float> **vertex,
+						   GraphChiContext *context, int iteration) {
+	int tid = blockDim.x * blockIdx.x + threadIdx.x;
+	if (tid < context->getNumVertices()) {
+	  if (iteration == 0) {
+		vertex[tid]->setValue(1.0f);
+	  } else {
+		float sum = 0.0f;
+		int numInEdge;
+		numInEdge = vertex[tid]->numInEdges();
+		for (int i = 0; i < numInEdge; i++) {
+		  ChiEdge<float> *inEdge;
+		  inEdge = vertex[tid]->getInEdge(i);
+		  sum += inEdge->getValue();
+		}
+		vertex[tid]->setValue(0.15f + 0.85f * sum);
+  
+		/* Write my value (divided by my out-degree) to my out-edges so neighbors
+		 * can read it. */
+		int numOutEdge;
+		numOutEdge = vertex[tid]->numOutEdges();
+		float outValue = vertex[tid]->getValue() / numOutEdge;
+		for (int i = 0; i < numOutEdge; i++) {
+		  ChiEdge<float> *outEdge;
+		  outEdge = vertex[tid]->getOutEdge(i);
+		  outEdge->setValue(outValue);
+		}
+	  }
+	  
+	}
+  }
+  
 __global__ void copyBack(ChiVertex<float, float> **vertex, GraphChiContext* context,
 	float *pagerank)
 {

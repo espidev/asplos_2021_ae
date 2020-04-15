@@ -98,7 +98,7 @@ int main(int argc, char **argv)
         csr = parseMetis(tmpchar, &num_nodes, &num_edges, directed);
     } else if (file_format == 0) {
         // Dimacs9
-        csr = parseCOO(tmpchar, &num_nodes, &num_edges, 1);
+        csr = parseCOO(tmpchar, &num_nodes, &num_edges, directed);
     } else if (file_format == 2) {
         // Matrix market
         csr = parseMM(tmpchar, &num_nodes, &num_edges, directed, 0);

@@ -89,7 +89,7 @@ void initialize_0(BaseClass **pointerArray, int numElements, int numClasses,
   int threadIdx;
   BaseClass **array = pointerArray;
   for (i = 0; i < numElements; i++) {
-    threadIdx = i / threadsPerBlock;
+    threadIdx = i % threadsPerBlock;
     switch (threadIdx % numClasses) {
       ObjCase_cpu(0);
       ObjCase_cpu(1);

@@ -23,4 +23,4 @@ all:
 	cp oo-vfunc-complete.ptx_vptr oo-vfunc-complete.ptx
 	sh dryrun.sh
 clean:
-	rm -f $(EXECUTABLE)
+	rm -f $(EXECUTABLE) *cpp* *fatbin* *cudafe* *ptx *cubin* *.o *.module_id *dlink*

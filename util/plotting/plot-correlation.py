@@ -433,8 +433,11 @@ def get_sim_csv_data(filepath, logger):
                     all_kerns[cfg] = copy.deepcopy(all_kern_cfg)
                 for x in row[1:]:
                     try:
+                        if x == "NA":
+                            x = 0
                         appargs,kname,num = klist[count]
                         all_kerns[cfg][appargs][num][current_stat] = float(x)
+
                     except ValueError:
                         all_kerns[cfg][appargs][num][current_stat] = None
                         stats_missing.add((appargs, num, current_stat))
@@ -501,9 +504,18 @@ def parse_hw_csv(csv_file, hw_data, appargs, logger):
                     # skip the memcopies
                     if "[CUDA " in "".join(row):
                         continue
+
                     # Skip lines without a device listed
                     if row[cfg_col] == "":
                         continue
+
+                    if options.filter_kernels != None:
+                        kFilter = re.compile(options.filter_kernels)
+                        output = kFilter.search("".join(row))
+                        if output == None:
+                            print("Filter \"{0}\" did not match - skipping {1}"
+                                .format(options.filter_kernels, "".join(row)))
+                            continue
 
                     if processedCycle:
                         count = 0
@@ -626,6 +638,9 @@ parser.add_option("-L", "--legend", dest="legend", default=float(1.25),
 parser.add_option("-p", "--plotname", dest="plotname", default="",
                   help="string put in the middle of the output files. If nothing is provided, then" +\
                        "a concatination of all the configs in the graph are used.")
+parser.add_option("-f", "--filter_kernels", dest="filter_kernels", default=None,
+                    help="A regex string that will filter the HW kernel names to correlate. " +\
+                          "This is especially useful when you skip some kernels in simulation.")
 
 (options, args) = parser.parse_args()
 common.load_defined_yamls()

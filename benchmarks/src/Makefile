@@ -334,6 +334,16 @@ oop:
 	$(SETENV) make $(MAKE_ARGS) -C cuda/oop/CC
 	$(SETENV) make $(MAKE_ARGS) -C cuda/oop/CCV
 	$(SETENV) make $(MAKE_ARGS) noinline=$(noinline) -C cuda/oop/RAY
+oop-concord:
+	mkdir -p $(BINDIR)/$(BINSUBDIR)/
+	$(SETENV) make $(MAKE_ARGS) -C cuda/oop-concord/ubench
+	$(SETENV) make $(MAKE_ARGS) -C cuda/oop-concord/PR
+	$(SETENV) make $(MAKE_ARGS) -C cuda/oop-concord/PRV
+	$(SETENV) make $(MAKE_ARGS) -C cuda/oop-concord/BFS
+	$(SETENV) make $(MAKE_ARGS) -C cuda/oop-concord/BFSV
+	$(SETENV) make $(MAKE_ARGS) -C cuda/oop-concord/CC
+	$(SETENV) make $(MAKE_ARGS) -C cuda/oop-concord/CCV
+	$(SETENV) make $(MAKE_ARGS) noinline=$(noinline) -C cuda/oop-concord/RAY
 
 oop-mem:
 	mkdir -p $(BINDIR)/$(BINSUBDIR)/

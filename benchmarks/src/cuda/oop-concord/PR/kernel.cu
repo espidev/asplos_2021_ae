@@ -80,7 +80,15 @@ __global__ void initOutEdge(ChiVertex<float, float> **vertex, GraphChiContext* c
 		for (int i = 0; i < numInEdge; i++) {
 		  ChiEdge<float> *inEdge;
 		  inEdge = vertex[tid]->getInEdge(i);
-		  sum += inEdge->getValue();
+		  switch (inEdge->type) {
+			case 0:
+			sum += inEdge->getValueChiEdge();
+			  break;
+			case 1:
+			sum += inEdge->getValueEdge();
+			  break;
+			}
+		 
 		}
 		vertex[tid]->setValue(0.15f + 0.85f * sum);
   
@@ -92,7 +100,15 @@ __global__ void initOutEdge(ChiVertex<float, float> **vertex, GraphChiContext* c
 		for (int i = 0; i < numOutEdge; i++) {
 		  ChiEdge<float> *outEdge;
 		  outEdge = vertex[tid]->getOutEdge(i);
-		  outEdge->setValue(outValue);
+		  switch (outEdge->type) {
+			case 0:
+			outEdge->setValueChiEdge(outValue);
+			  break;
+			case 1:
+			outEdge->setValueEdge(outValue);
+			  break;
+			}
+		 
 		}
 	  }
 	  

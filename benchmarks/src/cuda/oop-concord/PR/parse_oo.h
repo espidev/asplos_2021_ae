@@ -1,31 +1,28 @@
 #define ALL __noinline__ __host__ __device__
-template <typename EdgeData>
-class ChiEdge {
-    public:
-	ALL virtual int getVertexId() = 0;
-	ALL virtual EdgeData getValue() = 0;
-	ALL virtual void setValue(EdgeData x) = 0;
+template <typename EdgeData> class ChiEdge {
+public:
+  int type;
+  ALL int getVertexIdChiEdge() { return -1;}
+  ALL EdgeData getValueChiEdge() {return 0;}
+  ALL void setValueChiEdge(EdgeData x) {}
+  ALL int getVertexIdEdge() { return this->vertexId; }
+  ALL EdgeData getValueEdge() { return this->edgeValue; }
+  ALL void setValueEdge(EdgeData x) { this->edgeValue = x; }
+
+  EdgeData edgeValue;
+  int vertexId;
 };
 
-template <typename EdgeValue>
-class Edge : public ChiEdge<EdgeValue> {
-    public:
-	ALL Edge(int id, int value) {
-	    vertexId = id;
-	    edgeValue = value;
-	}
-	ALL int getVertexId() {
-	    return vertexId;
-	}
-	ALL EdgeValue getValue() {
-	    return edgeValue;
-	}
-	ALL void setValue(EdgeValue x) {
-	    edgeValue = x;
-	}
-    private:
-	EdgeValue edgeValue;
-	int vertexId;
+template <typename EdgeValue> class Edge : public ChiEdge<EdgeValue> {
+public:
+  ALL Edge(int id, int value) {
+    this->vertexId = id;
+    this->edgeValue = value;
+    this->type = 1;
+  }
+
+
+
 };
 
 template <typename VertexValue, typename EdgeValue>
@@ -70,7 +67,7 @@ class ChiVertex {
 	ALL void setOutEdge(ChiVertex<float, float> **vertex, int src, int idx, int vertexId, EdgeValue value) {
 	    //outEdgeDataArray[idx] = new Edge<EdgeValue>(vertexId, value);
 	    for (int i = 0; i < vertex[vertexId]->numInEdges(); i++) {
-	        if (vertex[vertexId]->getInEdge(i)->getVertexId() == src) {
+	        if (vertex[vertexId]->getInEdge(i)->getVertexIdEdge() == src) {
 	            outEdgeDataArray[idx] = vertex[vertexId]->getInEdge(i);
 	            break;
 	        }

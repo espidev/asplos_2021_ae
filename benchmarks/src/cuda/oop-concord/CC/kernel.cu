@@ -76,12 +76,20 @@ __global__ void ConnectedComponent(ChiVertex<int, int> **vertex,
         nbLabel = edge->getValueChiEdge();
           break;
         case 1:
-        nbLabel = edge->getValue();
+        nbLabel = edge->getValueEdge();
           break;
         }
      
       if (iteration == 0) {
-        nbLabel = edge->getVertexId(); // Note!
+        switch (edge->type) {
+          case 0:
+          nbLabel = edge->getVertexIdChiEdge(); // Note!
+            break;
+          case 1:
+          nbLabel = edge->getVertexIdEdge(); // Note!
+            break;
+          }
+        
       }
       if (nbLabel < curMin) {
         curMin = nbLabel;
@@ -101,10 +109,27 @@ __global__ void ConnectedComponent(ChiVertex<int, int> **vertex,
       for (int i = 0; i < numEdges; i++) {
         ChiEdge<int> *edge;
         edge = vertex[tid]->edge(i);
+        
         int edgeValue;
-        edgeValue = edge->getValue();
+        switch (edge->type) {
+          case 0:
+          edgeValue = edge->getValueChiEdge();
+            break;
+          case 1:
+          edgeValue = edge->getValueEdge();
+            break;
+          }
+       
         if (edgeValue > label) {
-          edge->setValue(label);
+          switch (edge->type) {
+            case 0:
+            edge->setValueChiEdge(label);
+              break;
+            case 1:
+            edge->setValueEdge(label);
+              break;
+            }
+          
         }
       }
     } else {
@@ -114,7 +139,15 @@ __global__ void ConnectedComponent(ChiVertex<int, int> **vertex,
       for (int i = 0; i < numOutEdge; i++) {
         ChiEdge<int> *outEdge;
         outEdge = vertex[tid]->getOutEdge(i);
-        outEdge->setValue(label);
+        switch (outEdge->type) {
+          case 0:
+          outEdge->setValueChiEdge(label);
+            break;
+          case 1:
+          outEdge->setValueEdge(label);
+            break;
+          }
+       
       }
     }
   }

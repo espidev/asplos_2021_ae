@@ -2,7 +2,7 @@
 template <typename EdgeData> class ChiEdge {
 public:
   int type;
-  ALL int getVertexIdChiEdge() {}
+  ALL int getVertexIdChiEdge() { return -1;}
   ALL EdgeData getValueChiEdge() {return 0;}
   ALL void setValueChiEdge(EdgeData x) {}
   ALL int getVertexIdEdge() { return this->vertexId; }

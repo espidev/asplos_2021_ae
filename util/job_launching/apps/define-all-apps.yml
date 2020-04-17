@@ -448,6 +448,25 @@ oop:
         - oop_ubench:
             - 10000 128 1 1
 
+oop_concord:
+    exec_dir: "../../benchmarks/bin/$CUDA_VERSION/release/"
+    data_dirs: "../../benchmarks/data_dirs/oop-concord/"
+    execs:
+        #- PR_CONCORD:
+        #    - ./data/coAuthorsDBLP.graph 1
+        #- PRV_CONCORD:
+        #    - ./data/coAuthorsDBLP.graph 1
+        #- CC_CONCORD:
+        #    - ./data/coAuthorsDBLP.graph 1
+        #- CCV_CONCORD:
+        #    - ./data/coAuthorsDBLP.graph 1
+        #- BFS_CONCORD:
+        #    - ./data/coAuthorsDBLP.graph 1
+        - BFSV_CONCORD:
+            - ./data/coAuthorsDBLP.graph 1
+        - RAY_CONCORD:
+            - 512 512 100
+
 oop_mem:
     exec_dir: "../../benchmarks/bin/$CUDA_VERSION/release/"
     data_dirs: "../../benchmarks/data_dirs/oop-mem/"

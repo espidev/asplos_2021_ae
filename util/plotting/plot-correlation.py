@@ -81,7 +81,7 @@ def getAppData(kernels, x, y, xaxis_title, correlmap):
             num_less_than_one_percent += 1
         if err < 10.0:
             num_less_than_ten_percent += 1
-    
+
 
     total_err = total_err / len(newx)
     aggregate_err = tot_err_num / tot_x * 100
@@ -157,7 +157,7 @@ def make_submission_quality_image(image_type, traces):
             trace.marker = markers[count %len(markers)]
         trace.mode = "markers"
         trace.error_x.color = trace.marker.color
-        
+
         # Set the alpha on the error bars to be 30%
         trace.error_x.color =  re.sub(r"(,.*,.*),.*\)",r"\1,0.3)", trace.error_x.color)
         kernel_annotations.append(make_anno1(anno,22,0,1.115 - count * 0.05))
@@ -347,8 +347,8 @@ def make_anno1(text, fontsize, x, y):
         text=text,   # annotation text
         xref='paper',  # use paper coordinates
         yref='paper',  #   for both x and y coords
-        x=x,           # x and y position 
-        y=y,           #   in norm. coord. 
+        x=x,           # x and y position
+        y=y,           #   in norm. coord.
         font=Font(size=fontsize,color='Black'),  # text font size
         showarrow=False,       # no arrow (default is True)
         bgcolor='#F5F3F2',     # light grey background color
@@ -447,6 +447,57 @@ def get_sim_csv_data(filepath, logger):
         for cfg in all_kerns.iterkeys():
             del all_kerns[cfg][appargs][num][current_stat]
     return all_kerns
+
+def parse_hw_csv_2(csv_file, hw_data, appargs, logger, cfg):
+    kdata = []
+    processFiles = True
+    processedCycle = False
+    cfg_col = None
+
+    cycle_file_count = 0
+    if os.path.exists(csv_file[:-2] + ".{0}".format(cycle_file_count)):
+        csv_file = csv_file[:-2] + ".{0}".format(cycle_file_count)
+    processed_files = set()
+    while processFiles:
+        with open(csv_file, 'rU') as data_file:
+            logger.log("Parsing HW csv file {0}".format(csv_file))
+            reader = csv.reader(data_file)        # define reader object
+            state = "start"
+            header = []
+            kcount = 0
+            for row in reader:                    # loop through rows in csv file
+                if state == "start":
+                    if len(row) == 0:
+                        continue
+                    if "ID" == row[0]:
+                        state = "kernel_proc"
+                    continue
+                if state == "kernel_proc":
+                    if len(row) == 1:
+                        logger.log("Bad line - possibly the app failed -- {0}".format(row))
+                        break
+
+                    kcount = int(row[0])
+                    metric = row[-3]
+                    value = float(row[-1].replace(",",""))
+#                    print "kcount={0}, metric={1}, value={2}".format(kcount,metric,value)
+#                    exit(1)
+                    if len(kdata) <= kcount:
+                        kdata.append({})
+                    if metric not in kdata[kcount]:
+                        kdata[kcount][metric] = []
+                    kdata[kcount][metric].append(value)
+
+        logger.log("Kernels found: {0}".format(kcount))
+        processed_files.add(csv_file)
+        cycle_file_count += 1
+        csv_file = csv_file[:-1] + str(cycle_file_count)
+        if not os.path.exists(csv_file):
+            break
+    if cfg != "" and cfg != None:
+        if cfg not in hw_data:
+            hw_data[cfg] = {}
+        hw_data[cfg][appargs] = kdata
 
 def parse_hw_csv(csv_file, hw_data, appargs, logger):
     kdata = []
@@ -641,6 +692,8 @@ parser.add_option("-p", "--plotname", dest="plotname", default="",
 parser.add_option("-f", "--filter_kernels", dest="filter_kernels", default=None,
                     help="A regex string that will filter the HW kernel names to correlate. " +\
                           "This is especially useful when you skip some kernels in simulation.")
+parser.add_option("-D", "--devicename", dest="devicename", default="",
+                  help="Used right now to provide a device name for turing")
 
 (options, args) = parser.parse_args()
 common.load_defined_yamls()
@@ -670,6 +723,15 @@ for root, dirs, files in os.walk(options.hardware_dir):
             # Pass in the lexiconically sorted newest file name. Cannot use getm/ctime because these files are
             # created at the same time on the local file system from a tarbal;.
             parse_hw_csv(sorted(csvs)[-1],hw_data, os.path.join(os.path.basename(root),d), logger)
+
+        csvs = glob.glob(os.path.join(csv_dir,"*.gpc__cycles_elapsed*"))
+        logger.log("Found HW gpc__cycles_elapsed {0} csvs in {1}\n".format(len(csvs),csv_dir))
+        if len(csvs) > 0:
+            # Pass in the lexiconically sorted newest file name. Cannot use getm/ctime because these files are
+            # created at the same time on the local file system from a tarbal;.
+            logger.log("Ignoring HW file {0}".format(sorted(csvs)[-1]))
+            #parse_hw_csv_2(sorted(csvs)[-1],hw_data, os.path.join(os.path.basename(root),d), logger, options.devicename)
+
 
 
 #Get the simulator data
@@ -762,7 +824,7 @@ for cfg,sim_for_cfg in sim_data.iteritems():
                            count += 1
                            hw_array = hw_array[:-1]
                            continue
- 
+
                         if correl.hw_error != None:
                             maxe,mine = eval(correl.hw_error)
                             hw_error.append(maxe)

@@ -1,4 +1,5 @@
 #include "parse_oo.h"
+
 __global__ void initContext(GraphChiContext* context, int vertices, int edges) {
     int tid = blockDim.x * blockIdx.x + threadIdx.x;
     if (tid == 0) {

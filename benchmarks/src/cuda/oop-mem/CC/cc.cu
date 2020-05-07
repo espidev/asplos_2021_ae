@@ -64,7 +64,7 @@
 #include <sys/time.h>
 #include <new>
 
-#include "../mem_alloc/mem_alloc_2.h"
+#include "../../mem_alloc/mem_alloc.h"
 #include "../graph_parser/parse.h"
 #include "../graph_parser/util.h"
 #include "kernel.cu"

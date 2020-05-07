@@ -5,7 +5,7 @@
 #ifndef __RAYTRACING_KERNEL_H__
 #define __RAYTRACING_KERNEL_H__
 
-#include "../mem_alloc/mem_alloc_2.h"
+#include "../../mem_alloc/mem_alloc.h"
 #include "helper_math.h"
 
 #define numObj 5

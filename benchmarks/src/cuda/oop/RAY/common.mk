@@ -181,14 +181,14 @@ endif
 
 # Debug/release configuration
 ifeq ($(dbg),1)
-	COMMONFLAGS += -g
+	COMMONFLAGS += -g -lineinfo
     NVCCFLAGS   += -D_DEBUG
 	CXXFLAGS    += -D_DEBUG
 	CFLAGS      += -D_DEBUG
 	BINSUBDIR   := debug
 	LIBSUFFIX   := D
 else
-	COMMONFLAGS += -O2 
+	COMMONFLAGS += -O2 -lineinfo
 	BINSUBDIR   := release
 	LIBSUFFIX   := 
 	NVCCFLAGS   += --compiler-options -fno-strict-aliasing

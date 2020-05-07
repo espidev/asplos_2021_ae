@@ -474,6 +474,7 @@ def parse_hw_csv(csv_file, hw_data, appargs, logger):
             state = "start"
             header = []
             kcount = 0
+            skipcount = 0
             for row in reader:                    # loop through rows in csv file
                 if state == "start":
                     if "Profiling result" in row[0]:
@@ -517,6 +518,14 @@ def parse_hw_csv(csv_file, hw_data, appargs, logger):
                                 .format(options.filter_kernels, "".join(row)))
                             continue
 
+                    if options.keep_kernel_list != None:
+                        keep_list = options.keep_kernel_list.split(",")
+                        if str(skipcount) not in keep_list:
+                            print("Skipping skipcount={0} - kcount={1}, whose name is {2}"
+                                .format(skipcount, kcount, "".join(row)))
+                            skipcount += 1
+                            continue
+
                     if processedCycle:
                         count = 0
                         if kcount >= len(kdata):
@@ -533,6 +542,7 @@ def parse_hw_csv(csv_file, hw_data, appargs, logger):
                         kname = kdata[kcount]["Kernel"]
                         #logger.log("Kernel Launch {0}: HW Kernel {1} found".format(kcount,kname))
                         kcount += 1
+                        skipcount += 1
                     else:
                         # Set the Device
                         if cfg != "" and cfg != row[cfg_col]:
@@ -554,6 +564,7 @@ def parse_hw_csv(csv_file, hw_data, appargs, logger):
                             count += 1
                         #logger.log("Kernel Launch {0}: HW Kernel {1} found".format(kcount,kdata[kcount]["Name"]))
                         kcount += 1
+                        skipcount += 1
                     continue
         logger.log("Kernels found: {0}".format(kcount))
         processed_files.add(csv_file)
@@ -641,6 +652,10 @@ parser.add_option("-p", "--plotname", dest="plotname", default="",
 parser.add_option("-f", "--filter_kernels", dest="filter_kernels", default=None,
                     help="A regex string that will filter the HW kernel names to correlate. " +\
                           "This is especially useful when you skip some kernels in simulation.")
+parser.add_option("-k", "--keep_kernel_list", dest="keep_kernel_list", default=None,
+                    help="This is a list of post-filtered kernels to keep from the HW parsing."
+                         " For example, if you want to keep the second the fourth kernel named \"foo\"" +\
+                         " pass -f \"foo\" -k 1,3")
 
 (options, args) = parser.parse_args()
 common.load_defined_yamls()

@@ -514,6 +514,7 @@ def parse_hw_csv(csv_file, hw_data, appargs, kdata, logger):
         state = "start"
         header = []
         kcount = 0
+        skipcount = 0
         for row in reader:
             # Begin by searching for the text line that indicates the beginning of the profile dump
             if state == "start" and len(row) > 0:
@@ -560,14 +561,14 @@ def parse_hw_csv(csv_file, hw_data, appargs, kdata, logger):
                     kFilter = re.compile(options.filter_kernels)
                     output = kFilter.search("".join(row))
                     if output == None:
-                        print("Filter \"{0}\" did not match - skipping {1}"
+                        logger.log("Filter \"{0}\" did not match - skipping {1}"
                               .format(options.filter_kernels, "".join(row)))
                         continue
 
                 if options.keep_kernel_list != None:
                    keep_list = options.keep_kernel_list.split(",")
                    if str(skipcount) not in keep_list:
-                       print("Skipping skipcount={0} - kcount={1}, whose name is {2}"
+                       logger.log("Skipping skipcount={0} - kcount={1}, whose name is {2}"
                                 .format(skipcount, kcount, "".join(row)))
                        skipcount += 1
                        continue

@@ -490,8 +490,6 @@ oop:
             - ./data/coAuthorsDBLP.graph 1
         - RAY:
             - 512 512 100
-        - oop_ubench:
-            - 10000 128 1 1
 
 oop_concord:
     exec_dir: "../../benchmarks/bin/$CUDA_VERSION/release/"

@@ -514,6 +514,7 @@ def parse_hw_csv(csv_file, hw_data, appargs, kdata, logger):
         state = "start"
         header = []
         kcount = 0
+        skipcount = 0
         for row in reader:
             # Begin by searching for the text line that indicates the beginning of the profile dump
             if state == "start" and len(row) > 0:
@@ -560,10 +561,17 @@ def parse_hw_csv(csv_file, hw_data, appargs, kdata, logger):
                     kFilter = re.compile(options.filter_kernels)
                     output = kFilter.search("".join(row))
                     if output == None:
-                        print("Filter \"{0}\" did not match - skipping {1}"
+                        logger.log("Filter \"{0}\" did not match - skipping {1}"
                               .format(options.filter_kernels, "".join(row)))
                         continue
 
+                if options.keep_kernel_list != None:
+                   keep_list = options.keep_kernel_list.split(",")
+                   if str(skipcount) not in keep_list:
+                       logger.log("Skipping skipcount={0} - kcount={1}, whose name is {2}"
+                                .format(skipcount, kcount, "".join(row)))
+                       skipcount += 1
+                       continue
                 # Set the Device
                 if cfg != "" and cfg != row[cfg_col]:
                     print "data for more than one device in {0}..{1}:{2}"\
@@ -584,6 +592,7 @@ def parse_hw_csv(csv_file, hw_data, appargs, kdata, logger):
                     count += 1
                 #logger.log("Kernel Launch {0}: HW Kernel {1} found".format(kcount,kdata[kcount]["Name"]))
                 kcount += 1
+                skipcount += 1
                 continue
         logger.log("Kernels found: {0}".format(kcount))
     if cfg != "" and cfg != None:
@@ -691,7 +700,10 @@ parser.add_option("-D", "--devicename", dest="devicename", default="",
                   help="Used right now to provide a device name for turing")
 parser.add_option("-C", "--logchannel", dest="logchannel", default="",
                   help="Turn on minimal logging. Right now \"hwsummary\" supported.")
-
+parser.add_option("-k", "--keep_kernel_list", dest="keep_kernel_list", default=None,
+                    help="This is a list of post-filtered kernels to keep from the HW parsing."
+                         " For example, if you want to keep the second the fourth kernel named \"foo\"" +\
+                         " pass -f \"foo\" -k 1,3")
 
 (options, args) = parser.parse_args()
 common.load_defined_yamls()

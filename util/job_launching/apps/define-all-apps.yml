@@ -474,20 +474,20 @@ pannotia:
 # oop
 oop:
     exec_dir: "../../benchmarks/bin/$CUDA_VERSION/release/"
-    data_dirs: "../../benchmarks/data_dirs/oop/"
+    data_dirs: "../../benchmarks/data_dirs/"
     execs:
         - PR:
-            - ./data/coAuthorsDBLP.graph 1
+            - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
         - PRV:
-            - ./data/coAuthorsDBLP.graph 1
+            - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
         - CC:
-            - ./data/coAuthorsDBLP.graph 1
+            - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
         - CCV:
-            - ./data/coAuthorsDBLP.graph 1
+            - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
         - BFS:
-            - ./data/coAuthorsDBLP.graph 1
+            - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
         - BFSV:
-            - ./data/coAuthorsDBLP.graph 1
+            - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
         - RAY:
             - 512 512 100
 
@@ -496,17 +496,17 @@ oop_concord:
     data_dirs: "../../benchmarks/data_dirs/oop-concord/"
     execs:
         #- PR_CONCORD:
-        #    - ./data/coAuthorsDBLP.graph 1
+        #    - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
         #- PRV_CONCORD:
-        #    - ./data/coAuthorsDBLP.graph 1
+        #    - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
         #- CC_CONCORD:
-        #    - ./data/coAuthorsDBLP.graph 1
+        #    - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
         #- CCV_CONCORD:
-        #    - ./data/coAuthorsDBLP.graph 1
+        #    - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
         #- BFS_CONCORD:
-        #    - ./data/coAuthorsDBLP.graph 1
+        #    - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
         - BFSV_CONCORD:
-            - ./data/coAuthorsDBLP.graph 1
+            - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
         - RAY_CONCORD:
             - 512 512 100
 
@@ -515,17 +515,17 @@ oop_mem:
     data_dirs: "../../benchmarks/data_dirs/oop-mem/"
     execs:
         - PR_MEM:
-            - ./data/coAuthorsDBLP.graph 1
+            - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
         - PRV_MEM:
-            - ./data/coAuthorsDBLP.graph 1
+            - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
         - CC_MEM:
-            - ./data/coAuthorsDBLP.graph 1
+            - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
         - CCV_MEM:
-            - ./data/coAuthorsDBLP.graph 1
+            - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
         - BFS_MEM:
-            - ./data/coAuthorsDBLP.graph 1
+            - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
         - BFSV_MEM:
-            - ./data/coAuthorsDBLP.graph 1
+            - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
         - RAY_MEM:
             - 512 512 100
 
@@ -534,17 +534,17 @@ oop_coal:
     data_dirs: "../../benchmarks/data_dirs/oop-coal/"
     execs:
         - PR_COAL:
-            - ./data/coAuthorsDBLP.graph 1
+            - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
         - PRV_COAL:
-            - ./data/coAuthorsDBLP.graph 1
+            - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
         - CC_COAL:
-            - ./data/coAuthorsDBLP.graph 1
+            - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
         - CCV_COAL:
-            - ./data/coAuthorsDBLP.graph 1
+            - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
         - BFS_COAL:
-            - ./data/coAuthorsDBLP.graph 1
+            - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
         - BFSV_COAL:
-            - ./data/coAuthorsDBLP.graph 1
+            - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
         - RAY_COAL:
             - 512 512 100
 
@@ -553,17 +553,17 @@ oop_trace:
     data_dirs: "../../benchmarks/data_dirs/oop/"
     execs:
         - PR:
-            - ./data/coAuthorsDBLP.graph 1
+            - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
         - PRV:
-            - ./data/coAuthorsDBLP.graph 1
+            - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
         - CC:
-            - ./data/coAuthorsDBLP.graph 1
+            - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
         - CCV:
-            - ./data/coAuthorsDBLP.graph 1
+            - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
         - BFS:
-            - ./data/coAuthorsDBLP.graph 1
+            - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
         - BFSV:
-            - ./data/coAuthorsDBLP.graph 1
+            - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
         - RAY:
             - 512 512 100
         - oop_ubench:

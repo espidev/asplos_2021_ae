@@ -164,7 +164,7 @@ class range_bucket {
     }
 };
 
-#define FUNC_LEN 15
+#define FUNC_LEN 30
 class obj_info_tuble {
   public:
     void *range_start;
@@ -183,27 +183,14 @@ __global__ void dump_vtable(void **vtable, void **gpu_ptr) {
     // // printf("dump\n");
     memcpy(gpu_ptr, obj2, sizeof(void *));
     long ***mVtable = (long ***)&obj2;
-    // printf("kernal %p-----%p-----------\n",mVtable[0][0],mVtable[0]);
+     //printf("kernal %p-----%p-----------\n",mVtable[0][0],mVtable[0]);
     // void **mVtable = (void **)*vfptr;
     for (i = 0; i < FUNC_LEN; i++) {
         vtable[i] = (void *)mVtable[0][0][i];
-        // printf("kernal i :%d %p----------------\n", i, mVtable[0][0][i]);
+        //printf("kernal i :%d %p----------------\n", i, mVtable[0][0][i]);
     }
 }
 
-template <class myType>
-void dump_vtable2(void **vtable) {
-    // int tid = threadIdx.x;
-    int i;
-    myType *obj;
-    obj = new myType();
-    void ***vfptr = (void ***)&obj;
-    long ***mVtable = (long ***)&obj;
-    for (i = 0; i < FUNC_LEN; i++) {
-        vtable[i] = (void *)mVtable[0][0][i];
-        printf("kernal %p----------------\n", mVtable[0][0]);
-    }
-}
 
 __global__ void vptrPatch(void *array, void *vPtr, unsigned sizeofType, int n) {
     int tid = threadIdx.x + blockIdx.x * blockDim.x;
@@ -283,7 +270,8 @@ class obj_alloc {
             }
             if (1)
                 for (int ii = 0; ii < FUNC_LEN; ii++) {
-                    printf("vtbale [%s ][%d]:%p\n", typeid(myType).name(), ii,
+			if(vtable[ii]==NULL) break;
+                    printf("vtbale [%s][%d]:%p\n", typeid(myType).name(), ii,
                            vtable[ii]);
                 }
             bucket = new range_bucket(CALLOC_NUM, sizeof(myType),

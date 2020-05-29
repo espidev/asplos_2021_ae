@@ -1,7 +1,7 @@
 #include <chrono>
 #include <curand_kernel.h>
 #include <stdio.h>
-#include "../../mem_alloc/mem_alloc.h"
+#include "../../../mem_alloc/mem_alloc.h"
 #define ALL __noinline__ __host__ __device__
 
 #include "../configuration.h"

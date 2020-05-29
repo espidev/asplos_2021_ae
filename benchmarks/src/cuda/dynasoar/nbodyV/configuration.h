@@ -7,7 +7,7 @@ static const float kMaxMass = 1000.0f;
 #ifdef PARAM_NUM_ITER
 static const int kNumIterations = PARAM_NUM_ITER;
 #else
-static const int kNumIterations = 3000;
+static const int kNumIterations = 1;
 #endif  // PARAM_NUM_ITER
 
 #ifdef PARAM_SIZE
@@ -30,5 +30,7 @@ static const int kNumObjects = 64*64*64*64;
 #else
 static const int kNumObjects = PARAM_MAX_OBJ;
 #endif  // PARAM_MAX_OBJ
+
+
 
 #endif  // EXAMPLE_NBODY_CONFIGURATION_H

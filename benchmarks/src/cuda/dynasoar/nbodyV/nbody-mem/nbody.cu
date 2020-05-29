@@ -1,7 +1,7 @@
 #include <chrono>
 #include <curand_kernel.h>
 #include <stdio.h>
-#include "../../mem_alloc/mem_alloc.h"
+#include "../../../mem_alloc/mem_alloc.h"
 #define ALL __noinline__ __host__ __device__
 
 #include "../configuration.h"
@@ -213,6 +213,15 @@ __global__ void kernel_compute_checksum(BodyType **bodies) {
     Body_add_checksum(bodies, i);
   }
 }
+// void print_ptr_diff(BodyType **ptr) {
+//   int i;
+//   for (i = 1; i < kNumBodies / 100; i++) {
+//     unsigned long long ptr2=(unsigned long long)ptr[i];
+//     unsigned long long ptr1=(unsigned long long)ptr[i-1];
+//       printf("[ptr[%d]-ptr[%d]]= %ull\n", i, i - 1,
+//   (ptr2-  ptr1 ));
+//   }
+// }
 
 int main(int /*argc*/, char ** /*argv*/) {
   BodyType **dev_bodies;

@@ -24,7 +24,7 @@ OBJS = $(notdir $(CPPSRC:.cpp=.o))
 
 all: $(OBJS)
 	nvcc --keep  $(NVOPTS) $(OPTS) $(CUOPTS) $(CUSRC)  $(INC) -o $(EXECUTABLE) $(LIBS) 
-	cp traffic.ptx_coal traffic.ptx
+	#cp traffic.ptx_coal traffic.ptx
 	sh dryrun.sh
 	rm -f *cpp* *fatbin* *cudafe*  *cubin* *.o *.module_id *dlink*
 

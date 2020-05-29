@@ -17,7 +17,7 @@ static const int kMaxVelocity = 10;
 static const int kMaxDegree = 4;
 
 #ifndef PARAM_SIZE
-static const int kNumIntersections = 175;
+static const int kNumIntersections = 850;
 #else
 static const int kNumIntersections = PARAM_SIZE;
 #endif  // PARAM_SIZE
@@ -29,7 +29,7 @@ static const int kNumIterations = 12000;
 static const float kCarAllocationRatio = 0.02f;
 
 #ifndef PARAM_MAX_OBJ
-static const int kNumObjects = 64*64*64;
+static const int kNumObjects = 2*64*64*64;
 #else
 static const int kNumObjects = PARAM_MAX_OBJ;
 #endif  // PARAM_MAX_OBJ

@@ -55,9 +55,13 @@ __device__ void Car_step_extend_path(IndexT self) {
     CellBase *next_cell;
     COAL_Car_get_velocity(dev_cars[self]);
     for (int i = 0; i < dev_cars[self]->get_velocity(); ++i) {
-        COAL_Cell_get_is_target(cell) bool cond = cell->get_is_target();
-        COAL_Cell_is_sink(cell) if (cell->is_sink() || cond) { break; }
-        COAL_Car_next_step(cell);
+        COAL_Cell_get_is_target(cell);
+        bool cond = cell->get_is_target();
+        COAL_Cell_is_sink(cell);
+        if (cell->is_sink() || cond) {
+            break;
+        }
+        COAL_Car_next_step(dev_cars[self]);
         next_cell = dev_cars[self]->next_step(cell);
         assert(next_cell != cell);
         COAL_Cell_is_free(next_cell);
@@ -66,8 +70,8 @@ __device__ void Car_step_extend_path(IndexT self) {
         cell = next_cell;
         COAL_Car_set_path(dev_cars[self]);
         dev_cars[self]->set_path(cell, i);
-        COAL_Car_get_path_length(dev_cars[self]) int path_len =
-            dev_cars[self]->get_path_length();
+        COAL_Car_get_path_length(dev_cars[self]);
+        int path_len = dev_cars[self]->get_path_length();
         COAL_Car_set_path_length(dev_cars[self]);
         dev_cars[self]->set_path_length(path_len + 1);
     }
@@ -87,8 +91,8 @@ __device__ void Car_step_constraint_velocity(IndexT self) {
     CellBase *cell = dev_cars[self]->get_position();
     COAL_Cell_get_current_max_velocity(cell);
     if (vel > cell->get_current_max_velocity()) {
-        COAL_Cell_get_current_max_velocity(cell) int max_velocity =
-            cell->get_current_max_velocity();
+        COAL_Cell_get_current_max_velocity(cell);
+        int max_velocity = cell->get_current_max_velocity();
         COAL_Car_set_velocity(dev_cars[self]);
         dev_cars[self]->set_velocity(max_velocity);
     }
@@ -199,7 +203,7 @@ __device__ void Car_step_slow_down(IndexT self) {
     COAL_Car_get_velocity(ptr);
     int vel = ptr->get_velocity();
     COAL_Car_random_uni(ptr);
-    if (dev_cars[self]->random_uni() < 0.2 && vel > 0) {
+    if (ptr->random_uni() < 0.2 && vel > 0) {
         COAL_Car_set_velocity(ptr);
         ptr->set_velocity(vel - 1);
     }
@@ -366,6 +370,7 @@ __device__ IndexT connect_intersections(IndexT from, Node *target,
 
         dev_cells[prev]->set_num_outgoing(1);
         dev_cells[prev]->set_outgoing(0, dev_cells[next]);
+
         dev_cells[next]->set_num_incoming(1);
         dev_cells[next]->set_incoming(0, dev_cells[prev]);
 

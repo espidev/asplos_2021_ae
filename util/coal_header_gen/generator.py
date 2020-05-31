@@ -34,6 +34,7 @@ def gen(fname):
             fun_name = str_name[str_name.index("virtual")+2]
             print(fun_name)
             fun_name = fun_name.replace('(',' ');
+	    fun_name = fun_name.replace('*',' ');
             fun_name = clean_line(fun_name)[0]
             def_coal = "#define COAL_" + class_name +"_"+fun_name+ "(ptr)"
 

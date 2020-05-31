@@ -43,17 +43,17 @@ __device__ int num_alive_neighbors(AgentV *ptr) {
             int ny = cell_y + dy;
 
             if (nx > -1 && nx < SIZE_X && ny > -1 && ny < SIZE_Y) {
-                COAL_CELL_agent(cells[ny * SIZE_X + nx])
+                COAL_CellV_agent(cells[ny * SIZE_X + nx])
                 AgentV *ptr = cells[ny * SIZE_X + nx]->agent();
                 AgentV *alive = nullptr;
                 if (ptr) {
-                    COAL_AGENT_isAlive(ptr)
+                    COAL_AgentV_isAlive(ptr)
                     if (ptr->isAlive()) {
-                        COAL_CELL_agent(cells[ny * SIZE_X + nx])
+                        COAL_CellV_agent(cells[ny * SIZE_X + nx])
                         alive = cells[ny * SIZE_X + nx]->agent();
                     }
                 }
-                COAL_AGENT_is_state_equal(alive)
+                COAL_AgentV_is_state_equal(alive)
                 if (alive != nullptr && alive->is_state_equal(0)) {
                     result++;
                 }
@@ -66,7 +66,7 @@ __device__ int num_alive_neighbors(AgentV *ptr) {
 
 __device__ void create_candidates(AgentV *ptr) {
     void **vtable;
-    COAL_AGENT_is_new(ptr)
+    COAL_AgentV_is_new(ptr)
     assert(ptr->is_new());
 
     // TODO: Consolidate with Agent::num_alive_neighbors().
@@ -80,10 +80,10 @@ __device__ void create_candidates(AgentV *ptr) {
 
             if (nx > -1 && nx < SIZE_X && ny > -1 && ny < SIZE_Y) {
                 auto cid = ny * SIZE_X + nx;
-                COAL_CELL_is_empty(cells[cid])
+                COAL_CellV_is_empty(cells[cid])
                 if (cells[cid]->is_empty()) {
                     if (atomicCAS(&cells[cid]->reserved, 0, 1) == 0) {
-                        COAL_CELL_set_agent(cells[cid])
+                        COAL_CellV_set_agent(cells[cid])
                         cells[cid]->set_agent(cid, AgentType::isCandidate);
                     }
                 }
@@ -141,14 +141,14 @@ __global__ void prepare() {
     void **vtable;
     for (int i = threadIdx.x + blockDim.x * blockIdx.x; i < SIZE_X * SIZE_Y;
          i += blockDim.x * gridDim.x) {
-        COAL_CELL_agent(cells[i])
+        COAL_CellV_agent(cells[i])
         AgentV *ptr = cells[i]->agent();
         if (ptr) {
-           COAL_AGENT_isAlive(ptr)
+           COAL_AgentV_isAlive(ptr)
             if (ptr->isAlive()) {
-                COAL_AGENT_is_state_equal(ptr)
+                COAL_AgentV_is_state_equal(ptr)
                 if (ptr->is_state_equal(0)) {
-                    COAL_AGENT_set_is_new(ptr)
+                    COAL_AgentV_set_is_new(ptr)
                     ptr->set_is_new(false);
 
                     // Also counts this object itself.
@@ -156,23 +156,23 @@ __global__ void prepare() {
 
                     const bool stay_alive_param[9] = kStayAlive;
                     if (!stay_alive_param[alive_neighbors]) {
-                        COAL_AGENT_set_action(ptr)
+                        COAL_AgentV_set_action(ptr)
                         ptr->set_action(kActionDie);
                     }
                 }
             }
         }
         if (ptr) {
-            COAL_AGENT_isCandidate(ptr)
+            COAL_AgentV_isCandidate(ptr)
             if (ptr->isCandidate()) {
                 int alive_neighbors = num_alive_neighbors(ptr);
                 const bool spawn_param[9] = kSpawnNew;
 
                 if (spawn_param[alive_neighbors]) {
-                    COAL_AGENT_set_action(ptr)
+                    COAL_AgentV_set_action(ptr)
                     ptr->set_action(kActionSpawnAlive);
                 } else if (alive_neighbors == 0) {
-                    COAL_AGENT_set_action(ptr)
+                    COAL_AgentV_set_action(ptr)
 
                     ptr->set_action(kActionDie);
                 }
@@ -185,19 +185,19 @@ __global__ void update() {
 
     for (int i = threadIdx.x + blockDim.x * blockIdx.x; i < SIZE_X * SIZE_Y;
          i += blockDim.x * gridDim.x) {
-        COAL_CELL_agent(cells[i])
+        COAL_CellV_agent(cells[i])
         AgentV *ptr = cells[i]->agent();
         if (ptr) {
-            COAL_AGENT_isCandidate(ptr)
+            COAL_AgentV_isCandidate(ptr)
             if (ptr->isCandidate()) {
                 int cid = ptr->cell_id_;
-                COAL_AGENT_get_action(ptr)
+                COAL_AgentV_get_action(ptr)
                 if (ptr->get_action() == kActionSpawnAlive) {
-                    COAL_CELL_set_agent(cells[cid])
+                    COAL_CellV_set_agent(cells[cid])
                     cells[cid]->set_agent(cid, AgentType::isAlive);
                     // delete this;
                 } else if (ptr->get_action() == kActionDie) {
-                    COAL_CELL_delete_agent(cells[cid])
+                    COAL_CellV_delete_agent(cells[cid])
                     cells[cid]->delete_agent();
                     cells[cid]->reserved = 0;
                     // delete this;
@@ -211,41 +211,41 @@ __global__ void alive_update() {
     void **vtable;
     for (int i = threadIdx.x + blockDim.x * blockIdx.x; i < SIZE_X * SIZE_Y;
          i += blockDim.x * gridDim.x) {
-        COAL_CELL_agent(cells[i])
+        COAL_CellV_agent(cells[i])
         AgentV *ptr = cells[i]->agent();
         if (ptr) {
-            COAL_AGENT_isAlive(ptr)
+            COAL_AgentV_isAlive(ptr)
             if (ptr->isAlive()) {
                 int cid = ptr->cell_id_;
-                COAL_AGENT_is_new(ptr)
+                COAL_AgentV_is_new(ptr)
                 // TODO: Consider splitting in two classes for less divergence.
                 if (ptr->is_new()) {
                     // Create candidates in neighborhood.
                     create_candidates(ptr);
                 } else {
-                    COAL_AGENT_get_action(ptr)
+                    COAL_AgentV_get_action(ptr)
                     bool flag1 = ptr->get_action() == kActionDie;
 
-                    COAL_AGENT_is_state_equal(ptr)
+                    COAL_AgentV_is_state_equal(ptr)
                     flag1 = flag1 && ptr->is_state_equal(0);
 
-                    COAL_AGENT_is_state_in_range(ptr)
+                    COAL_AgentV_is_state_in_range(ptr)
                     bool flag2 = ptr->is_state_in_range(0, kNumStates);
-                    COAL_AGENT_is_state_equal(ptr)
+                    COAL_AgentV_is_state_equal(ptr)
                     bool flag3 = ptr->is_state_equal(kNumStates);
                     if (flag1) {
                         // Increment state. If reached max. state, replace with
                         // Candidate.
-                        COAL_AGENT_inc_state(ptr)
+                        COAL_AgentV_inc_state(ptr)
                         ptr->inc_state();
-                        COAL_AGENT_set_action(ptr)
+                        COAL_AgentV_set_action(ptr)
                         ptr->set_action(kActionNone);
                     } else if (flag2) {
-                        COAL_AGENT_inc_state(ptr)
+                        COAL_AgentV_inc_state(ptr)
                         ptr->inc_state();
                     } else if (flag3) {
                         // Replace with Candidate.
-                        COAL_CELL_set_agent(cells[cid])
+                        COAL_CellV_set_agent(cells[cid])
                         cells[cid]->set_agent(cid, AgentType::isCandidate);
                         // delete this;
                     }

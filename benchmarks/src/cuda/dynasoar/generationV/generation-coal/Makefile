@@ -19,11 +19,13 @@ OPTS = -O3
 CUOPTS = $(GENCODE_ARCH) $(GENCODE_SM20) $(GENCODE_SM30) $(GENCODE_SM35) $(GENCODE_SM50) $(GENCODE_SM60) $(GENCODE_SM62) $(GENCODE_SM70)
 INC = -I$(NVIDIA_COMPUTE_SDK_LOCATION)/../4.2/C/common/inc -I$(CUDA_INSTALL_PATH)/include
 LIBS = -L$(NVIDIA_COMPUTE_SDK_LOCATION)/../4.2/C/lib -lcutil_x86_64 -lcudart
+PTX_GEN =  ../../../../../../util/ptx_transform_coal/
 
 OBJS = $(notdir $(CPPSRC:.cpp=.o))
 
 all: $(OBJS)
-	nvcc --keep  $(NVOPTS) $(OPTS) $(CUOPTS) $(CUSRC)  $(INC) -o $(EXECUTABLE) $(LIBS) 
+	nvcc --keep   $(NVOPTS) $(OPTS) $(CUOPTS) $(CUSRC)  $(INC) -o $(EXECUTABLE) $(LIBS) 
+	$(PTX_GEN)/generator.py generation.ptx
 	cp generation.ptx_coal generation.ptx
 	sh dryrun.sh
 	rm -f *cpp* *fatbin* *cudafe*  *cubin* *.o *.module_id *dlink*

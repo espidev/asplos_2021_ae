@@ -712,8 +712,8 @@ BB22_5:
 	add.s64 	%rd17, %rd3, %rd16;
 	ld.u64 	%rd18, [%rd17+24];
 	ld.u64 	%rd19, [%rd18+24];
-
 	ld.u64 	%rd20, [%rd1];
+
 
 	// Callseq Start 1
 	{
@@ -723,7 +723,7 @@ BB22_5:
 	st.param.b64	[param0+0], %rd20;
 	prototype_1 : .callprototype ()_ (.param .b64 _);
 	call 
-	%rd19, 
+%rd19,
 	(
 	param0
 	)
@@ -813,6 +813,7 @@ BB23_6:
 	ld.u64 	%rd64, [%rd63+24];
 	ld.u64 	%rd65, [%rd64+16];
 
+
 	// Callseq Start 2
 	{
 	.reg .b32 temp_param_reg;
@@ -824,7 +825,7 @@ BB23_6:
 	.param .b64 retval0;
 	prototype_2 : .callprototype (.param .b64 _) _ (.param .b64 _, .param .b32 _);
 	call (retval0), 
-	%rd65, 
+%rd65,
 	(
 	param0, 
 	param1
@@ -871,6 +872,7 @@ BB23_9:
 	ld.u64 	%rd78, [%rd77+24];
 	ld.u64 	%rd79, [%rd78+64];
 
+
 	// Callseq Start 3
 	{
 	.reg .b32 temp_param_reg;
@@ -880,7 +882,7 @@ BB23_9:
 	.param .b64 retval0;
 	prototype_3 : .callprototype (.param .b64 _) _ (.param .b64 _);
 	call (retval0), 
-	%rd79, 
+%rd79,
 	(
 	param0
 	)
@@ -928,6 +930,7 @@ BB23_19:
 	ld.u64 	%rd128, [%rd127+24];
 	ld.u64 	%rd129, [%rd128+72];
 
+
 	// Callseq Start 7
 	{
 	.reg .b32 temp_param_reg;
@@ -937,7 +940,7 @@ BB23_19:
 	.param .b64 retval0;
 	prototype_7 : .callprototype (.param .b64 _) _ (.param .b64 _);
 	call (retval0), 
-	%rd129, 
+%rd129,
 	(
 	param0
 	)
@@ -978,6 +981,7 @@ BB23_12:
 	ld.u64 	%rd93, [%rd92+24];
 	ld.u64 	%rd94, [%rd93+72];
 
+
 	// Callseq Start 4
 	{
 	.reg .b32 temp_param_reg;
@@ -987,7 +991,7 @@ BB23_12:
 	.param .b64 retval0;
 	prototype_4 : .callprototype (.param .b64 _) _ (.param .b64 _);
 	call (retval0), 
-	%rd94, 
+%rd94,
 	(
 	param0
 	)
@@ -1069,6 +1073,7 @@ BB23_16:
 	ld.u64 	%rd115, [%rd114+24];
 	ld.u64 	%rd116, [%rd115+64];
 
+
 	// Callseq Start 6
 	{
 	.reg .b32 temp_param_reg;
@@ -1078,7 +1083,7 @@ BB23_16:
 	.param .b64 retval0;
 	prototype_6 : .callprototype (.param .b64 _) _ (.param .b64 _);
 	call (retval0), 
-	%rd116, 
+%rd116,
 	(
 	param0
 	)
@@ -1124,6 +1129,7 @@ BB23_22:
 	ld.u64 	%rd143, [%rd142+24];
 	ld.u64 	%rd144, [%rd143+32];
 
+
 	// Callseq Start 8
 	{
 	.reg .b32 temp_param_reg;
@@ -1135,7 +1141,7 @@ BB23_22:
 	.param .b32 retval0;
 	prototype_8 : .callprototype (.param .b32 _) _ (.param .b64 _, .param .b64 _);
 	call (retval0), 
-	%rd144, 
+%rd144,
 	(
 	param0, 
 	param1
@@ -1179,6 +1185,7 @@ BB23_24:
 	ld.u64 	%rd157, [%rd156+24];
 	ld.u64 	%rd158, [%rd157+48];
 
+
 	// Callseq Start 9
 	{
 	.reg .b32 temp_param_reg;
@@ -1192,7 +1199,7 @@ BB23_24:
 	.param .b32 retval0;
 	prototype_9 : .callprototype (.param .b32 _) _ (.param .b64 _, .param .b64 _, .param .b32 _);
 	call (retval0), 
-	%rd158, 
+%rd158,
 	(
 	param0, 
 	param1, 
@@ -1237,6 +1244,7 @@ BB23_26:
 	ld.u64 	%rd171, [%rd170+24];
 	ld.u64 	%rd172, [%rd171+56];
 
+
 	// Callseq Start 10
 	{
 	.reg .b32 temp_param_reg;
@@ -1250,7 +1258,7 @@ BB23_26:
 	.param .b32 retval0;
 	prototype_10 : .callprototype (.param .b32 _) _ (.param .b64 _, .param .b64 _, .param .b32 _);
 	call (retval0), 
-	%rd172, 
+%rd172,
 	(
 	param0, 
 	param1, 
@@ -1295,6 +1303,7 @@ BB23_28:
 	ld.u64 	%rd185, [%rd184+24];
 	ld.u64 	%rd186, [%rd185+32];
 
+
 	// Callseq Start 11
 	{
 	.reg .b32 temp_param_reg;
@@ -1304,7 +1313,7 @@ BB23_28:
 	.param .b32 retval0;
 	prototype_11 : .callprototype (.param .b32 _) _ (.param .b64 _);
 	call (retval0), 
-	%rd186, 
+%rd186,
 	(
 	param0
 	)
@@ -1347,6 +1356,7 @@ BB23_30:
 	ld.u64 	%rd198, [%rd197+24];
 	ld.u64 	%rd199, [%rd198+32];
 
+
 	// Callseq Start 12
 	{
 	.reg .b32 temp_param_reg;
@@ -1356,7 +1366,7 @@ BB23_30:
 	.param .b32 retval0;
 	prototype_12 : .callprototype (.param .b32 _) _ (.param .b64 _);
 	call (retval0), 
-	%rd199, 
+%rd199,
 	(
 	param0
 	)
@@ -1407,6 +1417,7 @@ BB23_34:
 	ld.u64 	%rd213, [%rd212+24];
 	ld.u64 	%rd214, [%rd213+64];
 
+
 	// Callseq Start 13
 	{
 	.reg .b32 temp_param_reg;
@@ -1417,7 +1428,7 @@ BB23_34:
 	st.param.f32	[param1+0], %f14;
 	prototype_13 : .callprototype ()_ (.param .b64 _, .param .b32 _);
 	call 
-	%rd214, 
+%rd214,
 	(
 	param0, 
 	param1
@@ -1460,6 +1471,7 @@ BB23_36:
 	ld.u64 	%rd227, [%rd226+24];
 	ld.u64 	%rd228, [%rd227+72];
 
+
 	// Callseq Start 14
 	{
 	.reg .b32 temp_param_reg;
@@ -1470,7 +1482,7 @@ BB23_36:
 	st.param.f32	[param1+0], %f15;
 	prototype_14 : .callprototype ()_ (.param .b64 _, .param .b32 _);
 	call 
-	%rd228, 
+%rd228,
 	(
 	param0, 
 	param1
@@ -1513,6 +1525,7 @@ BB23_38:
 	ld.u64 	%rd241, [%rd240+24];
 	ld.u64 	%rd242, [%rd241+80];
 
+
 	// Callseq Start 15
 	{
 	.reg .b32 temp_param_reg;
@@ -1523,7 +1536,7 @@ BB23_38:
 	st.param.f32	[param1+0], %f14;
 	prototype_15 : .callprototype ()_ (.param .b64 _, .param .b32 _);
 	call 
-	%rd242, 
+%rd242,
 	(
 	param0, 
 	param1
@@ -1565,6 +1578,7 @@ BB23_40:
 	ld.u64 	%rd254, [%rd253+24];
 	ld.u64 	%rd255, [%rd254+88];
 
+
 	// Callseq Start 16
 	{
 	.reg .b32 temp_param_reg;
@@ -1575,7 +1589,7 @@ BB23_40:
 	st.param.f32	[param1+0], %f15;
 	prototype_16 : .callprototype ()_ (.param .b64 _, .param .b32 _);
 	call 
-	%rd255, 
+%rd255,
 	(
 	param0, 
 	param1
@@ -1665,6 +1679,7 @@ BB24_9:
 	ld.u64 	%rd34, [%rd33+24];
 	ld.u64 	%rd35, [%rd34+96];
 
+
 	mov.f32 	%f2, 0f00000000;
 	// Callseq Start 18
 	{
@@ -1676,7 +1691,7 @@ BB24_9:
 	st.param.f32	[param1+0], %f2;
 	prototype_18 : .callprototype ()_ (.param .b64 _, .param .b32 _);
 	call 
-	%rd35, 
+%rd35,
 	(
 	param0, 
 	param1
@@ -1717,6 +1732,7 @@ BB24_6:
 	ld.u64 	%rd21, [%rd20+24];
 	ld.u64 	%rd22, [%rd21+96];
 
+
 	mov.f32 	%f1, 0f47000000;
 	// Callseq Start 17
 	{
@@ -1728,7 +1744,7 @@ BB24_6:
 	st.param.f32	[param1+0], %f1;
 	prototype_17 : .callprototype ()_ (.param .b64 _, .param .b32 _);
 	call 
-	%rd22, 
+%rd22,
 	(
 	param0, 
 	param1
@@ -1815,6 +1831,7 @@ BB25_5:
 	ld.u64 	%rd41, [%rd40+24];
 	ld.u64 	%rd42, [%rd41+104];
 
+
 	// Callseq Start 19
 	{
 	.reg .b32 temp_param_reg;
@@ -1824,7 +1841,7 @@ BB25_5:
 	.param .b32 retval0;
 	prototype_19 : .callprototype (.param .b32 _) _ (.param .b64 _);
 	call (retval0), 
-	%rd42, 
+%rd42,
 	(
 	param0
 	)
@@ -1876,6 +1893,7 @@ BB25_9:
 	ld.u64 	%rd55, [%rd54+24];
 	ld.u64 	%rd56, [%rd55+16];
 
+
 	// Callseq Start 20
 	{
 	.reg .b32 temp_param_reg;
@@ -1887,7 +1905,7 @@ BB25_9:
 	.param .b64 retval0;
 	prototype_20 : .callprototype (.param .b64 _) _ (.param .b64 _, .param .b32 _);
 	call (retval0), 
-	%rd56, 
+%rd56,
 	(
 	param0, 
 	param1
@@ -1934,6 +1952,7 @@ BB25_12:
 	ld.u64 	%rd69, [%rd68+24];
 	ld.u64 	%rd70, [%rd69+64];
 
+
 	// Callseq Start 21
 	{
 	.reg .b32 temp_param_reg;
@@ -1943,7 +1962,7 @@ BB25_12:
 	.param .b64 retval0;
 	prototype_21 : .callprototype (.param .b64 _) _ (.param .b64 _);
 	call (retval0), 
-	%rd70, 
+%rd70,
 	(
 	param0
 	)
@@ -1991,6 +2010,7 @@ BB25_18:
 	ld.u64 	%rd97, [%rd96+24];
 	ld.u64 	%rd98, [%rd97+72];
 
+
 	// Callseq Start 23
 	{
 	.reg .b32 temp_param_reg;
@@ -2000,7 +2020,7 @@ BB25_18:
 	.param .b64 retval0;
 	prototype_23 : .callprototype (.param .b64 _) _ (.param .b64 _);
 	call (retval0), 
-	%rd98, 
+%rd98,
 	(
 	param0
 	)
@@ -2041,6 +2061,7 @@ BB25_15:
 	ld.u64 	%rd84, [%rd83+24];
 	ld.u64 	%rd85, [%rd84+64];
 
+
 	// Callseq Start 22
 	{
 	.reg .b32 temp_param_reg;
@@ -2050,7 +2071,7 @@ BB25_15:
 	.param .b64 retval0;
 	prototype_22 : .callprototype (.param .b64 _) _ (.param .b64 _);
 	call (retval0), 
-	%rd85, 
+%rd85,
 	(
 	param0
 	)
@@ -2095,6 +2116,7 @@ BB25_21:
 	ld.u64 	%rd111, [%rd110+24];
 	ld.u64 	%rd112, [%rd111+104];
 
+
 	// Callseq Start 24
 	{
 	.reg .b32 temp_param_reg;
@@ -2104,7 +2126,7 @@ BB25_21:
 	.param .b32 retval0;
 	prototype_24 : .callprototype (.param .b32 _) _ (.param .b64 _);
 	call (retval0), 
-	%rd112, 
+%rd112,
 	(
 	param0
 	)
@@ -2150,6 +2172,7 @@ BB25_24:
 	ld.u64 	%rd125, [%rd124+24];
 	ld.u64 	%rd126, [%rd125+96];
 
+
 	// Callseq Start 25
 	{
 	.reg .b32 temp_param_reg;
@@ -2160,7 +2183,7 @@ BB25_24:
 	st.param.f32	[param1+0], %f2;
 	prototype_25 : .callprototype ()_ (.param .b64 _, .param .b32 _);
 	call 
-	%rd126, 
+%rd126,
 	(
 	param0, 
 	param1
@@ -2254,6 +2277,7 @@ BB26_6:
 	ld.u64 	%rd36, [%rd35+24];
 	ld.u64 	%rd37, [%rd36+16];
 
+
 	mov.u32 	%r69, 0;
 	// Callseq Start 26
 	{
@@ -2266,7 +2290,7 @@ BB26_6:
 	.param .b64 retval0;
 	prototype_26 : .callprototype (.param .b64 _) _ (.param .b64 _, .param .b32 _);
 	call (retval0), 
-	%rd37, 
+%rd37,
 	(
 	param0, 
 	param1
@@ -2316,6 +2340,7 @@ BB26_10:
 	ld.u64 	%rd50, [%rd49+24];
 	ld.u64 	%rd51, [%rd50+16];
 
+
 	mov.u32 	%r49, 1;
 	// Callseq Start 27
 	{
@@ -2328,7 +2353,7 @@ BB26_10:
 	.param .b64 retval0;
 	prototype_27 : .callprototype (.param .b64 _) _ (.param .b64 _, .param .b32 _);
 	call (retval0), 
-	%rd51, 
+%rd51,
 	(
 	param0, 
 	param1
@@ -2379,6 +2404,7 @@ BB26_14:
 	ld.u64 	%rd64, [%rd63+24];
 	ld.u64 	%rd65, [%rd64+16];
 
+
 	mov.u32 	%r54, 2;
 	// Callseq Start 28
 	{
@@ -2391,7 +2417,7 @@ BB26_14:
 	.param .b64 retval0;
 	prototype_28 : .callprototype (.param .b64 _) _ (.param .b64 _, .param .b32 _);
 	call (retval0), 
-	%rd65, 
+%rd65,
 	(
 	param0, 
 	param1
@@ -2442,6 +2468,7 @@ BB26_18:
 	ld.u64 	%rd78, [%rd77+24];
 	ld.u64 	%rd79, [%rd78+16];
 
+
 	mov.u32 	%r59, 3;
 	// Callseq Start 29
 	{
@@ -2454,7 +2481,7 @@ BB26_18:
 	.param .b64 retval0;
 	prototype_29 : .callprototype (.param .b64 _) _ (.param .b64 _, .param .b32 _);
 	call (retval0), 
-	%rd79, 
+%rd79,
 	(
 	param0, 
 	param1
@@ -2505,6 +2532,7 @@ BB26_22:
 	ld.u64 	%rd92, [%rd91+24];
 	ld.u64 	%rd93, [%rd92+16];
 
+
 	mov.u32 	%r64, 4;
 	// Callseq Start 30
 	{
@@ -2517,7 +2545,7 @@ BB26_22:
 	.param .b64 retval0;
 	prototype_30 : .callprototype (.param .b64 _) _ (.param .b64 _, .param .b32 _);
 	call (retval0), 
-	%rd93, 
+%rd93,
 	(
 	param0, 
 	param1
@@ -2600,6 +2628,7 @@ BB27_3:
 	ld.u64 	%rd47, [%rd46+24];
 	ld.u64 	%rd48, [%rd47+48];
 
+
 	// Callseq Start 31
 	{
 	.reg .b32 temp_param_reg;
@@ -2609,7 +2638,7 @@ BB27_3:
 	.param .b32 retval0;
 	prototype_31 : .callprototype (.param .b32 _) _ (.param .b64 _);
 	call (retval0), 
-	%rd48, 
+%rd48,
 	(
 	param0
 	)
@@ -2658,6 +2687,7 @@ BB27_6:
 	ld.u64 	%rd62, [%rd61+24];
 	ld.u64 	%rd63, [%rd62+72];
 
+
 	// Callseq Start 32
 	{
 	.reg .b32 temp_param_reg;
@@ -2667,7 +2697,7 @@ BB27_6:
 	.param .b64 retval0;
 	prototype_32 : .callprototype (.param .b64 _) _ (.param .b64 _);
 	call (retval0), 
-	%rd63, 
+%rd63,
 	(
 	param0
 	)
@@ -2710,6 +2740,7 @@ BB27_8:
 	ld.u64 	%rd76, [%rd75+24];
 	ld.u64 	%rd77, [%rd76+64];
 
+
 	// Callseq Start 33
 	{
 	.reg .b32 temp_param_reg;
@@ -2719,7 +2750,7 @@ BB27_8:
 	.param .b64 retval0;
 	prototype_33 : .callprototype (.param .b64 _) _ (.param .b64 _);
 	call (retval0), 
-	%rd77, 
+%rd77,
 	(
 	param0
 	)
@@ -2762,6 +2793,7 @@ BB27_10:
 	ld.u64 	%rd90, [%rd89+24];
 	ld.u64 	%rd91, [%rd90+32];
 
+
 	// Callseq Start 34
 	{
 	.reg .b32 temp_param_reg;
@@ -2773,7 +2805,7 @@ BB27_10:
 	.param .b32 retval0;
 	prototype_34 : .callprototype (.param .b32 _) _ (.param .b64 _, .param .b64 _);
 	call (retval0), 
-	%rd91, 
+%rd91,
 	(
 	param0, 
 	param1
@@ -2817,6 +2849,7 @@ BB27_12:
 	ld.u64 	%rd104, [%rd103+24];
 	ld.u64 	%rd105, [%rd104+40];
 
+
 	// Callseq Start 35
 	{
 	.reg .b32 temp_param_reg;
@@ -2826,7 +2859,7 @@ BB27_12:
 	.param .b32 retval0;
 	prototype_35 : .callprototype (.param .b32 _) _ (.param .b64 _);
 	call (retval0), 
-	%rd105, 
+%rd105,
 	(
 	param0
 	)
@@ -2872,6 +2905,7 @@ BB27_14:
 	ld.u64 	%rd118, [%rd117+24];
 	ld.u64 	%rd119, [%rd118+24];
 
+
 	// Callseq Start 36
 	{
 	.reg .b32 temp_param_reg;
@@ -2882,7 +2916,7 @@ BB27_14:
 	st.param.f32	[param1+0], %f2;
 	prototype_36 : .callprototype ()_ (.param .b64 _, .param .b32 _);
 	call 
-	%rd119, 
+%rd119,
 	(
 	param0, 
 	param1
@@ -2924,6 +2958,7 @@ BB27_16:
 	ld.u64 	%rd131, [%rd130+24];
 	ld.u64 	%rd132, [%rd131+80];
 
+
 	// Callseq Start 37
 	{
 	.reg .b32 temp_param_reg;
@@ -2933,7 +2968,7 @@ BB27_16:
 	.param .b32 retval0;
 	prototype_37 : .callprototype (.param .b32 _) _ (.param .b64 _);
 	call (retval0), 
-	%rd132, 
+%rd132,
 	(
 	param0
 	)
@@ -2982,6 +3017,7 @@ BB27_19:
 	ld.u64 	%rd146, [%rd145+24];
 	ld.u64 	%rd147, [%rd146+40];
 
+
 	// Callseq Start 38
 	{
 	.reg .b32 temp_param_reg;
@@ -2992,7 +3028,7 @@ BB27_19:
 	st.param.b64	[param1+0], %rd1;
 	prototype_38 : .callprototype ()_ (.param .b64 _, .param .b64 _);
 	call 
-	%rd147, 
+%rd147,
 	(
 	param0, 
 	param1
@@ -3035,6 +3071,7 @@ BB27_21:
 	ld.u64 	%rd160, [%rd159+24];
 	ld.u64 	%rd161, [%rd160+40];
 
+
 	// Callseq Start 39
 	{
 	.reg .b32 temp_param_reg;
@@ -3045,7 +3082,7 @@ BB27_21:
 	st.param.b64	[param1+0], %rd1;
 	prototype_39 : .callprototype ()_ (.param .b64 _, .param .b64 _);
 	call 
-	%rd161, 
+%rd161,
 	(
 	param0, 
 	param1
@@ -3087,6 +3124,7 @@ BB27_23:
 	ld.u64 	%rd173, [%rd172+24];
 	ld.u64 	%rd174, [%rd173+16];
 
+
 	// Callseq Start 40
 	{
 	.reg .b32 temp_param_reg;
@@ -3095,7 +3133,7 @@ BB27_23:
 	st.param.b64	[param0+0], %rd1;
 	prototype_40 : .callprototype ()_ (.param .b64 _);
 	call 
-	%rd174, 
+%rd174,
 	(
 	param0
 	)
@@ -3207,6 +3245,7 @@ BB28_5:
 	ld.u64 	%rd41, [%rd40+24];
 	ld.u64 	%rd42, [%rd41+64];
 
+
 	// Callseq Start 42
 	{
 	.reg .b32 temp_param_reg;
@@ -3216,7 +3255,7 @@ BB28_5:
 	.param .b64 retval0;
 	prototype_42 : .callprototype (.param .b64 _) _ (.param .b64 _);
 	call (retval0), 
-	%rd42, 
+%rd42,
 	(
 	param0
 	)
@@ -3259,6 +3298,7 @@ BB28_7:
 	ld.u64 	%rd55, [%rd54+24];
 	ld.u64 	%rd56, [%rd55+72];
 
+
 	// Callseq Start 43
 	{
 	.reg .b32 temp_param_reg;
@@ -3268,7 +3308,7 @@ BB28_7:
 	.param .b64 retval0;
 	prototype_43 : .callprototype (.param .b64 _) _ (.param .b64 _);
 	call (retval0), 
-	%rd56, 
+%rd56,
 	(
 	param0
 	)
@@ -3310,7 +3350,8 @@ BB28_9:
 	add.s64 	%rd68, %rd12, %rd67;
 	ld.u64 	%rd69, [%rd68+24];
 	ld.u64 	%rd70, [%rd69+40];
-	
+
+
 	// Callseq Start 44
 	{
 	.reg .b32 temp_param_reg;
@@ -3321,7 +3362,7 @@ BB28_9:
 	st.param.b64	[param1+0], %rd2;
 	prototype_44 : .callprototype ()_ (.param .b64 _, .param .b64 _);
 	call 
-	%rd70, 
+%rd70,
 	(
 	param0, 
 	param1
@@ -3363,7 +3404,8 @@ BB28_11:
 	add.s64 	%rd82, %rd15, %rd81;
 	ld.u64 	%rd83, [%rd82+24];
 	ld.u64 	%rd84, [%rd83+40];
-	
+
+
 	// Callseq Start 45
 	{
 	.reg .b32 temp_param_reg;
@@ -3374,7 +3416,7 @@ BB28_11:
 	st.param.b64	[param1+0], %rd2;
 	prototype_45 : .callprototype ()_ (.param .b64 _, .param .b64 _);
 	call 
-	%rd84, 
+%rd84,
 	(
 	param0, 
 	param1
@@ -3416,6 +3458,7 @@ BB28_13:
 	ld.u64 	%rd96, [%rd95+24];
 	ld.u64 	%rd97, [%rd96+16];
 
+
 	// Callseq Start 46
 	{
 	.reg .b32 temp_param_reg;
@@ -3424,7 +3467,7 @@ BB28_13:
 	st.param.b64	[param0+0], %rd2;
 	prototype_46 : .callprototype ()_ (.param .b64 _);
 	call 
-	%rd97, 
+%rd97,
 	(
 	param0
 	)
@@ -4129,12 +4172,12 @@ BB31_15:
 {
 	.reg .pred 	%p<2>;
 	.reg .b16 	%rs<9>;
-	.reg .b64 	%rd<45>;
+	.reg .b64 	%rd<75>;
 
 
 	ld.param.u64 	%rd2, [_Z11dump_vtableI4NodeEvPPvS2__param_0];
 	ld.param.u64 	%rd3, [_Z11dump_vtableI4NodeEvPPvS2__param_1];
-	mov.u64 	%rd44, 0;
+	mov.u64 	%rd74, 0;
 	mov.u64 	%rd5, buf5;
 	cvta.global.u64 	%rd6, %rd5;
 	setp.eq.s64	%p1, %rd6, 0;
@@ -4150,72 +4193,117 @@ BB31_15:
 	add.s64 	%rd10, %rd9, 16;
 	cvta.global.u64 	%rd11, %rd10;
 	st.global.u64 	[buf5], %rd11;
-	mov.u64 	%rd44, %rd5;
+	mov.u64 	%rd74, %rd5;
 
 BB32_2:
 	cvta.to.global.u64 	%rd12, %rd2;
 	cvta.to.global.u64 	%rd13, %rd3;
-	ld.global.u8 	%rs1, [%rd44];
+	ld.global.u8 	%rs1, [%rd74];
 	st.global.u8 	[%rd13], %rs1;
-	ld.global.u8 	%rs2, [%rd44+1];
+	ld.global.u8 	%rs2, [%rd74+1];
 	st.global.u8 	[%rd13+1], %rs2;
-	ld.global.u8 	%rs3, [%rd44+2];
+	ld.global.u8 	%rs3, [%rd74+2];
 	st.global.u8 	[%rd13+2], %rs3;
-	ld.global.u8 	%rs4, [%rd44+3];
+	ld.global.u8 	%rs4, [%rd74+3];
 	st.global.u8 	[%rd13+3], %rs4;
-	ld.global.u8 	%rs5, [%rd44+4];
+	ld.global.u8 	%rs5, [%rd74+4];
 	st.global.u8 	[%rd13+4], %rs5;
-	ld.global.u8 	%rs6, [%rd44+5];
+	ld.global.u8 	%rs6, [%rd74+5];
 	st.global.u8 	[%rd13+5], %rs6;
-	ld.global.u8 	%rs7, [%rd44+6];
+	ld.global.u8 	%rs7, [%rd74+6];
 	st.global.u8 	[%rd13+6], %rs7;
-	ld.global.u8 	%rs8, [%rd44+7];
+	ld.global.u8 	%rs8, [%rd74+7];
 	st.global.u8 	[%rd13+7], %rs8;
-	ld.global.u64 	%rd14, [%rd44];
+	ld.global.u64 	%rd14, [%rd74];
 	ld.u64 	%rd15, [%rd14];
 	st.global.u64 	[%rd12], %rd15;
-	ld.global.u64 	%rd16, [%rd44];
+	ld.global.u64 	%rd16, [%rd74];
 	ld.u64 	%rd17, [%rd16+8];
 	st.global.u64 	[%rd12+8], %rd17;
-	ld.global.u64 	%rd18, [%rd44];
+	ld.global.u64 	%rd18, [%rd74];
 	ld.u64 	%rd19, [%rd18+16];
 	st.global.u64 	[%rd12+16], %rd19;
-	ld.global.u64 	%rd20, [%rd44];
+	ld.global.u64 	%rd20, [%rd74];
 	ld.u64 	%rd21, [%rd20+24];
 	st.global.u64 	[%rd12+24], %rd21;
-	ld.global.u64 	%rd22, [%rd44];
+	ld.global.u64 	%rd22, [%rd74];
 	ld.u64 	%rd23, [%rd22+32];
 	st.global.u64 	[%rd12+32], %rd23;
-	ld.global.u64 	%rd24, [%rd44];
+	ld.global.u64 	%rd24, [%rd74];
 	ld.u64 	%rd25, [%rd24+40];
 	st.global.u64 	[%rd12+40], %rd25;
-	ld.global.u64 	%rd26, [%rd44];
+	ld.global.u64 	%rd26, [%rd74];
 	ld.u64 	%rd27, [%rd26+48];
 	st.global.u64 	[%rd12+48], %rd27;
-	ld.global.u64 	%rd28, [%rd44];
+	ld.global.u64 	%rd28, [%rd74];
 	ld.u64 	%rd29, [%rd28+56];
 	st.global.u64 	[%rd12+56], %rd29;
-	ld.global.u64 	%rd30, [%rd44];
+	ld.global.u64 	%rd30, [%rd74];
 	ld.u64 	%rd31, [%rd30+64];
 	st.global.u64 	[%rd12+64], %rd31;
-	ld.global.u64 	%rd32, [%rd44];
+	ld.global.u64 	%rd32, [%rd74];
 	ld.u64 	%rd33, [%rd32+72];
 	st.global.u64 	[%rd12+72], %rd33;
-	ld.global.u64 	%rd34, [%rd44];
+	ld.global.u64 	%rd34, [%rd74];
 	ld.u64 	%rd35, [%rd34+80];
 	st.global.u64 	[%rd12+80], %rd35;
-	ld.global.u64 	%rd36, [%rd44];
+	ld.global.u64 	%rd36, [%rd74];
 	ld.u64 	%rd37, [%rd36+88];
 	st.global.u64 	[%rd12+88], %rd37;
-	ld.global.u64 	%rd38, [%rd44];
+	ld.global.u64 	%rd38, [%rd74];
 	ld.u64 	%rd39, [%rd38+96];
 	st.global.u64 	[%rd12+96], %rd39;
-	ld.global.u64 	%rd40, [%rd44];
+	ld.global.u64 	%rd40, [%rd74];
 	ld.u64 	%rd41, [%rd40+104];
 	st.global.u64 	[%rd12+104], %rd41;
-	ld.global.u64 	%rd42, [%rd44];
+	ld.global.u64 	%rd42, [%rd74];
 	ld.u64 	%rd43, [%rd42+112];
 	st.global.u64 	[%rd12+112], %rd43;
+	ld.global.u64 	%rd44, [%rd74];
+	ld.u64 	%rd45, [%rd44+120];
+	st.global.u64 	[%rd12+120], %rd45;
+	ld.global.u64 	%rd46, [%rd74];
+	ld.u64 	%rd47, [%rd46+128];
+	st.global.u64 	[%rd12+128], %rd47;
+	ld.global.u64 	%rd48, [%rd74];
+	ld.u64 	%rd49, [%rd48+136];
+	st.global.u64 	[%rd12+136], %rd49;
+	ld.global.u64 	%rd50, [%rd74];
+	ld.u64 	%rd51, [%rd50+144];
+	st.global.u64 	[%rd12+144], %rd51;
+	ld.global.u64 	%rd52, [%rd74];
+	ld.u64 	%rd53, [%rd52+152];
+	st.global.u64 	[%rd12+152], %rd53;
+	ld.global.u64 	%rd54, [%rd74];
+	ld.u64 	%rd55, [%rd54+160];
+	st.global.u64 	[%rd12+160], %rd55;
+	ld.global.u64 	%rd56, [%rd74];
+	ld.u64 	%rd57, [%rd56+168];
+	st.global.u64 	[%rd12+168], %rd57;
+	ld.global.u64 	%rd58, [%rd74];
+	ld.u64 	%rd59, [%rd58+176];
+	st.global.u64 	[%rd12+176], %rd59;
+	ld.global.u64 	%rd60, [%rd74];
+	ld.u64 	%rd61, [%rd60+184];
+	st.global.u64 	[%rd12+184], %rd61;
+	ld.global.u64 	%rd62, [%rd74];
+	ld.u64 	%rd63, [%rd62+192];
+	st.global.u64 	[%rd12+192], %rd63;
+	ld.global.u64 	%rd64, [%rd74];
+	ld.u64 	%rd65, [%rd64+200];
+	st.global.u64 	[%rd12+200], %rd65;
+	ld.global.u64 	%rd66, [%rd74];
+	ld.u64 	%rd67, [%rd66+208];
+	st.global.u64 	[%rd12+208], %rd67;
+	ld.global.u64 	%rd68, [%rd74];
+	ld.u64 	%rd69, [%rd68+216];
+	st.global.u64 	[%rd12+216], %rd69;
+	ld.global.u64 	%rd70, [%rd74];
+	ld.u64 	%rd71, [%rd70+224];
+	st.global.u64 	[%rd12+224], %rd71;
+	ld.global.u64 	%rd72, [%rd74];
+	ld.u64 	%rd73, [%rd72+232];
+	st.global.u64 	[%rd12+232], %rd73;
 	ret;
 }
 
@@ -4227,12 +4315,12 @@ BB32_2:
 {
 	.reg .pred 	%p<2>;
 	.reg .b16 	%rs<10>;
-	.reg .b64 	%rd<45>;
+	.reg .b64 	%rd<75>;
 
 
 	ld.param.u64 	%rd2, [_Z11dump_vtableI6SpringEvPPvS2__param_0];
 	ld.param.u64 	%rd3, [_Z11dump_vtableI6SpringEvPPvS2__param_1];
-	mov.u64 	%rd44, 0;
+	mov.u64 	%rd74, 0;
 	mov.u64 	%rd5, buf5;
 	cvta.global.u64 	%rd6, %rd5;
 	setp.eq.s64	%p1, %rd6, 0;
@@ -4249,72 +4337,117 @@ BB32_2:
 	add.s64 	%rd10, %rd9, 16;
 	cvta.global.u64 	%rd11, %rd10;
 	st.global.u64 	[buf5], %rd11;
-	mov.u64 	%rd44, %rd5;
+	mov.u64 	%rd74, %rd5;
 
 BB33_2:
 	cvta.to.global.u64 	%rd12, %rd2;
 	cvta.to.global.u64 	%rd13, %rd3;
-	ld.global.u8 	%rs2, [%rd44];
+	ld.global.u8 	%rs2, [%rd74];
 	st.global.u8 	[%rd13], %rs2;
-	ld.global.u8 	%rs3, [%rd44+1];
+	ld.global.u8 	%rs3, [%rd74+1];
 	st.global.u8 	[%rd13+1], %rs3;
-	ld.global.u8 	%rs4, [%rd44+2];
+	ld.global.u8 	%rs4, [%rd74+2];
 	st.global.u8 	[%rd13+2], %rs4;
-	ld.global.u8 	%rs5, [%rd44+3];
+	ld.global.u8 	%rs5, [%rd74+3];
 	st.global.u8 	[%rd13+3], %rs5;
-	ld.global.u8 	%rs6, [%rd44+4];
+	ld.global.u8 	%rs6, [%rd74+4];
 	st.global.u8 	[%rd13+4], %rs6;
-	ld.global.u8 	%rs7, [%rd44+5];
+	ld.global.u8 	%rs7, [%rd74+5];
 	st.global.u8 	[%rd13+5], %rs7;
-	ld.global.u8 	%rs8, [%rd44+6];
+	ld.global.u8 	%rs8, [%rd74+6];
 	st.global.u8 	[%rd13+6], %rs8;
-	ld.global.u8 	%rs9, [%rd44+7];
+	ld.global.u8 	%rs9, [%rd74+7];
 	st.global.u8 	[%rd13+7], %rs9;
-	ld.global.u64 	%rd14, [%rd44];
+	ld.global.u64 	%rd14, [%rd74];
 	ld.u64 	%rd15, [%rd14];
 	st.global.u64 	[%rd12], %rd15;
-	ld.global.u64 	%rd16, [%rd44];
+	ld.global.u64 	%rd16, [%rd74];
 	ld.u64 	%rd17, [%rd16+8];
 	st.global.u64 	[%rd12+8], %rd17;
-	ld.global.u64 	%rd18, [%rd44];
+	ld.global.u64 	%rd18, [%rd74];
 	ld.u64 	%rd19, [%rd18+16];
 	st.global.u64 	[%rd12+16], %rd19;
-	ld.global.u64 	%rd20, [%rd44];
+	ld.global.u64 	%rd20, [%rd74];
 	ld.u64 	%rd21, [%rd20+24];
 	st.global.u64 	[%rd12+24], %rd21;
-	ld.global.u64 	%rd22, [%rd44];
+	ld.global.u64 	%rd22, [%rd74];
 	ld.u64 	%rd23, [%rd22+32];
 	st.global.u64 	[%rd12+32], %rd23;
-	ld.global.u64 	%rd24, [%rd44];
+	ld.global.u64 	%rd24, [%rd74];
 	ld.u64 	%rd25, [%rd24+40];
 	st.global.u64 	[%rd12+40], %rd25;
-	ld.global.u64 	%rd26, [%rd44];
+	ld.global.u64 	%rd26, [%rd74];
 	ld.u64 	%rd27, [%rd26+48];
 	st.global.u64 	[%rd12+48], %rd27;
-	ld.global.u64 	%rd28, [%rd44];
+	ld.global.u64 	%rd28, [%rd74];
 	ld.u64 	%rd29, [%rd28+56];
 	st.global.u64 	[%rd12+56], %rd29;
-	ld.global.u64 	%rd30, [%rd44];
+	ld.global.u64 	%rd30, [%rd74];
 	ld.u64 	%rd31, [%rd30+64];
 	st.global.u64 	[%rd12+64], %rd31;
-	ld.global.u64 	%rd32, [%rd44];
+	ld.global.u64 	%rd32, [%rd74];
 	ld.u64 	%rd33, [%rd32+72];
 	st.global.u64 	[%rd12+72], %rd33;
-	ld.global.u64 	%rd34, [%rd44];
+	ld.global.u64 	%rd34, [%rd74];
 	ld.u64 	%rd35, [%rd34+80];
 	st.global.u64 	[%rd12+80], %rd35;
-	ld.global.u64 	%rd36, [%rd44];
+	ld.global.u64 	%rd36, [%rd74];
 	ld.u64 	%rd37, [%rd36+88];
 	st.global.u64 	[%rd12+88], %rd37;
-	ld.global.u64 	%rd38, [%rd44];
+	ld.global.u64 	%rd38, [%rd74];
 	ld.u64 	%rd39, [%rd38+96];
 	st.global.u64 	[%rd12+96], %rd39;
-	ld.global.u64 	%rd40, [%rd44];
+	ld.global.u64 	%rd40, [%rd74];
 	ld.u64 	%rd41, [%rd40+104];
 	st.global.u64 	[%rd12+104], %rd41;
-	ld.global.u64 	%rd42, [%rd44];
+	ld.global.u64 	%rd42, [%rd74];
 	ld.u64 	%rd43, [%rd42+112];
 	st.global.u64 	[%rd12+112], %rd43;
+	ld.global.u64 	%rd44, [%rd74];
+	ld.u64 	%rd45, [%rd44+120];
+	st.global.u64 	[%rd12+120], %rd45;
+	ld.global.u64 	%rd46, [%rd74];
+	ld.u64 	%rd47, [%rd46+128];
+	st.global.u64 	[%rd12+128], %rd47;
+	ld.global.u64 	%rd48, [%rd74];
+	ld.u64 	%rd49, [%rd48+136];
+	st.global.u64 	[%rd12+136], %rd49;
+	ld.global.u64 	%rd50, [%rd74];
+	ld.u64 	%rd51, [%rd50+144];
+	st.global.u64 	[%rd12+144], %rd51;
+	ld.global.u64 	%rd52, [%rd74];
+	ld.u64 	%rd53, [%rd52+152];
+	st.global.u64 	[%rd12+152], %rd53;
+	ld.global.u64 	%rd54, [%rd74];
+	ld.u64 	%rd55, [%rd54+160];
+	st.global.u64 	[%rd12+160], %rd55;
+	ld.global.u64 	%rd56, [%rd74];
+	ld.u64 	%rd57, [%rd56+168];
+	st.global.u64 	[%rd12+168], %rd57;
+	ld.global.u64 	%rd58, [%rd74];
+	ld.u64 	%rd59, [%rd58+176];
+	st.global.u64 	[%rd12+176], %rd59;
+	ld.global.u64 	%rd60, [%rd74];
+	ld.u64 	%rd61, [%rd60+184];
+	st.global.u64 	[%rd12+184], %rd61;
+	ld.global.u64 	%rd62, [%rd74];
+	ld.u64 	%rd63, [%rd62+192];
+	st.global.u64 	[%rd12+192], %rd63;
+	ld.global.u64 	%rd64, [%rd74];
+	ld.u64 	%rd65, [%rd64+200];
+	st.global.u64 	[%rd12+200], %rd65;
+	ld.global.u64 	%rd66, [%rd74];
+	ld.u64 	%rd67, [%rd66+208];
+	st.global.u64 	[%rd12+208], %rd67;
+	ld.global.u64 	%rd68, [%rd74];
+	ld.u64 	%rd69, [%rd68+216];
+	st.global.u64 	[%rd12+216], %rd69;
+	ld.global.u64 	%rd70, [%rd74];
+	ld.u64 	%rd71, [%rd70+224];
+	st.global.u64 	[%rd12+224], %rd71;
+	ld.global.u64 	%rd72, [%rd74];
+	ld.u64 	%rd73, [%rd72+232];
+	st.global.u64 	[%rd12+232], %rd73;
 	ret;
 }
 

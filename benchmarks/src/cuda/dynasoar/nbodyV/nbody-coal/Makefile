@@ -16,6 +16,7 @@ VARIANT ?= DEFAULT
 EXECUTABLE = $(BINDIR)/$(BINSUBDIR)/$(BASEEXE)
 CUSRC += nbody.cu
 OPTS = -O3
+PTX_GEN =  ../../../../../../util/ptx_transform_coal/
 CUOPTS = $(GENCODE_ARCH) $(GENCODE_SM20) $(GENCODE_SM30) $(GENCODE_SM35) $(GENCODE_SM50) $(GENCODE_SM60) $(GENCODE_SM62) $(GENCODE_SM70)
 INC = -I$(NVIDIA_COMPUTE_SDK_LOCATION)/../4.2/C/common/inc -I$(CUDA_INSTALL_PATH)/include
 LIBS = -L$(NVIDIA_COMPUTE_SDK_LOCATION)/../4.2/C/lib -lcutil_x86_64 -lcudart
@@ -24,9 +25,10 @@ OBJS = $(notdir $(CPPSRC:.cpp=.o))
 
 all: $(OBJS)
 	nvcc --keep  $(NVOPTS) $(OPTS) $(CUOPTS) $(CUSRC)  $(INC) -o $(EXECUTABLE) $(LIBS) 
+	$(PTX_GEN)/generator.py nbody.ptx
 	cp nbody.ptx_coal nbody.ptx
 	sh dryrun.sh
-	rm -f *cpp* *fatbin* *cudafe* *ptx *cubin* *.o *.module_id *dlink*
+	rm -f *cpp* *fatbin* *cudafe*  *cubin* *.o *.module_id *dlink*
 
 $(OBJS):
 	g++ -c $(CPPSRC) $(OPTS)

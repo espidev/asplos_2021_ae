@@ -22,9 +22,9 @@ dataset_t dataset;
 __device__ int num_alive_neighbors(AgentV *ptr) {
     void **vtable;
 
-    COAL_Agent_cell_id(ptr);
+    COAL_AgentV_cell_id(ptr);
     int cell_x = ptr->cell_id() % SIZE_X;
-    COAL_Agent_cell_id(ptr);
+    COAL_AgentV_cell_id(ptr);
     int cell_y = ptr->cell_id() / SIZE_X;
     int result = 0;
 
@@ -34,11 +34,11 @@ __device__ int num_alive_neighbors(AgentV *ptr) {
             int ny = cell_y + dy;
 
             if (nx > -1 && nx < SIZE_X && ny > -1 && ny < SIZE_Y) {
-                COAL_Cell_agent(cells[ny * SIZE_X + nx]);
+                COAL_CellV_agent(cells[ny * SIZE_X + nx]);
                 AgentV *tmp = cells[ny * SIZE_X + nx]->agent();
 
                 if (tmp) {
-                    COAL_Agent_isAlive(tmp);
+                    COAL_AgentV_isAlive(tmp);
                     if (tmp->isAlive()) {
                         result++;
                     }
@@ -59,14 +59,14 @@ __device__ void maybe_create_candidate(AgentV *ptr, int x, int y) {
             int ny = y + dy;
 
             if (nx > -1 && nx < SIZE_X && ny > -1 && ny < SIZE_Y) {
-                COAL_Cell_agent(cells[ny * SIZE_X + nx]);
+                COAL_CellV_agent(cells[ny * SIZE_X + nx]);
                 AgentV *alive = cells[ny * SIZE_X + nx]->agent();
                 if (alive != nullptr) {
-                    COAL_Agent_is_new(alive);
+                    COAL_AgentV_is_new(alive);
                     if (alive->is_new()) {
                         if (alive == ptr) {
                             // Create candidate now.
-                            COAL_Cell_set_agent(cells[y * SIZE_X + x]);
+                            COAL_CellV_set_agent(cells[y * SIZE_X + x]);
                             cells[y * SIZE_X + x]->set_agent(
                                 (y * SIZE_X + x), AgentType::isCandidate);
 
@@ -83,13 +83,13 @@ __device__ void maybe_create_candidate(AgentV *ptr, int x, int y) {
 }
 __device__ void create_candidates(AgentV *ptr) {
     void **vtable;
-    COAL_Agent_is_new(ptr);
+    COAL_AgentV_is_new(ptr);
     assert(ptr->is_new());
-    COAL_Agent_isAlive(ptr) assert(ptr->isAlive());
+    COAL_AgentV_isAlive(ptr) assert(ptr->isAlive());
     // TODO: Consolidate with Agent::num_alive_neighbors().
-    COAL_Agent_cell_id(ptr);
+    COAL_AgentV_cell_id(ptr);
     int cell_x = ptr->cell_id() % SIZE_X;
-    COAL_Agent_cell_id(ptr);
+    COAL_AgentV_cell_id(ptr);
     int cell_y = ptr->cell_id() / SIZE_X;
 
     for (int dx = -1; dx < 2; ++dx) {
@@ -98,7 +98,7 @@ __device__ void create_candidates(AgentV *ptr) {
             int ny = cell_y + dy;
 
             if (nx > -1 && nx < SIZE_X && ny > -1 && ny < SIZE_Y) {
-                COAL_Cell_is_empty(cells[ny * SIZE_X + nx]);
+                COAL_CellV_is_empty(cells[ny * SIZE_X + nx]);
                 if (cells[ny * SIZE_X + nx]->is_empty()) {
                     // Candidate should be created here.
                     maybe_create_candidate(ptr, nx, ny);
@@ -112,16 +112,16 @@ __device__ void Alive_prepare(AgentV *ptr) {
     void **vtable;
 
     if (ptr) {
-        COAL_Agent_isAlive(ptr);
+        COAL_AgentV_isAlive(ptr);
         if (ptr->isAlive()) {
-            COAL_Agent_set_is_new(ptr);
+            COAL_AgentV_set_is_new(ptr);
             ptr->set_is_new(false);
 
             // Also counts this object itself.
             int alive_neighbors = num_alive_neighbors(ptr) - 1;
 
             if (alive_neighbors < 2 || alive_neighbors > 3) {
-                COAL_Agent_set_action(ptr);
+                COAL_AgentV_set_action(ptr);
                 ptr->set_action(kActionDie);
             }
         }
@@ -131,22 +131,22 @@ __device__ void Alive_prepare(AgentV *ptr) {
 __device__ void Alive_update(AgentV *ptr) {
     void **vtable;
     if (ptr) {
-        COAL_Agent_isAlive(ptr);
+        COAL_AgentV_isAlive(ptr);
 
         if (ptr->isAlive()) {
-            COAL_Agent_cell_id(ptr);
+            COAL_AgentV_cell_id(ptr);
 
             int cid = ptr->cell_id();
 
             // TODO: Consider splitting in two classes for less divergence.
-            COAL_Agent_is_new(ptr);
+            COAL_AgentV_is_new(ptr);
             if (ptr->is_new()) {
                 // Create candidates in neighborhood.
                 create_candidates(ptr);
             } else {
-                COAL_Agent_get_action(ptr);
+                COAL_AgentV_get_action(ptr);
                 if (ptr->get_action() == kActionDie) {
-                    COAL_Cell_set_agent(cells[cid]);
+                    COAL_CellV_set_agent(cells[cid]);
                     cells[cid]->set_agent(cid, AgentType::isCandidate);
                 }
             }
@@ -172,16 +172,16 @@ __global__ void alive_update() {
 __device__ void Candidate_prepare(AgentV *ptr) {
     void **vtable;
     if (ptr) {
-        COAL_Agent_isCandidate(ptr);
+        COAL_AgentV_isCandidate(ptr);
         if (ptr->isCandidate()) {
             int alive_neighbors = num_alive_neighbors(ptr);
 
             if (alive_neighbors == 3) {
-                COAL_Agent_set_action(ptr);
+                COAL_AgentV_set_action(ptr);
                 ptr->set_action(kActionSpawnAlive);
 
             } else if (alive_neighbors == 0) {
-                COAL_Agent_set_action(ptr);
+                COAL_AgentV_set_action(ptr);
                 ptr->set_action(kActionDie);
             }
         }
@@ -193,20 +193,20 @@ __device__ void Candidate_update(AgentV *ptr) {
     void **vtable;
 
     if (ptr) {
-        COAL_Agent_isCandidate(ptr);
+        COAL_AgentV_isCandidate(ptr);
 
         if (ptr->isCandidate()) {
-            COAL_Agent_cell_id(ptr);
+            COAL_AgentV_cell_id(ptr);
 
             int cid = ptr->cell_id();
-            COAL_Agent_get_action(ptr);
+            COAL_AgentV_get_action(ptr);
             if (ptr->get_action() == kActionSpawnAlive) {
-              COAL_Cell_set_agent(cells[cid]);
+              COAL_CellV_set_agent(cells[cid]);
                 cells[cid]->set_agent(cid, AgentType::isAlive);
             } else {
-              COAL_Agent_get_action(ptr);
+              COAL_AgentV_get_action(ptr);
                 if (ptr->get_action() == kActionDie) {
-                  COAL_Cell_delete_agent(cells[cid]);
+                  COAL_CellV_delete_agent(cells[cid]);
                     cells[cid]->delete_agent();
                 }
             }

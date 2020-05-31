@@ -11,6 +11,7 @@ GENCODE_SM70 ?= -gencode=arch=compute_70,code=\"sm_70,compute_70\"
 CPPSRC = 
 CUSRC =
 BASEEXE = game-of-life_COAL
+PTX_GEN =  ../../../../../../util/ptx_transform_coal/
 
 VARIANT ?= DEFAULT
 # CUDA source files (compiled with cudacc)
@@ -25,6 +26,7 @@ OBJS = $(notdir $(CPPSRC:.cpp=.o))
 
 all: $(OBJS)
 	nvcc  --keep  $(NVOPTS) $(OPTS) $(CUOPTS) $(CUSRC)  $(INC) -o $(EXECUTABLE) $(LIBS) 
+	$(PTX_GEN)/generator.py gol.ptx
 	cp gol.ptx_coal gol.ptx
 	sh dryrun.sh
 	rm -f *cpp* *fatbin* *cudafe*  *cubin* *.o *.module_id *dlink*

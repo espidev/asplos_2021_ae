@@ -111,22 +111,22 @@ __device__ void Spring_self_destruct(SpringBase *spring) {
 
 __device__ void Spring_compute_force(SpringBase *spring) {
     void ** vtable;
-    COAL_Spring_get_p2(spring) 
+    COAL_SpringBase_get_p2(spring) 
     NodeBase *p2 = spring->get_p2();
-    COAL_Spring_get_p1(spring) 
+    COAL_SpringBase_get_p1(spring) 
     NodeBase *p1 = spring->get_p1();
 
-    COAL_Node_distance_to(p1);
+    COAL_NodeBase_distance_to(p1);
     float dist = p1->distance_to(p2);
-    COAL_Spring_get_init_len(spring) float displacement =
+    COAL_SpringBase_get_init_len(spring) float displacement =
         max(0.0f, dist - spring->get_init_len());
-    COAL_Spring_update_force(spring) spring->update_force(displacement);
-    COAL_Spring_is_max_force(spring) if (spring->is_max_force()) {
-        COAL_Node_remove_spring(p1);
+    COAL_SpringBase_update_force(spring) spring->update_force(displacement);
+    COAL_SpringBase_is_max_force(spring) if (spring->is_max_force()) {
+        COAL_NodeBase_remove_spring(p1);
         p1->remove_spring(spring);
-        COAL_Node_remove_spring(p2);
+        COAL_NodeBase_remove_spring(p2);
         p2->remove_spring(spring);
-        COAL_Spring_deactivate(spring) spring->deactivate();
+        COAL_SpringBase_deactivate(spring) spring->deactivate();
         // Spring_self_destruct(spring);
     }
 }
@@ -136,59 +136,59 @@ __device__ void Node_move(NodeBase *node) {
     float force_y = 0.0f;
     void ** vtable;
     for (int i = 0; i < kMaxDegree; ++i) {
-        COAL_Node_spring(node)
+        COAL_NodeBase_spring(node)
         SpringBase *s = node->spring(i);
 
         if (s != NULL) {
             NodeBase *from;
             NodeBase *to;
-            COAL_Spring_get_p1(s)
+            COAL_SpringBase_get_p1(s)
             if (s->get_p1()== node) {
                 from = node;
-                COAL_Spring_get_p2(s)
+                COAL_SpringBase_get_p2(s)
                 to = s->get_p2();
             } else {
-                COAL_Spring_get_p2(s)
+                COAL_SpringBase_get_p2(s)
                 assert(s->get_p2() == node);
                 from = node;
-                COAL_Spring_get_p1(s)
+                COAL_SpringBase_get_p1(s)
                 to = s->get_p1();
             }
 
             // Calculate unit vector.
-            COAL_Node_distance_to(to)
+            COAL_NodeBase_distance_to(to)
             float dist = to->distance_to(from);
-            COAL_Node_unit_x(to)
+            COAL_NodeBase_unit_x(to)
             float unit_x = to->unit_x(from, dist);
-            COAL_Node_unit_y(to)
+            COAL_NodeBase_unit_y(to)
             float unit_y = to->unit_y(from, dist);
 
             // Apply force.
-            COAL_Spring_get_force(s)
+            COAL_SpringBase_get_force(s)
             force_x += unit_x * s->get_force();
-            COAL_Spring_get_force(s)
+            COAL_SpringBase_get_force(s)
             force_y += unit_y * s->get_force();
         }
     }
 
     // Calculate new velocity and position.
-    COAL_Node_update_vel_x(node)
+    COAL_NodeBase_update_vel_x(node)
     node->update_vel_x(force_x);
-    COAL_Node_update_vel_y(node)
+    COAL_NodeBase_update_vel_y(node)
     node->update_vel_y(force_y);
-    COAL_Node_update_pos_x(node)
+    COAL_NodeBase_update_pos_x(node)
     node->update_pos_x(force_x);
-    COAL_Node_update_pos_y(node)
+    COAL_NodeBase_update_pos_y(node)
     node->update_pos_y(force_y);
 }
 
 __device__ void NodeBase_initialize_bfs(NodeBase *node) {
     void ** vtable;
     if (node->type == kTypeAnchorNode) {
-        COAL_Node_set_distance(node)
+        COAL_NodeBase_set_distance(node)
         node->set_distance(0);
     } else {
-        COAL_Node_set_distance(node)
+        COAL_NodeBase_set_distance(node)
         node->set_distance(kMaxDistance);  // should be int_max
     }
 }
@@ -197,30 +197,30 @@ __device__ bool dev_bfs_continue;
 
 __device__ void NodeBase_bfs_visit(NodeBase *node, int distance) {
     void ** vtable;
-    COAL_Node_get_distance(node)
+    COAL_NodeBase_get_distance(node)
     if (distance == node->get_distance()) {
         // Continue until all vertices were visited.
         dev_bfs_continue = true;
 
         for (int i = 0; i < kMaxDegree; ++i) {
-            COAL_Node_spring(node)
+            COAL_NodeBase_spring(node)
             SpringBase *spring = node->spring(i);
 
             if (spring != NULL) {
                 // Find neighboring vertices.
                 NodeBase *n;
-                COAL_Spring_get_p1(spring)
+                COAL_SpringBase_get_p1(spring)
                 if (node == spring->get_p1()) {
-                    COAL_Spring_get_p2(spring)
+                    COAL_SpringBase_get_p2(spring)
                     n = spring->get_p2();
                 } else {
-                    COAL_Spring_get_p1(spring)
+                    COAL_SpringBase_get_p1(spring)
                     n = spring->get_p1();
                 }
-                COAL_Node_get_distance(n)
+                COAL_NodeBase_get_distance(n)
                 if (n->get_distance() == kMaxDistance) {
                     // Set distance on neighboring vertex if unvisited.
-                    COAL_Node_set_distance(n)
+                    COAL_NodeBase_set_distance(n)
                     n->set_distance(distance + 1);
                 }
             }
@@ -230,15 +230,15 @@ __device__ void NodeBase_bfs_visit(NodeBase *node, int distance) {
 __device__ void Spring_bfs_delete(SpringBase *spring) {
     void ** vtable;
     if (spring->delete_flag) {
-        COAL_Spring_get_p1(spring)
+        COAL_SpringBase_get_p1(spring)
         NodeBase *p1 = spring->get_p1();
-        COAL_Spring_get_p2(spring)
+        COAL_SpringBase_get_p2(spring)
         NodeBase *p2 = spring->get_p2();
-        COAL_Node_remove_spring(p1)
+        COAL_NodeBase_remove_spring(p1)
         p1->remove_spring(spring);
-        COAL_Node_remove_spring(p2)
+        COAL_NodeBase_remove_spring(p2)
         p2->remove_spring(spring);
-        COAL_Spring_deactivate(spring)
+        COAL_SpringBase_deactivate(spring)
         spring->deactivate();
     }
 }
@@ -247,7 +247,7 @@ __device__ void NodeBase_bfs_set_delete_flags(NodeBase *node) {
     void ** vtable;
     if (node->distance == kMaxDistance) {  // should be int_max
         for (int i = 0; i < kMaxDegree; ++i) {
-            COAL_Node_spring(node)
+            COAL_NodeBase_spring(node)
             SpringBase *spring = node->spring(i);
             if (spring != NULL) {
                 spring->delete_flag = true;
@@ -278,7 +278,7 @@ __global__ void kernel_AnchorPullNode_pull() {
          i += blockDim.x * gridDim.x) {
             void ** vtable;
         if (dev_nodes[i]->type == kTypeAnchorPullNode) {
-            COAL_Node_pull(dev_nodes[i]) 
+            COAL_NodeBase_pull(dev_nodes[i]) 
             dev_nodes[i]->pull();
         }
     }
@@ -325,7 +325,7 @@ __global__ void kernel_Spring_compute_force() {
     for (int i = threadIdx.x + blockDim.x * blockIdx.x; i < kMaxSprings;
          i += blockDim.x * gridDim.x) {
         SpringBase *ptr = dev_springs[i];
-        COAL_Spring_get_is_active(ptr) 
+        COAL_SpringBase_get_is_active(ptr) 
         if (ptr->get_is_active()) {
             Spring_compute_force(ptr);
         }

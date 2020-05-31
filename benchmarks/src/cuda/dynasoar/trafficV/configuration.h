@@ -25,7 +25,7 @@ static const int kNumIntersections = PARAM_SIZE;
 static const float kCellLength = 0.005f;
 static const float kProducerRatio = 0.02f;
 static const float kTargetRatio = 0.003f;
-static const int kNumIterations = 12000;
+static const int kNumIterations = 1200;
 static const float kCarAllocationRatio = 0.02f;
 
 #ifndef PARAM_MAX_OBJ

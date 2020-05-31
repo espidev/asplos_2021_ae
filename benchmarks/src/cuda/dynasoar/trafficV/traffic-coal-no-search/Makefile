@@ -10,7 +10,7 @@ GENCODE_SM70 ?= -gencode=arch=compute_70,code=\"sm_70,compute_70\"
 
 CPPSRC = 
 CUSRC =
-BASEEXE = trafficV_COAL
+BASEEXE = trafficV_COAL_2
 VARIANT ?= DEFAULT
 # CUDA source files (compiled with cudacc)
 EXECUTABLE = $(BINDIR)/$(BINSUBDIR)/$(BASEEXE)
@@ -23,7 +23,7 @@ PTX_GEN = ../../../../../../util/ptx_transform_coal/
 OBJS = $(notdir $(CPPSRC:.cpp=.o))
 
 all: $(OBJS)
-	nvcc --keep  $(NVOPTS) $(OPTS) $(CUOPTS) $(CUSRC)  $(INC) -o $(EXECUTABLE) $(LIBS) 
+	nvcc --keep   $(NVOPTS) $(OPTS) $(CUOPTS) $(CUSRC)  $(INC) -o $(EXECUTABLE) $(LIBS)  
 	$(PTX_GEN)/generator.py traffic.ptx
 	cp traffic.ptx_coal traffic.ptx
 	sh dryrun.sh

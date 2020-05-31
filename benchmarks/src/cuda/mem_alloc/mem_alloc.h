@@ -268,15 +268,16 @@ class obj_alloc {
                 fprintf(stderr, "ERROR: my_new failed (%s)\n",
                         cudaGetErrorString(err));
             }
-            if (1)
-                for (int ii = 0; ii < FUNC_LEN; ii++) {
-			if(vtable[ii]==NULL) break;
-                    printf("vtbale [%s][%d]:%p\n", typeid(myType).name(), ii,
-                           vtable[ii]);
-                }
+      
             bucket = new range_bucket(CALLOC_NUM, sizeof(myType),
                                       mem->calloc<myType>(CALLOC_NUM),
                                       gpu_vtable, cpu_vtable);
+      if (1)
+                for (int ii = 0; ii < FUNC_LEN; ii++) {
+			if(vtable[ii]==NULL) break;
+                    printf("vtbale [%s][%d]:%p mem: %p\n", typeid(myType).name(), ii,
+                           vtable[ii] , bucket->mem_ptr);
+                }
             num_of_ranges++;
             list_ptr->push_front(bucket);
 
@@ -492,9 +493,8 @@ class obj_alloc {
                     (1 << (level - 1)) - 1 + (1 << (level - 1)));
         if (1)
             for (int i = 0; i < tree_size; i++) {
-                printf("%d: %p %p %p %d \n", i, this->range_tree[i].range_start,
-                       this->range_tree[i].range_end, this->range_tree[i].mid,
-                       num_of_ranges + power2);
+                printf("%d: %p %p %p  \n", i, this->range_tree[i].range_start,
+                       this->range_tree[i].range_end, this->range_tree[i].mid);
                 // obj_info_tuble *tuble = this->range_tree[i].tuble;
                 // void **vtable;
                 // if (0) {
@@ -562,12 +562,23 @@ class obj_alloc {
         }
     }
 };
+
+__host__ __device__ bool inRange(void *obj, range_tree_node *range_tree,unsigned ptr){
+	
+	if(range_tree[ptr].mid){
+		return obj >= range_tree[ptr]. range_start && obj <= range_tree[ptr]. range_end;
+	
+	}
+	return false;
+}
+
+
 __host__ __device__ void **get_vfunc(void *obj, range_tree_node *range_tree,
                                      unsigned tree_size) {
     unsigned ptr = 0;
     unsigned next_ptr = 0;
     while (true) {
-        if (obj < range_tree[ptr].mid)
+        if (obj<range_tree[ptr].mid)
             next_ptr = 2 * ptr + 1;
 
         else

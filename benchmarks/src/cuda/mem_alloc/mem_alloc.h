@@ -13,7 +13,7 @@
 using namespace std::chrono;
 using namespace std;
 #define DEBUG 0
-#define CALLOC_NUM 2097152
+#define CALLOC_NUM 2*2097152
 typedef char ALIGN[16];
 
 union header {

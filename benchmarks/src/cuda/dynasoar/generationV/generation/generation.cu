@@ -258,7 +258,7 @@ void transfer_dataset() {
 __device__ int device_checksum;
 __device__ int device_num_candidates;
 
-__device__ void Agent::update_checksum() {
+__device__  __noinline__ void Agent::update_checksum() {
     if (this->isAlive())
         atomicAdd(&device_checksum, 1);
     else

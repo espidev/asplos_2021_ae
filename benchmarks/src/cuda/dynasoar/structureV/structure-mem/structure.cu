@@ -1,15 +1,16 @@
 
 #include "structure.h"
-#define gpuErrchk(ans) \
-    { gpuAssert((ans), __FILE__, __LINE__); }
+#define gpuErrchk(ans)                                                         \
+  { gpuAssert((ans), __FILE__, __LINE__); }
 
 inline void gpuAssert(cudaError_t code, const char *file, int line,
                       bool abort = true) {
-    if (code != cudaSuccess) {
-        fprintf(stderr, "GPUassert: %s %s %d\n", cudaGetErrorString(code), file,
-                line);
-        if (abort) exit(code);
-    }
+  if (code != cudaSuccess) {
+    fprintf(stderr, "GPUassert: %s %s %d\n", cudaGetErrorString(code), file,
+            line);
+    if (abort)
+      exit(code);
+  }
 }
 static const int kThreads = 256;
 
@@ -18,33 +19,33 @@ using IndexT = int;
 __managed__ NodeBase **dev_nodes;
 __managed__ SpringBase **dev_springs;
 __device__ void new_NodeBase(NodeBase *node, float pos_x, float pos_y) {
-    node->pos_x = pos_x;
-    node->pos_y = pos_y;
-    node->num_springs = 0;
-    node->type = kTypeNodeBase;
+  node->pos_x = pos_x;
+  node->pos_y = pos_y;
+  node->num_springs = 0;
+  node->type = kTypeNodeBase;
 
-    for (int i = 0; i < kMaxDegree; ++i) {
-        node->springs[i] = NULL;
-    }
+  for (int i = 0; i < kMaxDegree; ++i) {
+    node->springs[i] = NULL;
+  }
 }
 
 __device__ void new_AnchorNode(NodeBase *node, float pos_x, float pos_y) {
-    new_NodeBase(node, pos_x, pos_y);
-    node->type = kTypeAnchorNode;
+  new_NodeBase(node, pos_x, pos_y);
+  node->type = kTypeAnchorNode;
 }
 
 __device__ void new_AnchorPullNode(NodeBase *node, float pos_x, float pos_y,
                                    float vel_x, float vel_y) {
-    new_AnchorNode(node, pos_x, pos_y);
-    node->vel_x = vel_x;
-    node->vel_y = vel_y;
-    node->type = kTypeAnchorPullNode;
+  new_AnchorNode(node, pos_x, pos_y);
+  node->vel_x = vel_x;
+  node->vel_y = vel_y;
+  node->type = kTypeAnchorPullNode;
 }
 
 __device__ void new_Node(NodeBase *node, float pos_x, float pos_y, float mass) {
-    new_NodeBase(node, pos_x, pos_y);
-    node->mass = mass;
-    node->type = kTypeNode;
+  new_NodeBase(node, pos_x, pos_y);
+  node->mass = mass;
+  node->type = kTypeNode;
 }
 
 // __device__ float NodeBase_distance_to(Node *node, Node *other) {
@@ -55,165 +56,165 @@ __device__ void new_Node(NodeBase *node, float pos_x, float pos_y, float mass) {
 // }
 
 __device__ void NodeBase_add_spring(NodeBase *node, SpringBase *spring) {
-    assert(node != NULL);
+  assert(node != NULL);
 
-    int idx = atomicAdd(&node->num_springs, 1);
-    assert(idx + 1 <= kMaxDegree);
-    node->springs[idx] = spring;
+  int idx = atomicAdd(&node->num_springs, 1);
+  assert(idx + 1 <= kMaxDegree);
+  node->springs[idx] = spring;
 
-    // assert(spring->p1 == node || spring->p2 == node);
+  // assert(spring->p1 == node || spring->p2 == node);
 }
 
 __device__ void new_Spring(SpringBase *spring, NodeBase *p1, NodeBase *p2,
                            float spring_factor, float max_force) {
-    spring->is_active = true;
-    spring->p1 = p1;
-    spring->p2 = p2;
-    spring->factor = spring_factor;
-    spring->force = 0.0f;
-    spring->max_force = max_force;
-    spring->initial_length = p1->distance_to(p2);
-    spring->delete_flag = false;
-    // if (!(spring->initial_length > 0.0f))
-    //   printf("%f \n", spring->initial_length);
-    assert(spring->initial_length > 0.0f);
+  spring->is_active = true;
+  spring->p1 = p1;
+  spring->p2 = p2;
+  spring->factor = spring_factor;
+  spring->force = 0.0f;
+  spring->max_force = max_force;
+  spring->initial_length = p1->distance_to(p2);
+  spring->delete_flag = false;
+  // if (!(spring->initial_length > 0.0f))
+  //   printf("%f \n", spring->initial_length);
+  assert(spring->initial_length > 0.0f);
 
-    NodeBase_add_spring(p1, spring);
-    NodeBase_add_spring(p2, spring);
+  NodeBase_add_spring(p1, spring);
+  NodeBase_add_spring(p2, spring);
 }
 
 __device__ void NodeBase_remove_spring(NodeBase *node, SpringBase *spring) {
-    for (int i = 0; i < kMaxDegree; ++i) {
-        if (node->springs[i] == spring) {
-            node->springs[i] = NULL;
-            if (atomicSub(&node->num_springs, 1) == 1) {
-                // Deleted last spring.
-                node->type = 0;
-            }
-            return;
-        }
+  for (int i = 0; i < kMaxDegree; ++i) {
+    if (node->springs[i] == spring) {
+      node->springs[i] = NULL;
+      if (atomicSub(&node->num_springs, 1) == 1) {
+        // Deleted last spring.
+        node->type = 0;
+      }
+      return;
     }
+  }
 
-    // Spring not found.
-    assert(false);
+  // Spring not found.
+  assert(false);
 }
 
 __device__ void AnchorPullNode_pull(NodeBase *node) {
-    node->pos_x += node->vel_x * kDt;
-    node->pos_y += node->vel_y * kDt;
+  node->pos_x += node->vel_x * kDt;
+  node->pos_y += node->vel_y * kDt;
 }
 
 __device__ void Spring_self_destruct(SpringBase *spring) {
-    NodeBase_remove_spring(spring->get_p1(), spring);
-    NodeBase_remove_spring(spring->get_p2(), spring);
-    spring->is_active = false;
+  NodeBase_remove_spring(spring->get_p1(), spring);
+  NodeBase_remove_spring(spring->get_p2(), spring);
+  spring->is_active = false;
 }
 
 __device__ void Spring_compute_force(SpringBase *spring) {
-    float dist = spring->p1->distance_to(spring->get_p2());
-    float displacement = max(0.0f, dist - spring->get_init_len());
-    spring->update_force(displacement);
+  float dist = spring->get_p1()->distance_to(spring->get_p2());
+  float displacement = max(0.0f, dist - spring->get_init_len());
+  spring->update_force(displacement);
 
-    if (spring->is_max_force()) {
-        spring->p1->remove_spring(spring);
-        spring->p2->remove_spring(spring);
-        spring->deactivate();
-        // Spring_self_destruct(spring);
-    }
+  if (spring->is_max_force()) {
+    spring->get_p1()->remove_spring(spring);
+    spring->get_p2()->remove_spring(spring);
+    spring->deactivate();
+    // Spring_self_destruct(spring);
+  }
 }
 
 __device__ void Node_move(NodeBase *node) {
-    float force_x = 0.0f;
-    float force_y = 0.0f;
+  float force_x = 0.0f;
+  float force_y = 0.0f;
 
-    for (int i = 0; i < kMaxDegree; ++i) {
-        SpringBase *s = node->spring(i);
+  for (int i = 0; i < kMaxDegree; ++i) {
+    SpringBase *s = node->spring(i);
 
-        if (s != NULL) {
-            NodeBase *from;
-            NodeBase *to;
+    if (s != NULL) {
+      NodeBase *from;
+      NodeBase *to;
 
-            if (s->p1 == node) {
-                from = node;
-                to = s->p2;
-            } else {
-                assert(s->p2 == node);
-                from = node;
-                to = s->p1;
-            }
+      if (s->get_p1() == node) {
+        from = node;
+        to = s->get_p2();
+      } else {
+        assert(s->get_p2() == node);
+        from = node;
+        to = s->get_p1( );
+      }
 
-            // Calculate unit vector.
+      // Calculate unit vector.
 
-            float dist = to->distance_to(from);
-            float unit_x = to->unit_x(from, dist);
-            float unit_y = to->unit_y(from, dist);
+      float dist = to->distance_to(from);
+      float unit_x = to->unit_x(from, dist);
+      float unit_y = to->unit_y(from, dist);
 
-            // Apply force.
-            force_x += unit_x * s->get_force();
-            force_y += unit_y * s->get_force();
-        }
+      // Apply force.
+      force_x += unit_x * s->get_force();
+      force_y += unit_y * s->get_force();
     }
+  }
 
-    // Calculate new velocity and position.
-    node->update_vel_x(force_x);
-    node->update_vel_y(force_y);
-    node->update_pos_x(force_x);
-    node->update_pos_y(force_y);
+  // Calculate new velocity and position.
+  node->update_vel_x(force_x);
+  node->update_vel_y(force_y);
+  node->update_pos_x(force_x);
+  node->update_pos_y(force_y);
 }
 
 __device__ void NodeBase_initialize_bfs(NodeBase *node) {
-    if (node->type == kTypeAnchorNode) {
-        node->set_distance(0);
-    } else {
-        node->set_distance(kMaxDistance);  // should be int_max
-    }
+  if (node->type == kTypeAnchorNode) {
+    node->set_distance(0);
+  } else {
+    node->set_distance(kMaxDistance); // should be int_max
+  }
 }
 
 __device__ bool dev_bfs_continue;
 
 __device__ void NodeBase_bfs_visit(NodeBase *node, int distance) {
-    if (distance == node->get_distance()) {
-        // Continue until all vertices were visited.
-        dev_bfs_continue = true;
+  if (distance == node->get_distance()) {
+    // Continue until all vertices were visited.
+    dev_bfs_continue = true;
 
-        for (int i = 0; i < kMaxDegree; ++i) {
-            SpringBase *spring = node->spring(i);
+    for (int i = 0; i < kMaxDegree; ++i) {
+      SpringBase *spring = node->spring(i);
 
-            if (spring != NULL) {
-                // Find neighboring vertices.
-                NodeBase *n;
-                if (node == spring->get_p1()) {
-                    n = spring->get_p2();
-                } else {
-                    n = spring->get_p1();
-                }
-
-                if (n->get_distance() == kMaxDistance) {
-                    // Set distance on neighboring vertex if unvisited.
-                    n->set_distance(distance + 1);
-                }
-            }
+      if (spring != NULL) {
+        // Find neighboring vertices.
+        NodeBase *n;
+        if (node == spring->get_p1()) {
+          n = spring->get_p2();
+        } else {
+          n = spring->get_p1();
         }
+
+        if (n->get_distance() == kMaxDistance) {
+          // Set distance on neighboring vertex if unvisited.
+          n->set_distance(distance + 1);
+        }
+      }
     }
+  }
 }
 __device__ void Spring_bfs_delete(SpringBase *spring) {
-    if (spring->delete_flag) {
-        spring->p1->remove_spring(spring);
-        spring->p2->remove_spring(spring);
-        spring->deactivate();
-    }
+  if (spring->delete_flag) {
+    spring->get_p1()->remove_spring(spring);
+    spring->get_p2()->remove_spring(spring);
+    spring->deactivate();
+  }
 }
 
 __device__ void NodeBase_bfs_set_delete_flags(NodeBase *node) {
-    if (node->distance == kMaxDistance) {  // should be int_max
-        for (int i = 0; i < kMaxDegree; ++i) {
-            SpringBase *spring = node->spring(i);
-            if (spring != NULL) {
-                spring->delete_flag = true;
-                // Spring_bfs_delete(spring);
-            }
-        }
+  if (node->distance == kMaxDistance) { // should be int_max
+    for (int i = 0; i < kMaxDegree; ++i) {
+      SpringBase *spring = node->spring(i);
+      if (spring != NULL) {
+        spring->delete_flag = true;
+        //Spring_bfs_delete(spring);
+      }
     }
+  }
 }
 
 // Only for rendering and checksum computation.

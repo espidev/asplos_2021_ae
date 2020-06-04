@@ -40,50 +40,47 @@ protected:
   int action_;
 
 public:
-  __device__ AgentV(int cell_id, AgentType type_) {}
-  __device__ AgentV() {}
-  __device__ virtual bool isAlive() = 0;
-  __device__ virtual bool isCandidate() = 0;
-  __device__ virtual bool is_new() = 0;
-  __device__ virtual void set_is_new(bool is_new) = 0;
-
-
-
-  __device__ virtual void set_action(int action) = 0;
-  __device__ virtual int get_action() = 0;
-  __device__ virtual int cell_id() = 0;
-  __device__ virtual void update_checksum() = 0;
+  __device__ __host__ __noinline__              AgentV(int cell_id, AgentType type_) {}
+  __device__ __host__ __noinline__              AgentV() {}
+  __device__ __host__ __noinline__ virtual bool isAlive() = 0;
+  __device__ __host__ __noinline__ virtual bool isCandidate() = 0;
+  __device__ __host__ __noinline__ virtual bool is_new() = 0;
+  __device__ __host__ __noinline__ virtual void set_is_new(bool is_new) = 0;
+  __device__ __host__ __noinline__ virtual void set_action(int action) = 0;
+  __device__ __host__ __noinline__ virtual int get_action() = 0;
+  __device__ __host__ __noinline__ virtual int cell_id() = 0;
+  __device__  __noinline__ virtual void update_checksum() = 0;
 };
 
 class Agent : public AgentV {
 
 public:
-  __device__ Agent(int cell_id, AgentType type_) {
+  __device__ __host__ __noinline__ Agent(int cell_id, AgentType type_) {
     this->is_new_ = true;
 
     this->cell_id_ = (cell_id);
     this->action_ = (kActionNone);
     this->type = type_;
   }
-  __device__ Agent() {
+  __device__ __host__ __noinline__ Agent() {
      this->type = AgentType::None;
   }
   
-  __device__ bool isAlive() { return this->type == AgentType::isAlive; }
-  __device__ bool isCandidate() { return this->type == AgentType::isCandidate; }
-  __device__ bool is_new() { return is_new_; }
-  __device__ void set_is_new(bool is_new) { is_new_ = is_new; }
+  __device__ __host__ __noinline__ bool isAlive() { return this->type == AgentType::isAlive; }
+  __device__ __host__ __noinline__ bool isCandidate() { return this->type == AgentType::isCandidate; }
+  __device__ __host__ __noinline__ bool is_new() { return is_new_; }
+  __device__ __host__ __noinline__ void set_is_new(bool is_new) { is_new_ = is_new; }
 
-  __device__ void set_action(int action) { this->action_ = action; }
-  __device__ int get_action() { return this->action_; }
-  __device__ int cell_id() { return this->cell_id_; }
+  __device__ __host__ __noinline__ void set_action(int action) { this->action_ = action; }
+  __device__ __host__ __noinline__ int get_action() { return this->action_; }
+  __device__ __host__ __noinline__ int cell_id() { return this->cell_id_; }
 #ifdef OPTION_RENDER
   // Only for rendering.
-  __device__ void update_render_array();
+  __device__ __host__ __noinline__ void update_render_array();
 #endif // OPTION_RENDER
 
   // Only for checksum computation.
-  __device__ void update_checksum();
+  __device__  __noinline__ void update_checksum();
 };
 
 class CellV {
@@ -93,30 +90,30 @@ protected:
 
 public:
   int reserved;
-  __device__ CellV() {}
+  __device__ __host__ __noinline__ CellV() {}
 
-  __device__ virtual AgentV *agent() = 0;
-  __device__ virtual void set_agent(int cid, AgentType type_) = 0;
-  __device__ virtual void delete_agent() = 0;
-  __device__ virtual bool is_empty() = 0;
+  __device__ __host__ __noinline__ virtual AgentV *agent() = 0;
+  __device__ __host__ __noinline__ virtual void set_agent(int cid, AgentType type_) = 0;
+  __device__ __host__ __noinline__ virtual void delete_agent() = 0;
+  __device__ __host__ __noinline__ virtual bool is_empty() = 0;
 };
 
 class Cell : public CellV {
 
 public:
-  __device__ Cell() {
+  __device__ __host__ __noinline__ Cell() {
 
     this->private_agent = new Agent();
     this->reserved = (0);
     this->agent_ = nullptr;
   }
 
-  __device__ AgentV *agent() { return agent_; }
-  __device__ void set_agent(int cid, AgentType type_) {
+  __device__ __host__ __noinline__ AgentV *agent() { return agent_; }
+  __device__ __host__ __noinline__ void set_agent(int cid, AgentType type_) {
     this->agent_ = new (this->private_agent) Agent(cid, type_);
   }
-  __device__ void delete_agent() { this->agent_ = nullptr; }
-  __device__ bool is_empty() { return agent_ == nullptr; }
+  __device__ __host__ __noinline__ void delete_agent() { this->agent_ = nullptr; }
+  __device__ __host__ __noinline__ bool is_empty() { return agent_ == nullptr; }
 };
 
 #endif // EXAMPLE_GENERATION_SOA_GENERATION_H

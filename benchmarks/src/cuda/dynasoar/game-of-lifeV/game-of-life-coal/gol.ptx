@@ -3627,32 +3627,32 @@ BB16_21:
 
 )
 {
-	.reg .pred 	%p<6>;
-	.reg .b32 	%r<19>;
-	.reg .b64 	%rd<34>;
+	.reg .pred 	%p<5>;
+	.reg .b32 	%r<18>;
+	.reg .b64 	%rd<24>;
 
 
 	mov.u32 	%r6, %tid.x;
 	mov.u32 	%r7, %ctaid.x;
 	mov.u32 	%r1, %ntid.x;
-	mad.lo.s32 	%r18, %r7, %r1, %r6;
+	mad.lo.s32 	%r17, %r7, %r1, %r6;
 	ld.global.u32 	%r8, [SIZE_Y];
 	ld.global.u32 	%r9, [SIZE_X];
 	mul.lo.s32 	%r10, %r8, %r9;
-	setp.ge.s32	%p1, %r18, %r10;
-	@%p1 bra 	BB17_9;
+	setp.ge.s32	%p1, %r17, %r10;
+	@%p1 bra 	BB17_7;
 
 	mov.u32 	%r11, %nctaid.x;
 	mul.lo.s32 	%r3, %r11, %r1;
 
 BB17_2:
-	mov.u64 	%rd9, 32;
+	mov.u64 	%rd5, 32;
 	// Callseq Start 54
 	{
 	.reg .b32 temp_param_reg;
 	// <end>}
 	.param .b64 param0;
-	st.param.b64	[param0+0], %rd9;
+	st.param.b64	[param0+0], %rd5;
 	.param .b64 retval0;
 	call.uni (retval0), 
 	malloc, 
@@ -3664,83 +3664,52 @@ BB17_2:
 	//{
 	}// Callseq End 54
 	setp.eq.s64	%p2, %rd1, 0;
-	mov.u64 	%rd33, 0;
-	@%p2 bra 	BB17_6;
+	mov.u64 	%rd23, 0;
+	@%p2 bra 	BB17_4;
 
-	mov.u64 	%rd11, _ZTV4Cell;
-	add.s64 	%rd12, %rd11, 16;
-	cvta.global.u64 	%rd13, %rd12;
-	st.u64 	[%rd1], %rd13;
-	mov.u64 	%rd14, 24;
+	mov.u64 	%rd6, _ZTV4Cell;
+	add.s64 	%rd7, %rd6, 16;
+	cvta.global.u64 	%rd8, %rd7;
+	st.u64 	[%rd1], %rd8;
+	mov.u64 	%rd9, 0;
+	st.u64 	[%rd1+8], %rd9;
+	mov.u32 	%r12, 0;
+	st.u32 	[%rd1+24], %r12;
+	mov.u64 	%rd23, %rd1;
+
+BB17_4:
+	ld.global.u64 	%rd10, [cells];
+	mul.wide.s32 	%rd11, %r17, 8;
+	add.s64 	%rd12, %rd10, %rd11;
+	st.u64 	[%rd12], %rd23;
+	ld.global.u64 	%rd13, [cells];
+	add.s64 	%rd14, %rd13, %rd11;
+	ld.u64 	%rd15, [%rd14];
+	setp.ne.s64	%p3, %rd15, 0;
+	@%p3 bra 	BB17_6;
+
+	mov.u64 	%rd16, $str5;
+	cvta.global.u64 	%rd17, %rd16;
+	mov.u64 	%rd18, $str2;
+	cvta.global.u64 	%rd19, %rd18;
+	mov.u64 	%rd20, __unnamed_3;
+	cvta.global.u64 	%rd21, %rd20;
+	mov.u32 	%r13, 236;
+	mov.u64 	%rd22, 1;
 	// Callseq Start 55
 	{
 	.reg .b32 temp_param_reg;
 	// <end>}
 	.param .b64 param0;
-	st.param.b64	[param0+0], %rd14;
-	.param .b64 retval0;
-	call.uni (retval0), 
-	malloc, 
-	(
-	param0
-	);
-	ld.param.b64	%rd3, [retval0+0];
-	
-	//{
-	}// Callseq End 55
-	setp.eq.s64	%p3, %rd3, 0;
-	mov.u64 	%rd10, 0;
-	mov.u64 	%rd32, %rd10;
-	@%p3 bra 	BB17_5;
-
-	mov.u64 	%rd15, _ZTV5Agent;
-	add.s64 	%rd16, %rd15, 16;
-	cvta.global.u64 	%rd17, %rd16;
-	st.u64 	[%rd3], %rd17;
-	mov.u32 	%r12, 2;
-	st.u32 	[%rd3+12], %r12;
-	mov.u64 	%rd32, %rd3;
-
-BB17_5:
-	st.u64 	[%rd1+16], %rd32;
-	st.u64 	[%rd1+8], %rd10;
-	mov.u32 	%r13, 0;
-	st.u32 	[%rd1+24], %r13;
-	mov.u64 	%rd33, %rd1;
-
-BB17_6:
-	ld.global.u64 	%rd19, [cells];
-	mul.wide.s32 	%rd20, %r18, 8;
-	add.s64 	%rd21, %rd19, %rd20;
-	st.u64 	[%rd21], %rd33;
-	ld.global.u64 	%rd22, [cells];
-	add.s64 	%rd23, %rd22, %rd20;
-	ld.u64 	%rd24, [%rd23];
-	setp.ne.s64	%p4, %rd24, 0;
-	@%p4 bra 	BB17_8;
-
-	mov.u64 	%rd25, $str5;
-	cvta.global.u64 	%rd26, %rd25;
-	mov.u64 	%rd27, $str2;
-	cvta.global.u64 	%rd28, %rd27;
-	mov.u64 	%rd29, __unnamed_3;
-	cvta.global.u64 	%rd30, %rd29;
-	mov.u32 	%r14, 236;
-	mov.u64 	%rd31, 1;
-	// Callseq Start 56
-	{
-	.reg .b32 temp_param_reg;
-	// <end>}
-	.param .b64 param0;
-	st.param.b64	[param0+0], %rd26;
+	st.param.b64	[param0+0], %rd17;
 	.param .b64 param1;
-	st.param.b64	[param1+0], %rd28;
+	st.param.b64	[param1+0], %rd19;
 	.param .b32 param2;
-	st.param.b32	[param2+0], %r14;
+	st.param.b32	[param2+0], %r13;
 	.param .b64 param3;
-	st.param.b64	[param3+0], %rd30;
+	st.param.b64	[param3+0], %rd21;
 	.param .b64 param4;
-	st.param.b64	[param4+0], %rd31;
+	st.param.b64	[param4+0], %rd22;
 	call.uni 
 	__assertfail, 
 	(
@@ -3752,17 +3721,17 @@ BB17_6:
 	);
 	
 	//{
-	}// Callseq End 56
+	}// Callseq End 55
 
-BB17_8:
-	add.s32 	%r18, %r3, %r18;
-	ld.global.u32 	%r15, [SIZE_Y];
-	ld.global.u32 	%r16, [SIZE_X];
-	mul.lo.s32 	%r17, %r15, %r16;
-	setp.lt.s32	%p5, %r18, %r17;
-	@%p5 bra 	BB17_2;
+BB17_6:
+	add.s32 	%r17, %r3, %r17;
+	ld.global.u32 	%r14, [SIZE_Y];
+	ld.global.u32 	%r15, [SIZE_X];
+	mul.lo.s32 	%r16, %r14, %r15;
+	setp.lt.s32	%p4, %r17, %r16;
+	@%p4 bra 	BB17_2;
 
-BB17_9:
+BB17_7:
 	ret;
 }
 
@@ -3801,7 +3770,7 @@ BB18_2:
 	ld.u64 	%rd9, [%rd8];
 	ld.u64 	%rd10, [%rd9+8];
 	mov.u32 	%r11, 0;
-	// Callseq Start 57
+	// Callseq Start 56
 	{
 	.reg .b32 temp_param_reg;
 	// <end>}
@@ -3811,7 +3780,7 @@ BB18_2:
 	st.param.b32	[param1+0], %r10;
 	.param .b32 param2;
 	st.param.b32	[param2+0], %r11;
-	prototype_57 : .callprototype ()_ (.param .b64 _, .param .b32 _, .param .b32 _);
+	prototype_56 : .callprototype ()_ (.param .b64 _, .param .b32 _, .param .b32 _);
 	call 
 	%rd10, 
 	(
@@ -3819,10 +3788,10 @@ BB18_2:
 	param1, 
 	param2
 	)
-	, prototype_57;
+	, prototype_56;
 	
 	//{
-	}// Callseq End 57
+	}// Callseq End 56
 	ld.global.u32 	%r12, [%rd4];
 	ld.global.u64 	%rd11, [cells];
 	mul.wide.s32 	%rd12, %r12, 8;
@@ -3830,44 +3799,44 @@ BB18_2:
 	ld.u64 	%rd14, [%rd13];
 	ld.u64 	%rd15, [%rd14];
 	ld.u64 	%rd16, [%rd15];
-	// Callseq Start 58
+	// Callseq Start 57
 	{
 	.reg .b32 temp_param_reg;
 	// <end>}
 	.param .b64 param0;
 	st.param.b64	[param0+0], %rd14;
 	.param .b64 retval0;
-	prototype_58 : .callprototype (.param .b64 _) _ (.param .b64 _);
+	prototype_57 : .callprototype (.param .b64 _) _ (.param .b64 _);
 	call (retval0), 
 	%rd16, 
 	(
 	param0
 	)
-	, prototype_58;
+	, prototype_57;
 	ld.param.b64	%rd17, [retval0+0];
 	
 	//{
-	}// Callseq End 58
+	}// Callseq End 57
 	ld.u64 	%rd18, [%rd17];
 	ld.u64 	%rd19, [%rd18+48];
-	// Callseq Start 59
+	// Callseq Start 58
 	{
 	.reg .b32 temp_param_reg;
 	// <end>}
 	.param .b64 param0;
 	st.param.b64	[param0+0], %rd17;
 	.param .b32 retval0;
-	prototype_59 : .callprototype (.param .b32 _) _ (.param .b64 _);
+	prototype_58 : .callprototype (.param .b32 _) _ (.param .b64 _);
 	call (retval0), 
 	%rd19, 
 	(
 	param0
 	)
-	, prototype_59;
+	, prototype_58;
 	ld.param.b32	%r13, [retval0+0];
 	
 	//{
-	}// Callseq End 59
+	}// Callseq End 58
 	ld.global.u32 	%r14, [%rd4];
 	setp.eq.s32	%p2, %r13, %r14;
 	@%p2 bra 	BB18_4;
@@ -3880,7 +3849,7 @@ BB18_2:
 	cvta.global.u64 	%rd25, %rd24;
 	mov.u32 	%r15, 245;
 	mov.u64 	%rd26, 1;
-	// Callseq Start 60
+	// Callseq Start 59
 	{
 	.reg .b32 temp_param_reg;
 	// <end>}
@@ -3905,7 +3874,7 @@ BB18_2:
 	);
 	
 	//{
-	}// Callseq End 60
+	}// Callseq End 59
 
 BB18_4:
 	add.s32 	%r16, %r3, %r16;
@@ -3946,45 +3915,45 @@ BB19_2:
 	ld.u64 	%rd5, [%rd4];
 	ld.u64 	%rd6, [%rd5];
 	ld.u64 	%rd7, [%rd6];
-	// Callseq Start 61
+	// Callseq Start 60
 	{
 	.reg .b32 temp_param_reg;
 	// <end>}
 	.param .b64 param0;
 	st.param.b64	[param0+0], %rd5;
 	.param .b64 retval0;
-	prototype_61 : .callprototype (.param .b64 _) _ (.param .b64 _);
+	prototype_60 : .callprototype (.param .b64 _) _ (.param .b64 _);
 	call (retval0), 
 	%rd7, 
 	(
 	param0
 	)
-	, prototype_61;
+	, prototype_60;
 	ld.param.b64	%rd1, [retval0+0];
 	
 	//{
-	}// Callseq End 61
+	}// Callseq End 60
 	setp.eq.s64	%p2, %rd1, 0;
 	@%p2 bra 	BB19_4;
 
 	ld.u64 	%rd8, [%rd1];
 	ld.u64 	%rd9, [%rd8+56];
-	// Callseq Start 62
+	// Callseq Start 61
 	{
 	.reg .b32 temp_param_reg;
 	// <end>}
 	.param .b64 param0;
 	st.param.b64	[param0+0], %rd1;
-	prototype_62 : .callprototype ()_ (.param .b64 _);
+	prototype_61 : .callprototype ()_ (.param .b64 _);
 	call 
 	%rd9, 
 	(
 	param0
 	)
-	, prototype_62;
+	, prototype_61;
 	
 	//{
-	}// Callseq End 62
+	}// Callseq End 61
 
 BB19_4:
 	add.s32 	%r15, %r3, %r15;
@@ -4144,170 +4113,138 @@ BB20_2:
 	.param .u64 _Z11dump_vtableI4CellEvPPvS2__param_1
 )
 {
-	.reg .pred 	%p<3>;
+	.reg .pred 	%p<2>;
 	.reg .b16 	%rs<9>;
-	.reg .b32 	%r<3>;
-	.reg .b64 	%rd<84>;
+	.reg .b32 	%r<2>;
+	.reg .b64 	%rd<75>;
 
 
-	ld.param.u64 	%rd5, [_Z11dump_vtableI4CellEvPPvS2__param_0];
-	ld.param.u64 	%rd6, [_Z11dump_vtableI4CellEvPPvS2__param_1];
-	mov.u64 	%rd83, 0;
-	mov.u64 	%rd8, buf5;
-	cvta.global.u64 	%rd9, %rd8;
-	setp.eq.s64	%p1, %rd9, 0;
-	@%p1 bra 	BB21_4;
+	ld.param.u64 	%rd2, [_Z11dump_vtableI4CellEvPPvS2__param_0];
+	ld.param.u64 	%rd3, [_Z11dump_vtableI4CellEvPPvS2__param_1];
+	mov.u64 	%rd74, 0;
+	mov.u64 	%rd5, buf5;
+	cvta.global.u64 	%rd6, %rd5;
+	setp.eq.s64	%p1, %rd6, 0;
+	@%p1 bra 	BB21_2;
 
-	mov.u64 	%rd11, _ZTV4Cell;
-	add.s64 	%rd12, %rd11, 16;
-	cvta.global.u64 	%rd13, %rd12;
-	st.global.u64 	[buf5], %rd13;
-	mov.u64 	%rd14, 24;
-	// Callseq Start 63
-	{
-	.reg .b32 temp_param_reg;
-	// <end>}
-	.param .b64 param0;
-	st.param.b64	[param0+0], %rd14;
-	.param .b64 retval0;
-	call.uni (retval0), 
-	malloc, 
-	(
-	param0
-	);
-	ld.param.b64	%rd1, [retval0+0];
-	
-	//{
-	}// Callseq End 63
-	setp.eq.s64	%p2, %rd1, 0;
-	mov.u64 	%rd10, 0;
-	mov.u64 	%rd82, %rd10;
-	@%p2 bra 	BB21_3;
+	mov.u64 	%rd8, _ZTV4Cell;
+	add.s64 	%rd9, %rd8, 16;
+	cvta.global.u64 	%rd10, %rd9;
+	mov.u64 	%rd11, 0;
+	st.global.v2.u64 	[buf5], {%rd10, %rd11};
+	mov.u32 	%r1, 0;
+	st.global.u32 	[buf5+24], %r1;
+	mov.u64 	%rd74, %rd5;
 
-	mov.u64 	%rd15, _ZTV5Agent;
-	add.s64 	%rd16, %rd15, 16;
-	cvta.global.u64 	%rd17, %rd16;
-	st.u64 	[%rd1], %rd17;
-	mov.u32 	%r1, 2;
-	st.u32 	[%rd1+12], %r1;
-	mov.u64 	%rd82, %rd1;
-
-BB21_3:
-	st.global.u64 	[buf5+16], %rd82;
-	st.global.u64 	[buf5+8], %rd10;
-	mov.u32 	%r2, 0;
-	st.global.u32 	[buf5+24], %r2;
-	mov.u64 	%rd83, %rd8;
-
-BB21_4:
-	cvta.to.global.u64 	%rd20, %rd5;
-	cvta.to.global.u64 	%rd21, %rd6;
-	ld.global.u8 	%rs1, [%rd83];
-	st.global.u8 	[%rd21], %rs1;
-	ld.global.u8 	%rs2, [%rd83+1];
-	st.global.u8 	[%rd21+1], %rs2;
-	ld.global.u8 	%rs3, [%rd83+2];
-	st.global.u8 	[%rd21+2], %rs3;
-	ld.global.u8 	%rs4, [%rd83+3];
-	st.global.u8 	[%rd21+3], %rs4;
-	ld.global.u8 	%rs5, [%rd83+4];
-	st.global.u8 	[%rd21+4], %rs5;
-	ld.global.u8 	%rs6, [%rd83+5];
-	st.global.u8 	[%rd21+5], %rs6;
-	ld.global.u8 	%rs7, [%rd83+6];
-	st.global.u8 	[%rd21+6], %rs7;
-	ld.global.u8 	%rs8, [%rd83+7];
-	st.global.u8 	[%rd21+7], %rs8;
-	ld.global.u64 	%rd22, [%rd83];
-	ld.u64 	%rd23, [%rd22];
-	st.global.u64 	[%rd20], %rd23;
-	ld.global.u64 	%rd24, [%rd83];
-	ld.u64 	%rd25, [%rd24+8];
-	st.global.u64 	[%rd20+8], %rd25;
-	ld.global.u64 	%rd26, [%rd83];
-	ld.u64 	%rd27, [%rd26+16];
-	st.global.u64 	[%rd20+16], %rd27;
-	ld.global.u64 	%rd28, [%rd83];
-	ld.u64 	%rd29, [%rd28+24];
-	st.global.u64 	[%rd20+24], %rd29;
-	ld.global.u64 	%rd30, [%rd83];
-	ld.u64 	%rd31, [%rd30+32];
-	st.global.u64 	[%rd20+32], %rd31;
-	ld.global.u64 	%rd32, [%rd83];
-	ld.u64 	%rd33, [%rd32+40];
-	st.global.u64 	[%rd20+40], %rd33;
-	ld.global.u64 	%rd34, [%rd83];
-	ld.u64 	%rd35, [%rd34+48];
-	st.global.u64 	[%rd20+48], %rd35;
-	ld.global.u64 	%rd36, [%rd83];
-	ld.u64 	%rd37, [%rd36+56];
-	st.global.u64 	[%rd20+56], %rd37;
-	ld.global.u64 	%rd38, [%rd83];
-	ld.u64 	%rd39, [%rd38+64];
-	st.global.u64 	[%rd20+64], %rd39;
-	ld.global.u64 	%rd40, [%rd83];
-	ld.u64 	%rd41, [%rd40+72];
-	st.global.u64 	[%rd20+72], %rd41;
-	ld.global.u64 	%rd42, [%rd83];
-	ld.u64 	%rd43, [%rd42+80];
-	st.global.u64 	[%rd20+80], %rd43;
-	ld.global.u64 	%rd44, [%rd83];
-	ld.u64 	%rd45, [%rd44+88];
-	st.global.u64 	[%rd20+88], %rd45;
-	ld.global.u64 	%rd46, [%rd83];
-	ld.u64 	%rd47, [%rd46+96];
-	st.global.u64 	[%rd20+96], %rd47;
-	ld.global.u64 	%rd48, [%rd83];
-	ld.u64 	%rd49, [%rd48+104];
-	st.global.u64 	[%rd20+104], %rd49;
-	ld.global.u64 	%rd50, [%rd83];
-	ld.u64 	%rd51, [%rd50+112];
-	st.global.u64 	[%rd20+112], %rd51;
-	ld.global.u64 	%rd52, [%rd83];
-	ld.u64 	%rd53, [%rd52+120];
-	st.global.u64 	[%rd20+120], %rd53;
-	ld.global.u64 	%rd54, [%rd83];
-	ld.u64 	%rd55, [%rd54+128];
-	st.global.u64 	[%rd20+128], %rd55;
-	ld.global.u64 	%rd56, [%rd83];
-	ld.u64 	%rd57, [%rd56+136];
-	st.global.u64 	[%rd20+136], %rd57;
-	ld.global.u64 	%rd58, [%rd83];
-	ld.u64 	%rd59, [%rd58+144];
-	st.global.u64 	[%rd20+144], %rd59;
-	ld.global.u64 	%rd60, [%rd83];
-	ld.u64 	%rd61, [%rd60+152];
-	st.global.u64 	[%rd20+152], %rd61;
-	ld.global.u64 	%rd62, [%rd83];
-	ld.u64 	%rd63, [%rd62+160];
-	st.global.u64 	[%rd20+160], %rd63;
-	ld.global.u64 	%rd64, [%rd83];
-	ld.u64 	%rd65, [%rd64+168];
-	st.global.u64 	[%rd20+168], %rd65;
-	ld.global.u64 	%rd66, [%rd83];
-	ld.u64 	%rd67, [%rd66+176];
-	st.global.u64 	[%rd20+176], %rd67;
-	ld.global.u64 	%rd68, [%rd83];
-	ld.u64 	%rd69, [%rd68+184];
-	st.global.u64 	[%rd20+184], %rd69;
-	ld.global.u64 	%rd70, [%rd83];
-	ld.u64 	%rd71, [%rd70+192];
-	st.global.u64 	[%rd20+192], %rd71;
-	ld.global.u64 	%rd72, [%rd83];
-	ld.u64 	%rd73, [%rd72+200];
-	st.global.u64 	[%rd20+200], %rd73;
-	ld.global.u64 	%rd74, [%rd83];
-	ld.u64 	%rd75, [%rd74+208];
-	st.global.u64 	[%rd20+208], %rd75;
-	ld.global.u64 	%rd76, [%rd83];
-	ld.u64 	%rd77, [%rd76+216];
-	st.global.u64 	[%rd20+216], %rd77;
-	ld.global.u64 	%rd78, [%rd83];
-	ld.u64 	%rd79, [%rd78+224];
-	st.global.u64 	[%rd20+224], %rd79;
-	ld.global.u64 	%rd80, [%rd83];
-	ld.u64 	%rd81, [%rd80+232];
-	st.global.u64 	[%rd20+232], %rd81;
+BB21_2:
+	cvta.to.global.u64 	%rd12, %rd2;
+	cvta.to.global.u64 	%rd13, %rd3;
+	ld.global.u8 	%rs1, [%rd74];
+	st.global.u8 	[%rd13], %rs1;
+	ld.global.u8 	%rs2, [%rd74+1];
+	st.global.u8 	[%rd13+1], %rs2;
+	ld.global.u8 	%rs3, [%rd74+2];
+	st.global.u8 	[%rd13+2], %rs3;
+	ld.global.u8 	%rs4, [%rd74+3];
+	st.global.u8 	[%rd13+3], %rs4;
+	ld.global.u8 	%rs5, [%rd74+4];
+	st.global.u8 	[%rd13+4], %rs5;
+	ld.global.u8 	%rs6, [%rd74+5];
+	st.global.u8 	[%rd13+5], %rs6;
+	ld.global.u8 	%rs7, [%rd74+6];
+	st.global.u8 	[%rd13+6], %rs7;
+	ld.global.u8 	%rs8, [%rd74+7];
+	st.global.u8 	[%rd13+7], %rs8;
+	ld.global.u64 	%rd14, [%rd74];
+	ld.u64 	%rd15, [%rd14];
+	st.global.u64 	[%rd12], %rd15;
+	ld.global.u64 	%rd16, [%rd74];
+	ld.u64 	%rd17, [%rd16+8];
+	st.global.u64 	[%rd12+8], %rd17;
+	ld.global.u64 	%rd18, [%rd74];
+	ld.u64 	%rd19, [%rd18+16];
+	st.global.u64 	[%rd12+16], %rd19;
+	ld.global.u64 	%rd20, [%rd74];
+	ld.u64 	%rd21, [%rd20+24];
+	st.global.u64 	[%rd12+24], %rd21;
+	ld.global.u64 	%rd22, [%rd74];
+	ld.u64 	%rd23, [%rd22+32];
+	st.global.u64 	[%rd12+32], %rd23;
+	ld.global.u64 	%rd24, [%rd74];
+	ld.u64 	%rd25, [%rd24+40];
+	st.global.u64 	[%rd12+40], %rd25;
+	ld.global.u64 	%rd26, [%rd74];
+	ld.u64 	%rd27, [%rd26+48];
+	st.global.u64 	[%rd12+48], %rd27;
+	ld.global.u64 	%rd28, [%rd74];
+	ld.u64 	%rd29, [%rd28+56];
+	st.global.u64 	[%rd12+56], %rd29;
+	ld.global.u64 	%rd30, [%rd74];
+	ld.u64 	%rd31, [%rd30+64];
+	st.global.u64 	[%rd12+64], %rd31;
+	ld.global.u64 	%rd32, [%rd74];
+	ld.u64 	%rd33, [%rd32+72];
+	st.global.u64 	[%rd12+72], %rd33;
+	ld.global.u64 	%rd34, [%rd74];
+	ld.u64 	%rd35, [%rd34+80];
+	st.global.u64 	[%rd12+80], %rd35;
+	ld.global.u64 	%rd36, [%rd74];
+	ld.u64 	%rd37, [%rd36+88];
+	st.global.u64 	[%rd12+88], %rd37;
+	ld.global.u64 	%rd38, [%rd74];
+	ld.u64 	%rd39, [%rd38+96];
+	st.global.u64 	[%rd12+96], %rd39;
+	ld.global.u64 	%rd40, [%rd74];
+	ld.u64 	%rd41, [%rd40+104];
+	st.global.u64 	[%rd12+104], %rd41;
+	ld.global.u64 	%rd42, [%rd74];
+	ld.u64 	%rd43, [%rd42+112];
+	st.global.u64 	[%rd12+112], %rd43;
+	ld.global.u64 	%rd44, [%rd74];
+	ld.u64 	%rd45, [%rd44+120];
+	st.global.u64 	[%rd12+120], %rd45;
+	ld.global.u64 	%rd46, [%rd74];
+	ld.u64 	%rd47, [%rd46+128];
+	st.global.u64 	[%rd12+128], %rd47;
+	ld.global.u64 	%rd48, [%rd74];
+	ld.u64 	%rd49, [%rd48+136];
+	st.global.u64 	[%rd12+136], %rd49;
+	ld.global.u64 	%rd50, [%rd74];
+	ld.u64 	%rd51, [%rd50+144];
+	st.global.u64 	[%rd12+144], %rd51;
+	ld.global.u64 	%rd52, [%rd74];
+	ld.u64 	%rd53, [%rd52+152];
+	st.global.u64 	[%rd12+152], %rd53;
+	ld.global.u64 	%rd54, [%rd74];
+	ld.u64 	%rd55, [%rd54+160];
+	st.global.u64 	[%rd12+160], %rd55;
+	ld.global.u64 	%rd56, [%rd74];
+	ld.u64 	%rd57, [%rd56+168];
+	st.global.u64 	[%rd12+168], %rd57;
+	ld.global.u64 	%rd58, [%rd74];
+	ld.u64 	%rd59, [%rd58+176];
+	st.global.u64 	[%rd12+176], %rd59;
+	ld.global.u64 	%rd60, [%rd74];
+	ld.u64 	%rd61, [%rd60+184];
+	st.global.u64 	[%rd12+184], %rd61;
+	ld.global.u64 	%rd62, [%rd74];
+	ld.u64 	%rd63, [%rd62+192];
+	st.global.u64 	[%rd12+192], %rd63;
+	ld.global.u64 	%rd64, [%rd74];
+	ld.u64 	%rd65, [%rd64+200];
+	st.global.u64 	[%rd12+200], %rd65;
+	ld.global.u64 	%rd66, [%rd74];
+	ld.u64 	%rd67, [%rd66+208];
+	st.global.u64 	[%rd12+208], %rd67;
+	ld.global.u64 	%rd68, [%rd74];
+	ld.u64 	%rd69, [%rd68+216];
+	st.global.u64 	[%rd12+216], %rd69;
+	ld.global.u64 	%rd70, [%rd74];
+	ld.u64 	%rd71, [%rd70+224];
+	st.global.u64 	[%rd12+224], %rd71;
+	ld.global.u64 	%rd72, [%rd74];
+	ld.u64 	%rd73, [%rd72+232];
+	st.global.u64 	[%rd12+232], %rd73;
 	ret;
 }
 

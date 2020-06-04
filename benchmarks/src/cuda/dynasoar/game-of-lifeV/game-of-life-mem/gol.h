@@ -109,7 +109,7 @@ class Cell : public CellV {
 public:
   __device__ Cell() {
 
-    this->private_agent = new Agent();
+    //this->private_agent = new Agent();
     this->reserved = (0);
     this->agent_ = nullptr;
   }

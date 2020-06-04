@@ -111,13 +111,13 @@ __device__ void Spring_self_destruct(SpringBase *spring) {
 }
 
 __device__ void Spring_compute_force(SpringBase *spring) {
-  float dist = spring->p1->distance_to(spring->get_p2());
+  float dist = spring->get_p1()->distance_to(spring->get_p2());
   float displacement = max(0.0f, dist - spring->get_init_len());
   spring->update_force(displacement);
 
   if (spring->is_max_force()) {
-    spring->p1->remove_spring(spring);
-    spring->p2->remove_spring(spring);
+    spring->get_p1()->remove_spring(spring);
+    spring->get_p2()->remove_spring(spring);
     spring->deactivate();
     // Spring_self_destruct(spring);
   }
@@ -134,13 +134,13 @@ __device__ void Node_move(NodeBase *node) {
       NodeBase *from;
       NodeBase *to;
 
-      if (s->p1 == node) {
+      if (s->get_p1() == node) {
         from = node;
-        to = s->p2;
+        to = s->get_p2();
       } else {
-        assert(s->p2 == node);
+        assert(s->get_p2() == node);
         from = node;
-        to = s->p1;
+        to = s->get_p1( );
       }
 
       // Calculate unit vector.
@@ -199,8 +199,8 @@ __device__ void NodeBase_bfs_visit(NodeBase *node, int distance) {
 }
 __device__ void Spring_bfs_delete(SpringBase *spring) {
   if (spring->delete_flag) {
-    spring->p1->remove_spring(spring);
-    spring->p2->remove_spring(spring);
+    spring->get_p1()->remove_spring(spring);
+    spring->get_p2()->remove_spring(spring);
     spring->deactivate();
   }
 }

@@ -39,58 +39,91 @@ class CellBase {
     int classType = 0;
 
     __noinline__ __host__ __device__ CellBase() { classType = 0; }
-    __noinline__ __device__ float Baserandom_uni() { return 0; }
-    __noinline__ __host__ __device__ int Baseget_current_max_velocity() {
-        return 0;
+     __noinline__ __device__ float Baserandom_uni() {
+        return curand_uniform(&this->random_state);
     }
 
-    __noinline__ __host__ __device__ int Baseget_max_velocity() { return 0; }
+    __noinline__ __host__ __device__ int Baseget_current_max_velocity() {
+        return this->current_max_velocity;
+    }
+
+    __noinline__ __host__ __device__ int Baseget_max_velocity() {
+        return this->max_velocity;
+    }
 
     __noinline__ __host__ __device__ void Baseset_current_max_velocity(int v) {
-        return;
+        this->current_max_velocity = v;
     }
 
-    __noinline__ __host__ __device__ void Baseremove_speed_limit() { return; }
-    __noinline__ __host__ __device__ int Baseget_num_incoming() { return 0; }
+    __noinline__ __host__ __device__ void Baseremove_speed_limit() {
+        this->current_max_velocity = this->max_velocity;
+    }
+
+    __noinline__ __host__ __device__ int Baseget_num_incoming() {
+        return this->num_incoming;
+    }
 
     __noinline__ __host__ __device__ void Baseset_num_incoming(int num) {
-        return;
+        this->num_incoming = num;
     }
-    __noinline__ __host__ __device__ int Baseget_num_outgoing() { return 0; }
+
+    __noinline__ __host__ __device__ int Baseget_num_outgoing() {
+        return this->num_outgoing;
+    }
+
     __noinline__ __host__ __device__ void Baseset_num_outgoing(int num) {
-        return;
+        this->num_outgoing = num;
     }
 
     __noinline__ __host__ __device__ CellBase *Baseget_incoming(int idx) {
-        return nullptr;
+        return this->incoming[idx];
     }
+
     __noinline__ __host__ __device__ void Baseset_incoming(int idx,
-                                                           CellBase *cell) {
-        return;
+                                                       CellBase *cell) {
+        assert(cell != nullptr);
+        this->incoming[idx] = cell;
     }
 
     __noinline__ __host__ __device__ CellBase *Baseget_outgoing(int idx) {
-        return nullptr;
+        return this->outgoing[idx];
     }
 
     __noinline__ __host__ __device__ void Baseset_outgoing(int idx,
-                                                           CellBase *cell) {
-        return;
+                                                       CellBase *cell) {
+        assert(cell != nullptr);
+        this->outgoing[idx] = cell;
     }
 
-    __noinline__ __host__ __device__ float Baseget_x() { return 0; }
+    __noinline__ __host__ __device__ float Baseget_x() { return this->x; }
 
-    __noinline__ __host__ __device__ float Baseget_y() { return 0; }
+    __noinline__ __host__ __device__ float Baseget_y() { return this->y; }
 
-    __noinline__ __host__ __device__ bool Baseis_free() { return true; }
+    __noinline__ __host__ __device__ bool Baseis_free() {
+        return this->car == nullptr;
+    }
 
-    __noinline__ __host__ __device__ bool Baseis_sink() { return true; }
+    __noinline__ __host__ __device__ bool Baseis_sink() {
+        return this->num_outgoing == 0;
+    }
 
-    __noinline__ __host__ __device__ bool Baseget_is_target() { return true; }
-    __noinline__ __host__ __device__ void Baseset_target() { return; }
-    __noinline__ __host__ __device__ void Baseoccupy(CarBase *car) { return; }
+    __noinline__ __host__ __device__ bool Baseget_is_target() {
+        return this->is_target;
+    }
 
-    __noinline__ __host__ __device__ void Baserelease() { return; }
+    __noinline__ __host__ __device__ void Baseset_target() {
+        this->is_target = true;
+    }
+    __noinline__ __host__ __device__ void Baseoccupy(CarBase *car) {
+        assert(this->is_free());
+        this->car = car;
+    }
+
+    __noinline__ __host__ __device__ void Baserelease() {
+        assert(!this->is_free());
+        this->car = nullptr;
+    }
+
 
     ///////////////
 
@@ -195,39 +228,74 @@ class CarBase {
     int max_velocity;
     int classType = 0;
     __noinline__ __host__ __device__ CarBase(){ classType = 0;}
-    __noinline__ __host__ __device__ void Baseset_path(CellBase *cell,
-                                                       int idx) {
-        return;
+     __noinline__ __host__ __device__ void Baseset_path(CellBase *cell, int idx) {
+        this->path[idx] = cell;
     }
     __noinline__ __host__ __device__ CellBase *Baseget_path(int idx) {
-        return nullptr;
+        return this->path[idx];
     }
+
     __noinline__ __host__ __device__ void Baseset_path_length(int len) {
-        return;
+        this->path_length = len;
     }
-    __noinline__ __host__ __device__ int Baseget_path_length() { return 0; }
-    __noinline__ __device__ int Baserandom_int(int a, int b) { return 0; }
-    __noinline__ __device__ float Baserandom_uni() { return 0; }
+    __noinline__ __host__ __device__ int Baseget_path_length() {
+        return this->path_length;
+    }
+    __noinline__ __device__ int Baserandom_int(int a, int b) {
+        return curand(&this->random_state) % (b - a) + a;
+    }
+    __noinline__ __device__ float Baserandom_uni() {
+        return curand_uniform(&this->random_state);
+    }
     __noinline__ __host__ __device__ void Basestep_initialize_iteration() {
-        return;
+        // Reset calculated path. This forces cars with a random moving behavior
+        // to select a new path in every iteration. Otherwise, cars might get
+        // "stuck" on a full network if many cars are waiting for the one in
+        // front of them in a cycle.
+        this->path_length = 0;
     }
-    __noinline__ __host__ __device__ int Baseget_velocity() { return 0; }
-    __noinline__ __host__ __device__ void Baseset_velocity(int v) { return; }
+    __noinline__ __host__ __device__ int Baseget_velocity() {
+        return this->velocity;
+    }
+    __noinline__ __host__ __device__ void Baseset_velocity(int v) {
+        this->velocity = v;
+    }
     __noinline__ __host__ __device__ void Baseset_max_velocity(int v) {
-        return;
+        this->max_velocity = v;
     }
-    __noinline__ __host__ __device__ int Baseget_max_velocity() { return 0; }
+
+    __noinline__ __host__ __device__ int Baseget_max_velocity() {
+        return this->max_velocity;
+    }
     __noinline__ __host__ __device__ void Baseset_position(CellBase *cell) {
-        return;
+        this->position = cell;
     }
+
     __noinline__ __host__ __device__ CellBase *Baseget_position() {
-        return nullptr;
+        return this->position;
     }
-    __noinline__ __device__ void Basestep_slow_down() { return; }
+    __noinline__ __device__ void Basestep_slow_down() {
+        // 20% change of slowdown.
+        if (curand_uniform(&this->random_state) < 0.2 && this->velocity > 0) {
+            this->velocity = this->velocity - 1;
+        }
+    }
     __noinline__ __device__ CellBase *Basenext_step(CellBase *position) {
-        return nullptr;
+        // Almost random walk.
+        const uint32_t num_outgoing = position->num_outgoing;
+        assert(num_outgoing > 0);
+
+        // Need some kind of return statement here.
+        return position->outgoing[this->random_int(0, num_outgoing)];
     }
-    __noinline__ __device__ void Basestep_accelerate() { return; }
+    __noinline__ __device__ void Basestep_accelerate() {
+        // Speed up the car by 1 or 2 units.
+
+        int speedup = curand(&this->random_state) % (2 - 0) + 0 + 1;
+        this->velocity = this->max_velocity < this->velocity + speedup
+                             ? this->max_velocity
+                             : this->velocity + speedup;
+    }
 
     ////////////////////////
 
@@ -322,19 +390,23 @@ class TrafficLightBase {
                                                       int phase_time_)
         : num_cells(num_cells_), timer(0), phase_time(phase_time_), phase(0) { classType = 0 ;}
 
-    __noinline__ __host__ __device__ void Baseset_cell(int idx,
-                                                       CellBase *cell) {
-        return;
+  __noinline__ __host__ __device__ void Baseset_cell(int idx, CellBase *cell) {
+        assert(cell != nullptr);
+        cells_[idx] = cell;
     }
     __noinline__ __host__ __device__ CellBase *Baseget_cell(int idx) {
-        return nullptr;
+        return cells_[idx];
     }
-    __noinline__ __host__ __device__ int Baseget_num_cells() { return 0; }
-    __noinline__ __host__ __device__ int Baseget_timer() { return 0; }
-    __noinline__ __host__ __device__ int Baseset_timer(int time) { return 0; }
-    __noinline__ __host__ __device__ int Baseget_phase_time() { return 0; }
-    __noinline__ __host__ __device__ void Baseset_phase(int ph) { return; }
-    __noinline__ __host__ __device__ int Baseget_phase() { return 0; }
+    __noinline__ __host__ __device__ int Baseget_num_cells() { return num_cells; }
+    __noinline__ __host__ __device__ int Baseget_timer() { return timer; }
+    __noinline__ __host__ __device__ int Baseset_timer(int time) {
+        return this->timer = time;
+    }
+    __noinline__ __host__ __device__ int Baseget_phase_time() { return phase_time; }
+    __noinline__ __host__ __device__ void Baseset_phase(int ph) {
+        this->phase = ph;
+    }
+    __noinline__ __host__ __device__ int Baseget_phase() { return this->phase; }
 
     __noinline__ __host__ __device__ void set_cell(int idx, CellBase *cell) {
         assert(cell != nullptr);

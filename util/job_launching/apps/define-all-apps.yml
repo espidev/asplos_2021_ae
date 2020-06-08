@@ -529,6 +529,41 @@ oop_mem:
         - RAY_MEM:
             - 512 512 100
 
+dynasoar:
+    exec_dir: "../../benchmarks/bin/$CUDA_VERSION/release/"
+    data_dirs: "../../benchmarks/data_dirs"
+    execs:
+        #- collision:
+        #    -
+        #- collision_MEM:
+        #    -
+        #- collision_CONCORD:
+        #    -
+        #        - generationV:
+        #            -
+        #        - generationV_MEM:
+        #            -
+        #        - generationV_CONCORD:
+        #            -
+        #        - structureV:
+        #            -
+        #        - structureV_MEM:
+        #            -
+        #        - structureV_CONCORD:
+        #            -
+        #        - trafficV:
+        #            -
+        #        - trafficV_MEM:
+        #            -
+        #        - trafficV_CONCORD:
+        #            -
+        - game-of-life:
+            - ./data/tm.pgm
+        - game-of-life_MEM:
+            - ./data/tm.pgm
+        - game-of-life_CONCORD:
+            - ./data/tm.pgm
+
 oop_coal:
     exec_dir: "../../benchmarks/bin/$CUDA_VERSION/release/"
     data_dirs: "../../benchmarks/data_dirs/oop-coal/"

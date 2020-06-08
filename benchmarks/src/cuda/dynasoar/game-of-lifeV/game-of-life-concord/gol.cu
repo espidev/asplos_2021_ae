@@ -383,7 +383,7 @@ int main(int argc, char **argv) {
     auto time_start = std::chrono::system_clock::now();
     printf("Checksum: %i\n", checksum());
     // Run simulation.
-    for (int i = 0; i < 300; ++i) {
+    for (int i = 0; i < kNumIterations; ++i) {
         candidate_prepare<<<1024, 1024>>>();
         gpuErrchk(cudaDeviceSynchronize());
 

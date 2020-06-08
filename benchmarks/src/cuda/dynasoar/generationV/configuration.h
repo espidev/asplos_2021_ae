@@ -15,7 +15,12 @@ extern dataset_t dataset;
 #define kSpawnNew  { false, false, false, true, true, false, true, false, true }
 
 
+#define PARAM_NUM_ITER 1
+#ifdef PARAM_NUM_ITER
+static const int kNumIterations = PARAM_NUM_ITER;
+#else
 static const int kNumIterations = 350;  // 1000
+#endif  // PARAM_NUM_ITER
 
 #ifndef PARAM_SIZE
 static const int kSize = 1024;  // 18000

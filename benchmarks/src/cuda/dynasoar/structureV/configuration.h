@@ -5,7 +5,12 @@
 // Note: DynaSOAr does not pay off with small problem sizes. Probably because
 // overheads due to kernel launch and pre-iteration bitmap scans dominate.
 
+#define PARAM_NUM_ITER 1
+#ifdef PARAM_NUM_ITER
+static const int kNumComputeIterations = PARAM_NUM_ITER;
+#else
 static const int kNumComputeIterations = 40;
+#endif  // PARAM_NUM_ITER
 static const int kMaxDegree = 5;
 static const float kDt = 0.2f;
 static const int kNumSteps = 10;

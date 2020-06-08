@@ -20,6 +20,7 @@ static const float kTimeInterval = 0.05f;
 static const float kDt = 0.05f;
 #endif  // PARAM_DELTA_T
 
+#define PARAM_NUM_ITER 1
 #ifdef PARAM_NUM_ITER
 static const int kIterations = PARAM_NUM_ITER;
 #else

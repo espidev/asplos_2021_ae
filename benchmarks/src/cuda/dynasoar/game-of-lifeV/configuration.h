@@ -7,7 +7,12 @@ using CellT = int;
 
 extern dataset_t dataset;
 
+#define PARAM_NUM_ITER 1
+#ifdef PARAM_NUM_ITER
+static const int kNumIterations = PARAM_NUM_ITER;
+#else
 static const int kNumIterations = 300;  // 10000
+#endif  // PARAM_NUM_ITER
 
 #ifndef PARAM_MAX_OBJ
 static const int kNumObjects = 64*64*64*64;

@@ -17,7 +17,7 @@ import common
 import re
 import datetime
 
-# We will look for the benchmarks 
+# We will look for the benchmarks
 parser = OptionParser()
 parser.add_option("-B", "--benchmark_list", dest="benchmark_list",
                  help="a comma seperated list of benchmark suites to run. See apps/define-*.yml for " +\
@@ -26,7 +26,7 @@ parser.add_option("-B", "--benchmark_list", dest="benchmark_list",
 parser.add_option("-D", "--device_num", dest="device_num",
                  help="CUDA device number",
                  default="0")
-parser.add_option("-n", "--norun", dest="norun", action="store_true", 
+parser.add_option("-n", "--norun", dest="norun", action="store_true",
                  help="Do not actually run the apps, just create the dir structure and launch files")
 
 (options, args) = parser.parse_args()
@@ -54,17 +54,19 @@ for bench in benchmarks:
         if not os.path.exists(this_run_dir):
             os.makedirs(this_run_dir)
 
+        print ddir
         # link the data directory
         if os.path.isdir(os.path.join(ddir, "data")):
             if os.path.lexists(os.path.join(this_run_dir, "data")):
                 os.remove(os.path.join(this_run_dir, "data"))
+            print os.path.join(ddir, "data")
             os.symlink(os.path.join(ddir, "data"), os.path.join(this_run_dir,"data"))
 
         if args == None:
             args = ""
 
         sh_contents = ""
-        
+
 	# first we generate the traces (.trace and kernelslist files)
 	# then, we do post-processing for the traces and generate (.traceg and kernelslist.g files)
 	# then, we delete the intermediate files ((.trace and kernelslist files files)

@@ -23,7 +23,7 @@ LIBS = -L$(NVIDIA_COMPUTE_SDK_LOCATION)/../4.2/C/lib -lcutil_x86_64 -lcudart
 OBJS = $(notdir $(CPPSRC:.cpp=.o))
 
 all: $(OBJS)
-	nvcc   $(NVOPTS) $(OPTS) $(CUOPTS) $(CUSRC)  $(INC) -o $(EXECUTABLE) $(LIBS) 
+	nvcc  $(NVOPTS) $(OPTS) $(CUOPTS) $(CUSRC)  $(INC) -o $(EXECUTABLE) $(LIBS) 
 	# cp generation.ptx_coal generation.ptx
 	# sh dryrun.sh
 	# rm -f *cpp* *fatbin* *cudafe*  *cubin* *.o *.module_id *dlink*

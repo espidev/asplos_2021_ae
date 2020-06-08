@@ -37,21 +37,22 @@ class AgentV {
   public:
     ALL AgentV(int cell_id, AgentType type_) { classType = 0; }
     ALL AgentV() { classType = 0; }
-    ALL bool BaseisAlive() { return true; }
-    ALL bool BaseisCandidate() { return true; }
-    ALL bool Baseis_new() { return true; }
-    ALL void Baseset_is_new(bool is_new) { return; }
-    ALL bool Baseis_state_equal(int state) { return true; }
-    ALL void Baseset_state(int state) { return; }
-    ALL void Baseinc_state() { return; }
-    ALL bool Baseis_state_in_range(int min, int max) { return true; }
 
-    ALL void Baseset_action(int action) { return; }
-    ALL int Baseget_action() { return 0; }
-    ALL int Basecell_id() { return  0; }
     __device__ __noinline__ void Baseupdate_checksum() {}
     ////////////////
-
+    ALL bool BaseisAlive() { return this->type == AgentType::isAlive; }
+    ALL bool BaseisCandidate() { return this->type == AgentType::isCandidate; }
+    ALL bool Baseis_new() { return is_new_; }
+    ALL void Baseset_is_new(bool is_new) { is_new_ = is_new; }
+    ALL bool Baseis_state_equal(int state) { return this->state_ == state; }
+    ALL void Baseset_state(int state) { this->state_ = state; }
+    ALL void Baseinc_state() { this->state_++; }
+    ALL bool Baseis_state_in_range(int min, int max) {
+        return this->state_ > min && this->state_ < max;
+    }
+    ALL void Baseset_action(int action) { this->action_ = action; }
+    ALL int   Baseget_action() { return this->action_; }
+    ALL int Basecell_id() { return this->cell_id_; }
     ALL bool isAlive() { return this->type == AgentType::isAlive; }
     ALL bool isCandidate() { return this->type == AgentType::isCandidate; }
     ALL bool is_new() { return is_new_; }
@@ -98,10 +99,12 @@ class CellV {
     int classType = 0;
     ALL CellV() { classType = 0; }
 
-    ALL AgentV *Baseagent() { return nullptr; }
-    ALL void Baseset_agent(int cid, AgentType type_) { return; }
-    ALL void Basedelete_agent() { return; }
-    ALL bool Baseis_empty() { return true; }
+    ALL AgentV *Baseagent() { return agent_; }
+    ALL void Baseset_agent(int cid, AgentType type_) {
+        this->agent_ = new (this->private_agent) Agent(cid, type_);
+    }
+    ALL void Basedelete_agent() { this->agent_ = nullptr; }
+    ALL bool Baseis_empty() { return agent_ == nullptr; }
 
     ALL AgentV *agent() { return agent_; }
     ALL void set_agent(int cid, AgentType type_) {

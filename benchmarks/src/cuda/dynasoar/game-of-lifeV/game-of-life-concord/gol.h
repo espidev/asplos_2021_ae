@@ -61,17 +61,30 @@ class AgentV {
         classType = 0;
     }
     __device__ __host__ __noinline__ AgentV() { classType = 0; }
-    __device__ __host__ __noinline__ bool BaseisAlive() { return true; }
-    __device__ __host__ __noinline__ bool BaseisCandidate() { return true; }
-    __device__ __host__ __noinline__ bool Baseis_new() { return true; }
-    __device__ __host__ __noinline__ void Baseset_is_new(bool is_new) {
-        return;
+     __device__ __host__ __noinline__ bool BaseisAlive() {
+        return this->type == AgentType::isAlive;
     }
-    __device__ __host__ __noinline__ void Baseset_action(int action) { return; }
-    __device__ __host__ __noinline__ int Baseget_action() { return 0; }
-    __device__ __host__ __noinline__ int Basecell_id() { return 0; }
-    __device__ __noinline__ void Baseupdate_checksum() { return; }
+    __device__ __host__ __noinline__ bool BaseisCandidate() {
+        return this->type == AgentType::isCandidate;
+    }
+    __device__ __host__ __noinline__ bool Baseis_new() { return is_new_; }
+    __device__ __host__ __noinline__ void Baseset_is_new(bool is_new) {
+        is_new_ = is_new;
+    }
 
+    __device__ __host__ __noinline__ void Baseset_action(int action) {
+        this->action_ = action;
+    }
+    __device__ __host__ __noinline__ int Baseget_action() { return this->action_; }
+    __device__ __host__ __noinline__ int Basecell_id() { return this->cell_id_; }
+#ifdef OPTION_RENDER
+    // Only for rendering.
+    __device__ __host__ __noinline__ void update_render_array();
+#endif  // OPTION_RENDER
+
+    // Only for checksum computation.
+    __device__ __noinline__ void Baseupdate_checksum(){}
+   
     __device__ __host__ __noinline__ bool isAlive() {
         return this->type == AgentType::isAlive;
     }
@@ -123,14 +136,18 @@ class CellV {
 
     __device__ __host__ __noinline__ CellV() {classType =0; }
 
-    __device__ __host__ __noinline__ AgentV *Baseagent() { return nullptr; }
-    __device__ __host__ __noinline__ void Baseset_agent(int cid,
-                                                        AgentType type_) {
-        return;
-    }
-    __device__ __host__ __noinline__ void Basedelete_agent() { return; }
-    __device__ __host__ __noinline__ bool Baseis_empty() { return true; }
 
+
+    __device__ __host__ __noinline__ AgentV *Baseagent() { return agent_; }
+    __device__ __host__ __noinline__ void Baseset_agent(int cid, AgentType type_) {
+        this->agent_ = new (this->private_agent) Agent(cid, type_);
+    }
+    __device__ __host__ __noinline__ void Basedelete_agent() {
+        this->agent_ = nullptr;
+    }
+    __device__ __host__ __noinline__ bool Baseis_empty() {
+        return agent_ == nullptr;
+    }
     __device__ __host__ __noinline__ AgentV *agent() { return agent_; }
     __device__ __host__ __noinline__ void set_agent(int cid, AgentType type_) {
         this->agent_ = new (this->private_agent) Agent(cid, type_);

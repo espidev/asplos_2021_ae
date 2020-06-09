@@ -198,7 +198,7 @@ void initContext(GraphChiContext *context, int vertices, int edges) {
   __managed__ range_tree_node *range_tree;
   __managed__ unsigned tree_size_g;
   __managed__ void *temp_copyBack;
-  __managed__ void *temp_PR;
+  __managed__ void *temp_coal;
   __global__ void PageRank_vptr(ChiVertex<float, float> **vertex,
 								GraphChiContext *context, int iteration) {
 	int tid = blockDim.x * blockIdx.x + threadIdx.x;
@@ -222,7 +222,7 @@ void initContext(GraphChiContext *context, int vertices, int edges) {
 		 
 		  inEdge = vertex[tid]->getInEdge(i);
 		  vtable2 = get_vfunc(inEdge, table, tree_size);
-		  temp_PR = vtable2[1];
+		  temp_coal = vtable2[1];
 		  sum += inEdge->getValue();
 		}
 
@@ -240,7 +240,7 @@ void initContext(GraphChiContext *context, int vertices, int edges) {
 		  
 		  outEdge = vertex[tid]->getOutEdge(i);
 		  vtable2 = get_vfunc(outEdge, table, tree_size);
-		  temp_PR = vtable2[2];
+		  temp_coal = vtable2[2];
 		  outEdge->setValue(outValue);
 		}
 	  }

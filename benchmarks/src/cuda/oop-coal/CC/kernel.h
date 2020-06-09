@@ -1,3 +1,61 @@
+/*
+__global__ void initContext(GraphChiContext* context, int vertices, int edges) {
+
+        context->setNumIterations(0);
+        context->setNumVertices(vertices);
+        context->setNumEdges(edges);
+
+}
+
+__global__ void initObject(ChiVertex<int, int> **vertex, GraphChiContext*
+context,
+        int* row, int* col, int* inrow, int* incol) {
+    int tid = blockDim.x * blockIdx.x + threadIdx.x;
+    if (tid < context->getNumVertices()) {
+        int out_start = row[tid];
+        int out_end;
+        if (tid + 1 < context->getNumVertices()) {
+            out_end = row[tid + 1];
+        } else {
+            out_end = context->getNumEdges();
+        }
+        int in_start = inrow[tid];
+        int in_end;
+        if (tid + 1 < context->getNumVertices()) {
+            in_end = inrow[tid + 1];
+        } else {
+            in_end = context->getNumEdges();
+        }
+        int indegree = in_end - in_start;
+        int outdegree = out_end - out_start;
+        vertex[tid] = new ChiVertex<int, int>(tid, indegree, outdegree);
+        for (int i = in_start; i < in_end; i++) {
+            vertex[tid]->setInEdge(i - in_start, incol[i], 0);
+        }
+        //for (int i = out_start; i < out_end; i++) {
+        //    vertex[tid]->setOutEdge(vertex, tid, i - out_start, col[i], 0.0f);
+        //}
+    }
+}
+
+__global__ void initOutEdge(ChiVertex<int, int> **vertex, GraphChiContext*
+context,
+        int* row, int* col) {
+    int tid = blockDim.x * blockIdx.x + threadIdx.x;
+    if (tid < context->getNumVertices()) {
+        int out_start = row[tid];
+        int out_end;
+        if (tid + 1 < context->getNumVertices()) {
+            out_end = row[tid + 1];
+        } else {
+            out_end = context->getNumEdges();
+        }
+        for (int i = out_start; i < out_end; i++) {
+            vertex[tid]->setOutEdge(vertex, tid, i - out_start, col[i], 0);
+        }
+    }
+}
+*/
 void initContext(GraphChiContext *context, int vertices, int edges) {
   // int tid = blockDim.x * blockIdx.x + threadIdx.x;
 
@@ -103,7 +161,6 @@ __global__ void part_kern0_initObject(ChiVertex<int, int> **vertex,
     } else {
       out_end = context->getNumEdges();
     }
-
     int in_start = inrow[tid];
     int in_end;
     if (tid + 1 < context->getNumVertices()) {
@@ -113,14 +170,17 @@ __global__ void part_kern0_initObject(ChiVertex<int, int> **vertex,
     }
     int indegree = in_end - in_start;
     int outdegree = out_end - out_start;
-
     new (vertex[tid]) ChiVertex<int, int>(tid, indegree, outdegree);
 
-    // vertex[tid].setValue(INT_MAX);
-    // for (int i = in_start; i < in_end; i++) {
-    //   vertex[tid].setInEdge(i - in_start, incol[i], INT_MAX);
-    // }
+    // for (int i = out_start; i < out_end; i++) {
+    //    vertex[tid]->setOutEdge(vertex, tid, i - out_start, col[i], 0.0f);
+    //}
   }
+
+  // vertex[tid].setValue(INT_MAX);
+  // for (int i = in_start; i < in_end; i++) {
+  //   vertex[tid].setInEdge(i - in_start, incol[i], INT_MAX);
+  // }
 }
 __global__ void part_kern1_initObject(ChiVertex<int, int> **vertex,
                                       GraphChiContext *context, int *row,
@@ -128,14 +188,13 @@ __global__ void part_kern1_initObject(ChiVertex<int, int> **vertex,
   int tid = blockDim.x * blockIdx.x + threadIdx.x;
 
   if (tid < context->getNumVertices()) {
-    // int out_start = row[tid];
-    // int out_end;
-    // if (tid + 1 < context->getNumVertices()) {
-    //   out_end = row[tid + 1];
-    // } else {
-    //   out_end = context->getNumEdges();
-    // }
 
+    int out_end;
+    if (tid + 1 < context->getNumVertices()) {
+      out_end = row[tid + 1];
+    } else {
+      out_end = context->getNumEdges();
+    }
     int in_start = inrow[tid];
     int in_end;
     if (tid + 1 < context->getNumVertices()) {
@@ -144,11 +203,13 @@ __global__ void part_kern1_initObject(ChiVertex<int, int> **vertex,
       in_end = context->getNumEdges();
     }
 
-    vertex[tid]->setValue(INT_MAX);
     for (int i = in_start; i < in_end; i++) {
-      vertex[tid]->setInEdge(i - in_start, incol[i], INT_MAX);
+      vertex[tid]->setInEdge(i - in_start, incol[i], 0);
     }
   }
+  // for (int i = out_start; i < out_end; i++) {
+  //    vertex[tid]->setOutEdge(vertex, tid, i - out_start, col[i], 0.0f);
+  //}
 }
 void initOutEdge(ChiVertex<int, int> **vertex, GraphChiContext *context,
                  int *row, int *col) {
@@ -164,7 +225,7 @@ void initOutEdge(ChiVertex<int, int> **vertex, GraphChiContext *context,
     }
 
     for (int i = out_start; i < out_end; i++) {
-      vertex[tid]->setOutEdge(vertex, tid, i - out_start, col[i], INT_MAX);
+      vertex[tid]->setOutEdge(vertex, tid, i - out_start, col[i], 0);
     }
   }
 }
@@ -215,108 +276,19 @@ __global__ void kern_initOutEdge(ChiVertex<int, int> **vertex,
     } else {
       out_end = context->getNumEdges();
     }
-    // int in_start = inrow[tid];
-    // int in_end;
-    // if (tid + 1 < context->getNumVertices()) {
-    //    in_end = inrow[tid + 1];
-    //} else {
-    //    in_end = context->getNumEdges();
-    //}
-    // int indegree = in_end - in_start;
-    // int outdegree = out_end - out_start;
-    // vertex[tid] = new ChiVertex<float, float>(tid, indegree, outdegree);
-    // for (int i = in_start; i < in_end; i++) {
-    //    vertex[tid]->setInEdge(i - in_start, incol[i], 0.0f);
-    //}
-
     for (int i = out_start; i < out_end; i++) {
-      vertex[tid]->setOutEdge(vertex, tid, i - out_start, col[i], INT_MAX);
+      vertex[tid]->setOutEdge(vertex, tid, i - out_start, col[i], 0);
     }
-  }
-}
-
-__managed__ __align__(16) char buf2[128];
-template <class myType> __global__ void vptrPatch(myType *array, int n) {
-
-  int tid = threadIdx.x + blockIdx.x * blockDim.x;
-  // printf("-----\n");
-  myType *obj;
-  obj = new (buf2) myType();
-  // void *p;
-  // p=(void *)0x111111111;
-  // memcpy(p, obj, sizeof(void *));
-  // printf("---%p--\n", p);
-  if (tid < n) {
-    memcpy(&array[tid], obj, sizeof(void *));
-    // printf("---%p--\n",p);
-  }
-}
-
-__global__ void vptrPatch_Edge(ChiVertex<int, int> *vertex, int n) {
-
-  int tid = threadIdx.x + blockIdx.x * blockDim.x;
-
-  Edge<int> *obj;
-  obj = new (buf2) Edge<int>();
-
-  if (tid < n)
-    if (tid == 0)
-      vertex[tid].vptrPatch(obj, 1);
-    else
-      vertex[tid].vptrPatch(obj, 1);
-}
-
-__global__ void BFS(ChiVertex<int, int> **vertex, GraphChiContext *context) {
-  int tid = blockDim.x * blockIdx.x + threadIdx.x;
-  if (tid < context->getNumVertices()) {
-    if (context->getNumIterations() == 0) {
-      if (tid == 0) {
-        vertex[tid]->setValue(0);
-        int numOutEdge;
-        numOutEdge = vertex[tid]->numOutEdges();
-        for (int i = 0; i < numOutEdge; i++) {
-          ChiEdge<int> *outEdge;
-          outEdge = vertex[tid]->getOutEdge(i);
-          outEdge->setValue(1);
-        }
-      }
-    } else {
-      int curmin;
-      curmin = vertex[tid]->getValue();
-      int numInEdge;
-      numInEdge = vertex[tid]->numInEdges();
-      for (int i = 0; i < numInEdge; i++) {
-        ChiEdge<int> *inEdge;
-        inEdge = vertex[tid]->getInEdge(i);
-        curmin = min(curmin, inEdge->getValue());
-      }
-      int vertValue;
-      vertValue = vertex[tid]->getValue();
-      if (curmin < vertValue) {
-        vertex[tid]->setValue(curmin);
-        int numOutEdge;
-        numOutEdge = vertex[tid]->numOutEdges();
-        for (int i = 0; i < numOutEdge; i++) {
-          ChiEdge<int> *outEdge;
-          outEdge = vertex[tid]->getOutEdge(i);
-          int edgeValue;
-          edgeValue = outEdge->getValue();
-          if (edgeValue > curmin + 1) {
-            outEdge->setValue(curmin + 1);
-          }
-        }
-      }
-    }
-    context->setNumIterations(context->getNumIterations() + 1);
   }
 }
 
 __managed__ range_tree_node *range_tree;
 __managed__ unsigned tree_size_g;
-__managed__ void *temp_copyBack;
-__managed__ void *temp_Bfs;
-__global__ void BFS_vptr(ChiVertex<int, int> **vertex, GraphChiContext *context,
-                         int iteration) {
+__managed__ void *temp_coal;
+
+__global__ void ConnectedComponent_vptr(ChiVertex<int, int> **vertex,
+                                        GraphChiContext *context,
+                                        int iteration) {
   int tid = blockDim.x * blockIdx.x + threadIdx.x;
   unsigned tree_size = tree_size_g;
   range_tree_node *table = range_tree;
@@ -335,113 +307,146 @@ __global__ void BFS_vptr(ChiVertex<int, int> **vertex, GraphChiContext *context,
 
   void **vtable2;
   if (tid < context->getNumVertices()) {
+
+    int numEdges;
+
+    numEdges = vertex[tid]->numEdges();
     if (iteration == 0) {
-      if (tid == 0) {
 
-        vertex[tid]->setValue(0);
-        int numOutEdge;
+      int vid = vertex[tid]->getId();
 
-        numOutEdge = vertex[tid]->numOutEdges();
-        for (int i = 0; i < numOutEdge; i++) {
-          ChiEdge<int> *outEdge;
+      vertex[tid]->setValue(vid);
+    }
+    int curMin;
 
-          outEdge = vertex[tid]->getOutEdge(i);
-          vtable2 = get_vfunc(outEdge, table, tree_size);
-          temp_Bfs = vtable2[2];
+    curMin = vertex[tid]->getValue();
+    for (int i = 0; i < numEdges; i++) {
+      ChiEdge<int> *edge;
 
-          outEdge->setValue(1);
+      edge = vertex[tid]->edge(i);
+      int nbLabel;
+      vtable2 = get_vfunc(edge, table, tree_size);
+      temp_coal = vtable2[1];
+      nbLabel = edge->getValue();
+      if (iteration == 0) {
+        vtable2 = get_vfunc(edge, table, tree_size);
+        temp_coal = vtable2[0];
+        nbLabel = edge->getVertexId(); // Note!
+      }
+      if (nbLabel < curMin) {
+        curMin = nbLabel;
+      }
+    }
+
+    /**
+     * Set my new label
+             */
+
+    vertex[tid]->setValue(curMin);
+    int label = curMin;
+
+    /**
+     * Broadcast my value to neighbors by writing the value to my edges.
+     */
+    if (iteration > 0) {
+      for (int i = 0; i < numEdges; i++) {
+        ChiEdge<int> *edge;
+
+        edge = vertex[tid]->edge(i);
+        int edgeValue;
+        vtable2 = get_vfunc(edge, table, tree_size);
+        temp_coal = vtable2[1];
+        edgeValue = edge->getValue();
+        if (edgeValue > label) {
+            vtable2 = get_vfunc(edge, table, tree_size);
+          temp_coal = vtable2[2];
+          
+          edge->setValue(label);
         }
       }
     } else {
-      int curmin;
+      // Special case for first iteration to avoid overwriting
+      int numOutEdge;
 
-      curmin = vertex[tid]->getValue();
-      int numInEdge;
+      numOutEdge = vertex[tid]->numOutEdges();
+      for (int i = 0; i < numOutEdge; i++) {
+        ChiEdge<int> *outEdge;
 
-      numInEdge = vertex[tid]->numInEdges();
-      for (int i = 0; i < numInEdge; i++) {
-        ChiEdge<int> *inEdge;
-
-        inEdge = vertex[tid]->getInEdge(i);
-        vtable2 = get_vfunc(inEdge, table, tree_size);
-        temp_Bfs = vtable2[1];
-        curmin = min(curmin, inEdge->getValue());
-      }
-      int vertValue;
-
-      vertValue = vertex[tid]->getValue();
-      if (curmin < vertValue) {
-
-        vertex[tid]->setValue(curmin);
-        int numOutEdge;
-
-        numOutEdge = vertex[tid]->numOutEdges();
-        for (int i = 0; i < numOutEdge; i++) {
-          ChiEdge<int> *outEdge;
-
-          outEdge = vertex[tid]->getOutEdge(i);
-          int edgeValue;
-          vtable2 = get_vfunc(outEdge, table, tree_size);
-          temp_Bfs = vtable2[1];
-          edgeValue = outEdge->getValue();
-          if (edgeValue > curmin + 1) {
-            temp_Bfs = vtable2[2];
-            outEdge->setValue(curmin + 1);
-          }
-        }
+        outEdge = vertex[tid]->getOutEdge(i);
+        vtable2 = get_vfunc(outEdge, table, tree_size);
+        temp_coal = vtable2[2];
+        outEdge->setValue(label);
       }
     }
   }
 }
-__global__ void BFS(ChiVertex<int, int> **vertex, GraphChiContext *context,
-                    int iteration) {
+
+__global__ void ConnectedComponent(ChiVertex<int, int> **vertex,
+                                   GraphChiContext *context, int iteration) {
   int tid = blockDim.x * blockIdx.x + threadIdx.x;
   if (tid < context->getNumVertices()) {
+
+    int numEdges;
+    numEdges = vertex[tid]->numEdges();
     if (iteration == 0) {
-      if (tid == 0) {
-        vertex[tid]->setValue(0);
-        int numOutEdge;
-        numOutEdge = vertex[tid]->numOutEdges();
-        for (int i = 0; i < numOutEdge; i++) {
-          ChiEdge<int> *outEdge;
-          outEdge = vertex[tid]->getOutEdge(i);
-          outEdge->setValue(1);
+      int vid = vertex[tid]->getId();
+      vertex[tid]->setValue(vid);
+    }
+    int curMin;
+    curMin = vertex[tid]->getValue();
+    for (int i = 0; i < numEdges; i++) {
+      ChiEdge<int> *edge;
+      edge = vertex[tid]->edge(i);
+      int nbLabel;
+      nbLabel = edge->getValue();
+      if (iteration == 0) {
+        nbLabel = edge->getVertexId(); // Note!
+      }
+      if (nbLabel < curMin) {
+        curMin = nbLabel;
+      }
+    }
+
+    /**
+     * Set my new label
+     */
+    vertex[tid]->setValue(curMin);
+    int label = curMin;
+
+    /**
+     * Broadcast my value to neighbors by writing the value to my edges.
+     */
+    if (iteration > 0) {
+      for (int i = 0; i < numEdges; i++) {
+        ChiEdge<int> *edge;
+        edge = vertex[tid]->edge(i);
+        int edgeValue;
+        edgeValue = edge->getValue();
+        if (edgeValue > label) {
+          edge->setValue(label);
         }
       }
     } else {
-      int curmin;
-      curmin = vertex[tid]->getValue();
-      int numInEdge;
-      numInEdge = vertex[tid]->numInEdges();
-      for (int i = 0; i < numInEdge; i++) {
-        ChiEdge<int> *inEdge;
-        inEdge = vertex[tid]->getInEdge(i);
-        curmin = min(curmin, inEdge->getValue());
-      }
-      int vertValue;
-      vertValue = vertex[tid]->getValue();
-      if (curmin < vertValue) {
-        vertex[tid]->setValue(curmin);
-        int numOutEdge;
-        numOutEdge = vertex[tid]->numOutEdges();
-        for (int i = 0; i < numOutEdge; i++) {
-          ChiEdge<int> *outEdge;
-          outEdge = vertex[tid]->getOutEdge(i);
-          int edgeValue;
-          edgeValue = outEdge->getValue();
-          if (edgeValue > curmin + 1) {
-            outEdge->setValue(curmin + 1);
-          }
-        }
+      // Special case for first iteration to avoid overwriting
+      int numOutEdge;
+      numOutEdge = vertex[tid]->numOutEdges();
+      for (int i = 0; i < numOutEdge; i++) {
+        ChiEdge<int> *outEdge;
+        outEdge = vertex[tid]->getOutEdge(i);
+        outEdge->setValue(label);
       }
     }
   }
 }
 
 __global__ void copyBack(ChiVertex<int, int> **vertex, GraphChiContext *context,
-                         int *index) {
+                         int *cc) {
   int tid = blockDim.x * blockIdx.x + threadIdx.x;
+  unsigned tree_size = tree_size_g;
+  void **vtable;
+  range_tree_node *table = range_tree;
   if (tid < context->getNumVertices()) {
-    index[tid] = vertex[tid]->getValue();
+  
+    cc[tid] = vertex[tid]->getValue();
   }
 }

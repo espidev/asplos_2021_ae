@@ -85,7 +85,7 @@ under  *
 #include "../graph_parser/parse.h"
 #include "parse_oo.h"
 #include "../graph_parser/util.h"
-#include "kernel.cu"
+#include "kernel.h"
 
 __managed__ GraphChiContext *context_zz;
 // Iteration count

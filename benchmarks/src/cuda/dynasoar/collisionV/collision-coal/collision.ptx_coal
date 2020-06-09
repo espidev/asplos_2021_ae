@@ -194,11 +194,11 @@
 .global .align 8 .u64 _ZTV4Body[30] = {0, 0, _ZN4Body8initBodyEi, _ZN4Body15computeDistanceEP8BodyType, _ZN4Body12computeForceEP8BodyTypef, _ZN4Body10updateVelXEv, _ZN4Body10updateVelYEv, _ZN4Body10updatePosXEv, _ZN4Body10updatePosYEv, _ZN4Body4VelXEv, _ZN4Body4VelYEv, _ZN4Body4PosXEv, _ZN4Body4PosYEv, _ZN4Body8set_VelXEf, _ZN4Body8set_VelYEf, _ZN4Body8set_PosXEf, _ZN4Body8set_PosYEf, _ZN4Body9initForceEv, _ZN4Body12updateForceXEP8BodyTypef, _ZN4Body12updateForceYEP8BodyTypef, _ZN4Body6activeEv, _ZN4Body10set_activeEb, _ZN4Body8get_massEv, _ZN4Body8set_massEf, _ZN4Body18get_incoming_mergeEv, _ZN4Body23get_is_successful_mergeEv, _ZN4Body16get_merge_targetEv, _ZN4Body18set_incoming_mergeEb, _ZN4Body23set_is_successful_mergeEb, _ZN4Body16set_merge_targetEi};
 .global .attribute(.managed) .align 8 .u64 d_bodies;
 .global .align 4 .u32 r_draw_counter;
-.global .align 4 .b8 r_Body_pos_x[160000];
-.global .align 4 .b8 r_Body_pos_y[160000];
-.global .align 4 .b8 r_Body_vel_x[160000];
-.global .align 4 .b8 r_Body_vel_y[160000];
-.global .align 4 .b8 r_Body_mass[160000];
+.global .align 4 .b8 r_Body_pos_x[40000];
+.global .align 4 .b8 r_Body_pos_y[40000];
+.global .align 4 .b8 r_Body_vel_x[40000];
+.global .align 4 .b8 r_Body_vel_y[40000];
+.global .align 4 .b8 r_Body_mass[40000];
 
 .func _ZN4Body8initBodyEi(
 	.param .b64 _ZN4Body8initBodyEi_param_0,
@@ -4286,7 +4286,7 @@ BB29_200:
 	@%p108 bra 	BB29_60;
 
 BB29_201:
-	setp.gt.s32	%p109, %r2520, 39999;
+	setp.gt.s32	%p109, %r2520, 9999;
 	@%p109 bra 	BB29_204;
 
 	mov.u32 	%r1996, %ntid.x;
@@ -4407,7 +4407,7 @@ BB29_203:
 	mov.u16 	%rs1, 1;
 	st.global.u8 	[%rd99+42], %rs1;
 	add.s32 	%r2520, %r990, %r2520;
-	setp.lt.s32	%p110, %r2520, 40000;
+	setp.lt.s32	%p110, %r2520, 10000;
 	@%p110 bra 	BB29_203;
 
 BB29_204:
@@ -4443,7 +4443,7 @@ BB29_204:
 	mov.u32 	%r13, %ctaid.x;
 	mov.u32 	%r1, %ntid.x;
 	mad.lo.s32 	%r22, %r13, %r1, %r12;
-	setp.gt.s32	%p1, %r22, 39999;
+	setp.gt.s32	%p1, %r22, 9999;
 	@%p1 bra 	BB31_7;
 
 	mov.u32 	%r14, %nctaid.x;
@@ -4549,7 +4549,7 @@ BB31_4:
 BB31_6:
 	cvt.u32.u64	%r21, %rd1;
 	add.s32 	%r22, %r3, %r21;
-	setp.lt.s32	%p8, %r22, 40000;
+	setp.lt.s32	%p8, %r22, 10000;
 	@%p8 bra 	BB31_2;
 
 BB31_7:
@@ -4572,7 +4572,7 @@ BB31_7:
 	mov.u32 	%r49, %ctaid.x;
 	mov.u32 	%r50, %ntid.x;
 	mad.lo.s32 	%r86, %r49, %r50, %r48;
-	setp.gt.s32	%p1, %r86, 39999;
+	setp.gt.s32	%p1, %r86, 9999;
 	@%p1 bra 	BB32_21;
 
 BB32_1:
@@ -5015,13 +5015,13 @@ BB32_18:
 BB32_19:
 	cvt.u32.u64	%r83, %rd12;
 	add.s32 	%r91, %r83, 1;
-	setp.lt.s32	%p41, %r91, 40000;
+	setp.lt.s32	%p41, %r91, 10000;
 	@%p41 bra 	BB32_7;
 
 BB32_20:
 	mov.u32 	%r84, %nctaid.x;
 	mad.lo.s32 	%r86, %r84, %r50, %r86;
-	setp.lt.s32	%p42, %r86, 40000;
+	setp.lt.s32	%p42, %r86, 10000;
 	@%p42 bra 	BB32_1;
 
 BB32_21:
@@ -5044,7 +5044,7 @@ BB32_21:
 	mov.u32 	%r71, %ctaid.x;
 	mov.u32 	%r72, %ntid.x;
 	mad.lo.s32 	%r121, %r71, %r72, %r70;
-	setp.gt.s32	%p1, %r121, 39999;
+	setp.gt.s32	%p1, %r121, 9999;
 	@%p1 bra 	BB33_29;
 
 BB33_1:
@@ -5659,7 +5659,7 @@ BB33_28:
 	cvt.u32.u64	%r118, %rd1;
 	mov.u32 	%r120, %nctaid.x;
 	mad.lo.s32 	%r121, %r120, %r72, %r118;
-	setp.lt.s32	%p64, %r121, 40000;
+	setp.lt.s32	%p64, %r121, 10000;
 	@%p64 bra 	BB33_1;
 
 BB33_29:
@@ -5681,7 +5681,7 @@ BB33_29:
 	mov.u32 	%r31, %ctaid.x;
 	mov.u32 	%r1, %ntid.x;
 	mad.lo.s32 	%r54, %r31, %r1, %r30;
-	setp.gt.s32	%p1, %r54, 39999;
+	setp.gt.s32	%p1, %r54, 9999;
 	@%p1 bra 	BB34_13;
 
 	mov.u32 	%r32, %nctaid.x;
@@ -5925,7 +5925,7 @@ BB34_11:
 BB34_12:
 	cvt.u32.u64	%r53, %rd1;
 	add.s32 	%r54, %r3, %r53;
-	setp.lt.s32	%p23, %r54, 40000;
+	setp.lt.s32	%p23, %r54, 10000;
 	@%p23 bra 	BB34_2;
 
 BB34_13:
@@ -5948,7 +5948,7 @@ BB34_13:
 	mov.u32 	%r55, %ctaid.x;
 	mov.u32 	%r56, %ntid.x;
 	mad.lo.s32 	%r98, %r55, %r56, %r54;
-	setp.gt.s32	%p1, %r98, 39999;
+	setp.gt.s32	%p1, %r98, 9999;
 	@%p1 bra 	BB35_24;
 
 BB35_1:
@@ -6440,13 +6440,13 @@ BB35_21:
 BB35_22:
 	cvt.u32.u64	%r95, %rd7;
 	add.s32 	%r101, %r95, 1;
-	setp.lt.s32	%p48, %r101, 40000;
+	setp.lt.s32	%p48, %r101, 10000;
 	@%p48 bra 	BB35_4;
 
 BB35_23:
 	mov.u32 	%r96, %nctaid.x;
 	mad.lo.s32 	%r98, %r96, %r56, %r98;
-	setp.lt.s32	%p49, %r98, 40000;
+	setp.lt.s32	%p49, %r98, 10000;
 	@%p49 bra 	BB35_1;
 
 BB35_24:
@@ -6469,7 +6469,7 @@ BB35_24:
 	mov.u32 	%r119, %ctaid.x;
 	mov.u32 	%r120, %ntid.x;
 	mad.lo.s32 	%r204, %r119, %r120, %r118;
-	setp.gt.s32	%p1, %r204, 39999;
+	setp.gt.s32	%p1, %r204, 9999;
 	@%p1 bra 	BB36_44;
 
 BB36_1:
@@ -7529,7 +7529,7 @@ BB36_43:
 	cvt.u32.u64	%r201, %rd1;
 	mov.u32 	%r203, %nctaid.x;
 	mad.lo.s32 	%r204, %r203, %r120, %r201;
-	setp.lt.s32	%p100, %r204, 40000;
+	setp.lt.s32	%p100, %r204, 10000;
 	@%p100 bra 	BB36_1;
 
 BB36_44:
@@ -7551,7 +7551,7 @@ BB36_44:
 	mov.u32 	%r25, %ctaid.x;
 	mov.u32 	%r1, %ntid.x;
 	mad.lo.s32 	%r43, %r25, %r1, %r24;
-	setp.gt.s32	%p1, %r43, 39999;
+	setp.gt.s32	%p1, %r43, 9999;
 	@%p1 bra 	BB37_12;
 
 	mov.u32 	%r26, %nctaid.x;
@@ -7749,7 +7749,7 @@ BB37_10:
 BB37_11:
 	cvt.u32.u64	%r42, %rd1;
 	add.s32 	%r43, %r3, %r42;
-	setp.lt.s32	%p19, %r43, 40000;
+	setp.lt.s32	%p19, %r43, 10000;
 	@%p19 bra 	BB37_2;
 
 BB37_12:

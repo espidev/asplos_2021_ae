@@ -180,7 +180,7 @@ __global__ void initObject_kern(Object **objList, float *A, int n) {
 __managed__ range_tree_node *range_tree;
 __managed__ unsigned tree_size_g;
 
-__managed__ void *temp_render;
+__managed__ void *temp_coal;
 __device__ bool notShadowRay(Object **__restrict__ objList, float3 A, float3 u,
                              int NUM) {
   float t(0.0f);
@@ -216,7 +216,7 @@ __device__ bool notShadowRay_vptr(Object **__restrict__ objList, float3 A,
   for (int j = 0; j < NUM && !t; j++) {
      ptr=objList[j];
     // vtable = get_vfunc(ptr, table, tree_size);
-    // temp_render = vtable[0];
+    // temp_coal = vtable[0];
     t = ptr->intersection(ray);
     if (t > 0.0f && dot(tmp = (A + u * t), tmp) > dst) {
       t = 0.0f;
@@ -275,7 +275,7 @@ __global__ void render_vptr(uint *result, Object **__restrict__ objList,
         float t;
          ptr=objList[j];
         //  vtable = get_vfunc(ptr, table, tree_size);
-        //  temp_render = vtable[0];
+        //  temp_coal = vtable[0];
         t = ptr->intersection(R);
         if (t > 0.0f && t < prof) {
           prof = t;
@@ -293,7 +293,7 @@ __global__ void render_vptr(uint *result, Object **__restrict__ objList,
             V(normalize(R.A - P));
             ptr=objList[Obj];
         vtable = get_vfunc(ptr, table, tree_size);
-        temp_render = vtable[1];
+        temp_coal = vtable[1];
         float3 N(ptr->getNormale(P));
         float3 Np(dot(V, N) < 0.0f ? (-1 * N) : N);
         pile[i] = 0.05f * color;

@@ -26,7 +26,7 @@ all: $(OBJS)
 	nvcc --keep   $(NVOPTS) $(OPTS) $(CUOPTS) $(CUSRC) *.o $(INC) -o $(EXECUTABLE) $(LIBS) 
 	$(PTX_GEN)/generator.py structure.ptx
 	cp structure.ptx_coal structure.ptx
-	sh dryrun.sh
+	sh dryrun_10.1.sh
 	rm -f *cpp* *fatbin* *cudafe*  *cubin* *.o *.module_id *dlink*
 
 $(OBJS):

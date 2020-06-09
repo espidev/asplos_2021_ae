@@ -27,8 +27,8 @@ OBJS = $(notdir $(CPPSRC:.cpp=.o))
 all: $(OBJS)
 	nvcc  --keep   $(NVOPTS) $(OPTS) $(CUOPTS) $(CUSRC)  $(INC) -o $(EXECUTABLE) $(LIBS) 
 	$(PTX_GEN)/generator.py collision.ptx
-	cp collision.ptx_coal collision.ptx
-	sh dryrun.sh
+	 cp collision.ptx_coal collision.ptx
+	sh dryrun_10.1.sh
 	rm -f *cpp* *fatbin* *cudafe*  *cubin* *.o *.module_id *dlink*
 
 $(OBJS):

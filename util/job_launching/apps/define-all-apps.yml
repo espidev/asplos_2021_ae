@@ -445,8 +445,6 @@ oop:
             - ./data/coAuthorsDBLP.graph 1
         - RAY:
             - 512 512 100
-        - oop_ubench:
-            - 10000 128 1 1
 
 oop_mem:
     exec_dir: "../../benchmarks/bin/$CUDA_VERSION/release/"
@@ -504,8 +502,6 @@ oop_trace:
             - ./data/coAuthorsDBLP.graph 1
         - RAY:
             - 512 512 100
-        - oop_ubench:
-            - 10000 128 1 1
 
 dragon-cdp:
     exec_dir: "../../benchmarks/src/cuda/dragon_li/cdp_bin/$CUDA_VERSION/"

@@ -24,10 +24,10 @@ LIBS = -L$(NVIDIA_COMPUTE_SDK_LOCATION)/../4.2/C/lib -lcutil_x86_64 -lcudart
 OBJS = $(notdir $(CPPSRC:.cpp=.o))
 
 all: $(OBJS)
-	nvcc --keep  $(NVOPTS) $(OPTS) $(CUOPTS) $(CUSRC)  $(INC) -o $(EXECUTABLE) $(LIBS) 
+	nvcc --keep  $(NVOPTS) $(OPTS) $(CUOPTS) $(CUSRC)  $(INC) -o $(EXECUTABLE) $(LIBS)  
 	$(PTX_GEN)/generator.py nbody.ptx
 	cp nbody.ptx_coal nbody.ptx
-	sh dryrun.sh
+	sh dryrun_10.1.sh
 	rm -f *cpp* *fatbin* *cudafe*  *cubin* *.o *.module_id *dlink*
 
 $(OBJS):

@@ -353,15 +353,32 @@ csr_array *parseCOO(char* tmpchar, int *p_num_nodes, int *p_num_edges, bool dire
 
     row_array[row_cnt] = idx;
 
-    fclose(fptr);
-    free(tuple_array);
-
     csr_array *csr = (csr_array *)malloc(sizeof(csr_array));
     memset(csr, 0, sizeof(csr_array));
     csr->row_array = row_array;
     csr->col_array = col_array;
     csr->data_array = data_array;
 
+    std::stable_sort(tuple_array, tuple_array + num_edges, doColCompare);
+    int *inrow_array = (int *)malloc((num_nodes + 1) * sizeof(int));
+    int *incol_array = (int *)malloc(num_edges * sizeof(int));
+    row_cnt = 0;
+    prev = -1;
+    for (idx = 0; idx < num_edges; idx++) {
+        int curr = tuple_array[idx].col;
+        if (curr != prev) {
+            inrow_array[row_cnt++] = idx;
+            prev = curr;
+        }
+        incol_array[idx] = tuple_array[idx].row;
+    }
+    inrow_array[row_cnt] = idx;
+
+    csr->inrow_array = inrow_array;
+    csr->incol_array = incol_array;
+
+    fclose(fptr);
+    free(tuple_array);
     return csr;
 
 }

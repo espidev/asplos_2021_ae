@@ -253,9 +253,9 @@ void nvbit_at_function_first_load(CUcontext ctx, CUfunction f) {
 			cnt++;
 			continue;
 		}
-		//if (verbose) {
+		if (verbose) {
 		instr->printDecoded();
-		//}
+		}
 
 		if (opcode_to_id_map.find(instr->getOpcode()) ==
 				opcode_to_id_map.end()) {

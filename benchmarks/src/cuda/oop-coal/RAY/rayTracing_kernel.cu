@@ -207,15 +207,17 @@ __device__ bool notShadowRay_vptr(Object **__restrict__ objList, float3 A,
   unsigned tree_size = tree_size_g;
 
   void **vtable;
+  Object *ptr;
 
   float3 L(make_float3(10.0f, 10.0f, 10.0f)), tmp;
   float dst(dot(tmp = (L - A), tmp));
   ray.A = A + u * 0.0001f;
   ray.u = u;
   for (int j = 0; j < NUM && !t; j++) {
-    vtable = get_vfunc(objList[j], table, tree_size);
-    temp_render = vtable[0];
-    t = objList[j]->intersection(ray);
+     ptr=objList[j];
+    // vtable = get_vfunc(ptr, table, tree_size);
+    // temp_render = vtable[0];
+    t = ptr->intersection(ray);
     if (t > 0.0f && dot(tmp = (A + u * t), tmp) > dst) {
       t = 0.0f;
     }
@@ -229,17 +231,18 @@ __global__ void render_vptr(uint *result, Object **__restrict__ objList,
   uint y = __umul24(blockIdx.y, blockDim.y) + threadIdx.y;
   uint tid(__umul24(threadIdx.y, blockDim.x) + threadIdx.x);
   unsigned tree_size = tree_size_g;
-  //range_tree_node *table = range_tree;
+  range_tree_node *table = range_tree;
   void **vtable;
-  __shared__ range_tree_node table[3];
-   if (threadIdx.x < tree_size && threadIdx.y==0) {
+  Object *ptr;
+  // __shared__ range_tree_node table[3];
+  //  if (threadIdx.x < tree_size && threadIdx.y==0) {
 
-    //for (int i = 0; i < tree_size; i++) {
-      //printf("%d\n",threadIdx.x);
-      memcpy(&table[threadIdx.x], &range_tree[threadIdx.x], sizeof(range_tree_node));
-      // if(tid==0)
-      // printf("%p %p \n",table[i].range_start,table[i].range_end);
-    }
+  //   //for (int i = 0; i < tree_size; i++) {
+  //     //printf("%d\n",threadIdx.x);
+  //     memcpy(&table[threadIdx.x], &range_tree[threadIdx.x], sizeof(range_tree_node));
+  //     // if(tid==0)
+  //     // printf("%p %p \n",table[i].range_start,table[i].range_end);
+  //   }
    
 
 
@@ -270,9 +273,10 @@ __global__ void render_vptr(uint *result, Object **__restrict__ objList,
 
       for (int j = 0; j < NUM; j++) {
         float t;
-        // vtable = get_vfunc(objList[j], table, tree_size);
-        // temp_render = vtable[0];
-        t = objList[j]->intersection(R);
+         ptr=objList[j];
+        //  vtable = get_vfunc(ptr, table, tree_size);
+        //  temp_render = vtable[0];
+        t = ptr->intersection(R);
         if (t > 0.0f && t < prof) {
           prof = t;
           Obj = j;
@@ -287,9 +291,10 @@ __global__ void render_vptr(uint *result, Object **__restrict__ objList,
         float3 P(R.A + R.u * t),
             L(normalize(make_float3(10.0f, 10.0f, 10.0f) - P)),
             V(normalize(R.A - P));
-        vtable = get_vfunc(objList[Obj], table, tree_size);
+            ptr=objList[Obj];
+        vtable = get_vfunc(ptr, table, tree_size);
         temp_render = vtable[1];
-        float3 N(objList[Obj]->getNormale(P));
+        float3 N(ptr->getNormale(P));
         float3 Np(dot(V, N) < 0.0f ? (-1 * N) : N);
         pile[i] = 0.05f * color;
         if (dot(Np, L) > 0.0f && notShadowRay_vptr(objList, P, L, NUM,table)) {

@@ -1,3 +1,4 @@
+// clang-format off
 /************************************************************************************\ 
  *                                                                                  *
  * Copyright � 2014 Advanced Micro Devices, Inc.                                    *
@@ -54,6 +55,7 @@
  * website at http://www.bis.doc.gov/.                                              *
  *                                                                                  *
 \************************************************************************************/
+// clang-format on
 
 #include <cuda.h>
 #include <stdio.h>
@@ -61,7 +63,6 @@
 #include <string.h>
 #include <sys/time.h>
 #include "../graph_parser/parse.h"
-#include "parse_oo.h"
 #include "../graph_parser/util.h"
 #include "kernel.cu"
 
@@ -70,8 +71,7 @@
 
 void print_vectorf(float *vector, int num);
 
-int main(int argc, char **argv)
-{
+int main(int argc, char **argv) {
     char *tmpchar;
 
     int num_nodes;
@@ -82,8 +82,8 @@ int main(int argc, char **argv)
     cudaError_t err = cudaSuccess;
 
     if (argc == 3) {
-        tmpchar = argv[1]; // Graph inputfile
-        file_format = atoi(argv[2]); // File format
+        tmpchar = argv[1];            // Graph inputfile
+        file_format = atoi(argv[2]);  // File format
     } else {
         fprintf(stderr, "You did something wrong!\n");
         exit(1);
@@ -123,60 +123,73 @@ int main(int argc, char **argv)
     // Create device-side buffers for the graph
     err = cudaMalloc(&row_d, num_nodes * sizeof(int));
     if (err != cudaSuccess) {
-        fprintf(stderr, "ERROR: cudaMalloc row_d (size:%d) => %s\n",  num_nodes, cudaGetErrorString(err));
+        fprintf(stderr, "ERROR: cudaMalloc row_d (size:%d) => %s\n", num_nodes,
+                cudaGetErrorString(err));
         return -1;
     }
     err = cudaMalloc(&col_d, num_edges * sizeof(int));
     if (err != cudaSuccess) {
-        fprintf(stderr, "ERROR: cudaMalloc col_d (size:%d) => %s\n",  num_edges, cudaGetErrorString(err));
+        fprintf(stderr, "ERROR: cudaMalloc col_d (size:%d) => %s\n", num_edges,
+                cudaGetErrorString(err));
         return -1;
     }
     err = cudaMalloc(&inrow_d, num_nodes * sizeof(int));
     if (err != cudaSuccess) {
-        fprintf(stderr, "ERROR: cudaMalloc inrow_d (size:%d) => %s\n",  num_nodes, cudaGetErrorString(err));
+        fprintf(stderr, "ERROR: cudaMalloc inrow_d (size:%d) => %s\n",
+                num_nodes, cudaGetErrorString(err));
         return -1;
     }
     err = cudaMalloc(&incol_d, num_edges * sizeof(int));
     if (err != cudaSuccess) {
-        fprintf(stderr, "ERROR: cudaMalloc incol_d (size:%d) => %s\n",  num_edges, cudaGetErrorString(err));
+        fprintf(stderr, "ERROR: cudaMalloc incol_d (size:%d) => %s\n",
+                num_edges, cudaGetErrorString(err));
         return -1;
     }
 
     // Create buffers for pagerank
     err = cudaMalloc(&pagerank_d, num_nodes * sizeof(float));
     if (err != cudaSuccess) {
-        fprintf(stderr, "ERROR: cudaMalloc pagerank_d (size:%d) => %s\n", num_nodes, cudaGetErrorString(err));
+        fprintf(stderr, "ERROR: cudaMalloc pagerank_d (size:%d) => %s\n",
+                num_nodes, cudaGetErrorString(err));
         return -1;
     }
 
     double timer1 = gettime();
 
     // Copy the data to the device-side buffers
-    err = cudaMemcpy(row_d, csr->row_array, num_nodes * sizeof(int), cudaMemcpyHostToDevice);
+    err = cudaMemcpy(row_d, csr->row_array, num_nodes * sizeof(int),
+                     cudaMemcpyHostToDevice);
     if (err != cudaSuccess) {
-        fprintf(stderr, "ERROR:#endif cudaMemcpy row_d (size:%d) => %s\n", num_nodes, cudaGetErrorString(err));
+        fprintf(stderr, "ERROR:#endif cudaMemcpy row_d (size:%d) => %s\n",
+                num_nodes, cudaGetErrorString(err));
         return -1;
     }
 
-    err = cudaMemcpy(col_d, csr->col_array, num_edges * sizeof(int), cudaMemcpyHostToDevice);
+    err = cudaMemcpy(col_d, csr->col_array, num_edges * sizeof(int),
+                     cudaMemcpyHostToDevice);
     if (err != cudaSuccess) {
-        fprintf(stderr, "ERROR: cudaMemcpy col_d (size:%d) => %s\n", num_nodes, cudaGetErrorString(err));
+        fprintf(stderr, "ERROR: cudaMemcpy col_d (size:%d) => %s\n", num_nodes,
+                cudaGetErrorString(err));
         return -1;
     }
-    err = cudaMemcpy(inrow_d, csr->inrow_array, num_nodes * sizeof(int), cudaMemcpyHostToDevice);
+    err = cudaMemcpy(inrow_d, csr->inrow_array, num_nodes * sizeof(int),
+                     cudaMemcpyHostToDevice);
     if (err != cudaSuccess) {
-        fprintf(stderr, "ERROR:#endif cudaMemcpy inrow_d (size:%d) => %s\n", num_nodes, cudaGetErrorString(err));
+        fprintf(stderr, "ERROR:#endif cudaMemcpy inrow_d (size:%d) => %s\n",
+                num_nodes, cudaGetErrorString(err));
         return -1;
     }
 
-    err = cudaMemcpy(incol_d, csr->incol_array, num_edges * sizeof(int), cudaMemcpyHostToDevice);
+    err = cudaMemcpy(incol_d, csr->incol_array, num_edges * sizeof(int),
+                     cudaMemcpyHostToDevice);
     if (err != cudaSuccess) {
-        fprintf(stderr, "ERROR: cudaMemcpy incol_d (size:%d) => %s\n", num_nodes, cudaGetErrorString(err));
+        fprintf(stderr, "ERROR: cudaMemcpy incol_d (size:%d) => %s\n",
+                num_nodes, cudaGetErrorString(err));
         return -1;
     }
 
     // Set up work dimensions
-    int block_size  = 256;
+    int block_size = 256;
     int num_blocks = (num_nodes + block_size - 1) / block_size;
 
     dim3 threads(block_size, 1, 1);
@@ -186,15 +199,17 @@ int main(int argc, char **argv)
     double timer3 = gettime();
 
     ChiVertex<float, float> **vertex;
-    GraphChiContext* context;
-    err = cudaMalloc(&vertex, num_nodes * sizeof(ChiVertex<float, float>*));
+    GraphChiContext *context;
+    err = cudaMalloc(&vertex, num_nodes * sizeof(ChiVertex<float, float> *));
     if (err != cudaSuccess) {
-        fprintf(stderr, "ERROR: cudaMalloc vertex (size:%d) => %s\n",  num_edges, cudaGetErrorString(err));
+        fprintf(stderr, "ERROR: cudaMalloc vertex (size:%d) => %s\n", num_edges,
+                cudaGetErrorString(err));
         return -1;
     }
     err = cudaMalloc(&context, sizeof(GraphChiContext));
     if (err != cudaSuccess) {
-        fprintf(stderr, "ERROR: cudaMalloc context (size:%d) => %s\n",  num_edges, cudaGetErrorString(err));
+        fprintf(stderr, "ERROR: cudaMalloc context (size:%d) => %s\n",
+                num_edges, cudaGetErrorString(err));
         return -1;
     }
     printf("Start initCtx\n");
@@ -202,17 +217,19 @@ int main(int argc, char **argv)
     cudaDeviceSynchronize();
     err = cudaGetLastError();
     if (err != cudaSuccess) {
-        fprintf(stderr, "ERROR: initCtx failed (%s)\n", cudaGetErrorString(err));
+        fprintf(stderr, "ERROR: initCtx failed (%s)\n",
+                cudaGetErrorString(err));
         return -1;
     }
 
-
     printf("Start initObj\n");
-    initObject<<<grid, threads>>>(vertex, context, row_d, col_d, inrow_d, incol_d);
+    initObject<<<grid, threads>>>(vertex, context, row_d, col_d, inrow_d,
+                                  incol_d);
     cudaDeviceSynchronize();
     err = cudaGetLastError();
     if (err != cudaSuccess) {
-        fprintf(stderr, "ERROR: initObject failed (%s)\n", cudaGetErrorString(err));
+        fprintf(stderr, "ERROR: initObject failed (%s)\n",
+                cudaGetErrorString(err));
         return -1;
     }
 
@@ -221,41 +238,45 @@ int main(int argc, char **argv)
     cudaDeviceSynchronize();
     err = cudaGetLastError();
     if (err != cudaSuccess) {
-        fprintf(stderr, "ERROR: initOutEdge failed (%s)\n", cudaGetErrorString(err));
+        fprintf(stderr, "ERROR: initOutEdge failed (%s)\n",
+                cudaGetErrorString(err));
         return -1;
     }
 
     // Run PageRank for some iter. TO: convergence determination
     for (int i = 0; i < ITER; i++) {
-	printf("Start PageRank\n");
+        printf("Start PageRank\n");
         PageRank<<<grid, threads>>>(vertex, context, i);
-	printf("Finish PageRank\n");
-	cudaDeviceSynchronize();
-	err = cudaGetLastError();
-	if (err != cudaSuccess) {
-	    fprintf(stderr, "ERROR: cudaLaunch failed (%s)\n", cudaGetErrorString(err));
-	    return -1;
-	}
-
+        printf("Finish PageRank\n");
+        cudaDeviceSynchronize();
+        err = cudaGetLastError();
+        if (err != cudaSuccess) {
+            fprintf(stderr, "ERROR: cudaLaunch failed (%s)\n",
+                    cudaGetErrorString(err));
+            return -1;
+        }
     }
     cudaDeviceSynchronize();
 
     double timer4 = gettime();
 
     printf("Start Copyback\n");
-    copyBack <<<grid, threads>>>(vertex, context, pagerank_d);
+    copyBack<<<grid, threads>>>(vertex, context, pagerank_d);
     printf("End Copyback\n");
     cudaDeviceSynchronize();
     err = cudaGetLastError();
     if (err != cudaSuccess) {
-        fprintf(stderr, "ERROR: cudaLaunch failed (%s)\n", cudaGetErrorString(err));
+        fprintf(stderr, "ERROR: cudaLaunch failed (%s)\n",
+                cudaGetErrorString(err));
         return -1;
     }
     // Copy the rank buffer back
-    err = cudaMemcpy(rank_array, pagerank_d, num_nodes * sizeof(float), cudaMemcpyDeviceToHost);
+    err = cudaMemcpy(rank_array, pagerank_d, num_nodes * sizeof(float),
+                     cudaMemcpyDeviceToHost);
 
     if (err != cudaSuccess) {
-        fprintf(stderr, "ERROR: cudaMemcpy() failed (%s)\n", cudaGetErrorString(err));
+        fprintf(stderr, "ERROR: cudaMemcpy() failed (%s)\n",
+                cudaGetErrorString(err));
         return -1;
     }
 
@@ -284,12 +305,10 @@ int main(int argc, char **argv)
     cudaFree(pagerank_d);
 
     return 0;
-
 }
 
-void print_vectorf(float *vector, int num)
-{
-    FILE * fp = fopen("result.out", "w");
+void print_vectorf(float *vector, int num) {
+    FILE *fp = fopen("result.out", "w");
     if (!fp) {
         printf("ERROR: unable to open result.txt\n");
     }
@@ -300,4 +319,3 @@ void print_vectorf(float *vector, int num)
 
     fclose(fp);
 }
-

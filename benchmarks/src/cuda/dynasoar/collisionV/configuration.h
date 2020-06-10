@@ -7,7 +7,7 @@ static const float kMergeThreshold = 0.005;
 #ifdef PARAM_SIZE
 static const int kNumBodies = PARAM_SIZE;
 #else
-static const int kNumBodies = 40000;
+static const int kNumBodies = 10000;
 #endif  // PARAM_SIZE
 
 static const float kMaxMass = 75;

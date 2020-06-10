@@ -2,6 +2,22 @@
 import pattern
 import serial_file
 
+def extract_loads(vfunc_lines):
+    obj_reg = vfunc_lines[0].split(' ')[10]
+    offset = vfunc_lines[1].split(' ')[-2]
+    obj_addr = vfunc_lines[0].split(' ')[11:-2]
+    call = vfunc_lines[3].split(' ')
+    line = call[0:6]
+    line.append("1")
+    line.append(obj_reg)
+    line.append("LD.E.64")
+    line.append("1 R1 8 0 0x0000000000fffc04 0 0")
+    special_inst = ""
+    for e in line:
+        special_inst = special_inst + str(e) + " "
+    return special_inst
+
+
 def extract_vfunc_insts(vfunc_lines):
     obj_reg = vfunc_lines[0].split(' ')[10]
     offset = vfunc_lines[1].split(' ')[-2]
@@ -30,7 +46,7 @@ def replace(trace_dir, vfc, outpath):
         vfunc_lines_idx = 0
         while line:
             if line[:-1].split(' ')[0] == 'insts':
-                line = "insts = ", str(vfc_traces.get_insts() + vfc_traces.get_vfc_number() * 1)
+                line = "insts = ", str(vfc_traces.get_insts() + vfc_traces.get_vfc_number() * 2)
                 out.writelines(line)
                 out.write("\n")
             else:
@@ -38,6 +54,9 @@ def replace(trace_dir, vfc, outpath):
                     if vfunc_lines_idx == 3:
                         vfunc_lines[vfunc_lines_idx] = line
                         vfunc_lines_idx = 0
+                        line = extract_loads(vfunc_lines)
+                        out.writelines(line)
+                        out.write("\n")
                         line = extract_vfunc_insts(vfunc_lines)
                         out.writelines(line)
                         out.write("\n")

@@ -10,7 +10,7 @@ import math
 
 # uses squeue to determine job status
 def get_job_status( jobId ):
-    job_status = { "state" : "WAITING_TO_RUN",
+    job_status = { "state" : "UNKOWN",
                    "exec_host" : "UNKNOWN",
                    "running_time": "UNKNOWN",
                    "mem_used" : "UNKNOWN" }
@@ -31,6 +31,11 @@ def get_job_status( jobId ):
                     job_status[ "state" ] = "RUNNING"
                 elif state_match.group(1) == 'CD':
                     job_status[ "state" ] = "COMPLETE_NO_OTHER_INFO"
+                elif state_match.group(1) == 'PD':
+                    job_status[ "state" ] = "WAITING_TO_RUN"
+                else:
+                    job_status[ "state" ] = state_match.group(1)
+
                 job_status[ "exec_host" ] = state_match.group(2)
                 job_status[ "running_time" ] = state_match.group(3)
         trace_out_file.close()
@@ -201,11 +206,10 @@ for logfile in parsed_logfiles:
             status_found = set()
 
             job_status = get_job_status( jobId )
-            if ( job_status[ "state" ] == "WAITING_TO_RUN" or job_status[ "state" ] == "RUNNING" ) \
-                and not os.path.isfile( outfile ):
+            if ( job_status[ "state" ] == "WAITING_TO_RUN" or job_status[ "state" ] == "RUNNING" ):
                 files_to_check = []
                 status_string = job_status[ "state" ]
-            else:
+            elif ( os.path.isfile( outfile ) and job_status[ "state" ] == "UNKOWN" ):
                 files_to_check = [ outfile, errfile ]
                 status_string = "COMPLETE_NO_OTHER_INFO"
 
@@ -255,7 +259,9 @@ for logfile in parsed_logfiles:
 
             if len( status_found ) > 0:
                 status_string = ", ".join( status_found )
-            elif os.path.exists( errfile ) and os.stat( errfile ).st_size > 0:
+            elif ( job_status["state"] == "UNKOWN" or job_status["state"] == "COMPLETE_NO_OTHER_INFO" )\
+                        and os.path.exists( errfile ) \
+                        and os.stat( errfile ).st_size > 0:
                 status_string = "COMPLETE_ERR_FILE_HAS_CONTENTS"
 
             gpgpu_git_commit = re.sub(r".*-commit-([^_]{7})[^_]+_(.*)\.so", r"\1-\2", jobname)

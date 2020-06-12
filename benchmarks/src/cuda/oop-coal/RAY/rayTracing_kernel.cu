@@ -225,7 +225,7 @@ __device__ bool notShadowRay_vptr(Object **__restrict__ objList, float3 A,
   return t == 0.0f;
 }
 
-__global__ void render_vptr(uint *result, Object **__restrict__ objList,
+__global__ void render(uint *result, Object **__restrict__ objList,
                             uint imageW, uint imageH, float df, int NUM) {
   uint x = __umul24(blockIdx.x, blockDim.x) + threadIdx.x;
   uint y = __umul24(blockIdx.y, blockDim.y) + threadIdx.y;
@@ -320,78 +320,5 @@ __global__ void render_vptr(uint *result, Object **__restrict__ objList,
     result[id] += rgbaFloatToInt(pile[0]);
   }
 }
-__global__ void render(uint *result, Object **__restrict__ objList, uint imageW,
-                       uint imageH, float df, int NUM) {
-  uint x = __umul24(blockIdx.x, blockDim.x) + threadIdx.x;
-  uint y = __umul24(blockIdx.y, blockDim.y) + threadIdx.y;
-  uint tid(__umul24(threadIdx.y, blockDim.x) + threadIdx.x);
 
-  uint id(x + y * imageW);
-  float4 pile[5];
-  uint Obj, n = 0, nRec = 5;
-  float prof, tmp;
-
-  for (int i = 0; i < nRec; ++i)
-    pile[i] = make_float4(0.0f, 0.0f, 0.0f, 1.0f);
-
-  if (x < imageW && y < imageH) {
-    prof = 10000.0f;
-    result[id] = 0;
-    float tPixel(2.0f / float(min(imageW, imageH)));
-    float4 f(make_float4(0.0f, 0.0f, 0.0f, 1.0f));
-    matrice3x4 M(MView);
-    Rayon R;
-    R.A = make_float3(M.m[0].w, M.m[1].w, M.m[2].w);
-    R.u = make_float3(M.m[0]) * df +
-          make_float3(M.m[2]) * (float(x) - float(imageW) * 0.5f) * tPixel +
-          make_float3(M.m[1]) * (float(y) - float(imageH) * 0.5f) * tPixel;
-    R.u = normalize(R.u);
-    __syncthreads();
-
-    // printf("%d: nRec %d\n", threadIdx.x, nRec);
-    for (int i = 0; i < nRec && n == i; i++) {
-
-      for (int j = 0; j < NUM; j++) {
-        float t;
-        t = objList[j]->intersection(R);
-        if (t > 0.0f && t < prof) {
-          prof = t;
-          Obj = j;
-        }
-      }
-      // printf("%d: i=%d, t=%e\n", threadIdx.x, i, prof);
-      float t = prof;
-      if (t > 0.0f && t < 10000.0f) {
-        n++;
-        float4 color(make_float4(objList[Obj]->R, objList[Obj]->V,
-                                 objList[Obj]->B, objList[Obj]->A));
-        float3 P(R.A + R.u * t),
-            L(normalize(make_float3(10.0f, 10.0f, 10.0f) - P)),
-            V(normalize(R.A - P));
-        float3 N(objList[Obj]->getNormale(P));
-        float3 Np(dot(V, N) < 0.0f ? (-1 * N) : N);
-        pile[i] = 0.05f * color;
-        if (dot(Np, L) > 0.0f && notShadowRay(objList, P, L, NUM)) {
-          // float3 Ri(2.0f*Np*dot(Np,L) - L);
-          float3 Ri(normalize(L + V));
-          // Ri = (L+V)/normalize(L+V);
-          pile[i] += 0.3f * color * (min(1.0f, dot(Np, L)));
-          tmp = 0.8f * pow(max(0.0f, min(1.0f, dot(Np, Ri))), 50.0f);
-          // tmp = 0.8f * float2int_pow50(max(0.0f,min(1.0f,dot(Np,Ri))));
-          pile[i].x += tmp;
-          pile[i].y += tmp;
-          pile[i].z += tmp;
-        }
-
-        R.u = 2.0f * N * dot(N, V) - V;
-        R.u = normalize(R.u);
-        R.A = P + R.u * 0.0001f;
-      }
-      prof = 10000.0f;
-    }
-    for (int i(n - 1); i > 0; i--)
-      pile[i - 1] = pile[i - 1] + 0.8f * pile[i];
-    result[id] += rgbaFloatToInt(pile[0]);
-  }
-}
 #endif // __RAYTRACING_KERNEL_H__

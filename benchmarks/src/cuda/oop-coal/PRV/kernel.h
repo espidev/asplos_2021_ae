@@ -199,7 +199,7 @@ __managed__ range_tree_node *range_tree;
 __managed__ unsigned tree_size_g;
 __managed__ void *temp_copyBack;
 __managed__ void *temp_coal;
-__global__ void PageRank_vptr(VirtVertex<float, float> **vertex,
+__global__ void PageRank(VirtVertex<float, float> **vertex,
                               GraphChiContext *context, int iteration) {
   int tid = blockDim.x * blockIdx.x + threadIdx.x;
   unsigned tree_size = tree_size_g;
@@ -248,36 +248,6 @@ __global__ void PageRank_vptr(VirtVertex<float, float> **vertex,
         outEdge = vertex[tid]->getOutEdge(i);
         vtable2 = get_vfunc(outEdge, table, tree_size);
         temp_coal = vtable2[2];
-        outEdge->setValue(outValue);
-      }
-    }
-  }
-}
-__global__ void PageRank(VirtVertex<float, float> **vertex,
-                         GraphChiContext *context, int iteration) {
-  int tid = blockDim.x * blockIdx.x + threadIdx.x;
-  if (tid < context->getNumVertices()) {
-    if (iteration == 0) {
-      vertex[tid]->setValue(1.0f);
-    } else {
-      float sum = 0.0f;
-      int numInEdge;
-      numInEdge = vertex[tid]->numInEdges();
-      for (int i = 0; i < numInEdge; i++) {
-        ChiEdge<float> *inEdge;
-        inEdge = vertex[tid]->getInEdge(i);
-        sum += inEdge->getValue();
-      }
-      vertex[tid]->setValue(0.15f + 0.85f * sum);
-
-      /* Write my value (divided by my out-degree) to my out-edges so neighbors
-       * can read it. */
-      int numOutEdge;
-      numOutEdge = vertex[tid]->numOutEdges();
-      float outValue = vertex[tid]->getValue() / numOutEdge;
-      for (int i = 0; i < numOutEdge; i++) {
-        ChiEdge<float> *outEdge;
-        outEdge = vertex[tid]->getOutEdge(i);
         outEdge->setValue(outValue);
       }
     }

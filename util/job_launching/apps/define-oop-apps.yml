@@ -18,41 +18,83 @@ oop_all_ordered:
             - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
         - PR_CONCORD:
             - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
+        - PR_MEM:
+            - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
         - PR_COAL:
+            - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
+        - PR_TP_LOAD:
+            - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
+        - PR_TP_NO:
             - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
         - PRV:
             - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
         - PRV_CONCORD:
             - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
+        - PRV_MEM:
+            - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
         - PRV_COAL:
+            - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
+        - PRV_TP_LOAD:
+            - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
+        - PRV_TP_NO:
             - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
         - CC:
             - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
         - CC_CONCORD:
             - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
+        - CC_MEM:
+            - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
         - CC_COAL:
+            - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
+        - CC_TP_LOAD:
+            - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
+        - CC_TP_NO:
             - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
         - CCV:
             - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
         - CCV_CONCORD:
             - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
+        - CCV_MEM:
+            - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
         - CCV_COAL:
+            - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
+        - CCV_TP_LOAD:
+            - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
+        - CCV_TP_NO:
             - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
         - BFS:
             - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
         - BFS_CONCORD:
             - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
+        - BFS_MEM:
+            - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
         - BFS_COAL:
+            - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
+        - BFS_TP_NO:
+            - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
+        - BFS_TP_LOAD:
             - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
         - BFSV:
             - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
         - BFSV_CONCORD:
             - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
+        - BFSV_MEM:
+            - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
         - BFSV_COAL:
+            - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
+        - BFSV_TP_LOAD:
+            - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
+        - BFSV_TP_NO:
             - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
         - RAY:
             - 512 512 100
         - RAY_CONCORD:
             - 512 512 100
+        - RAY_MEM:
+            - 512 512 100
         - RAY_COAL:
+            - 512 512 100
+        - RAY_TP_LOAD:
+            - 512 512 100
+        - RAY_TP_NO:
             - 512 512 100

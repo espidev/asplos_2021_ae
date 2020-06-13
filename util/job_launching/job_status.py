@@ -44,7 +44,7 @@ def get_qstat_status( jobId ):
 
 # uses squeue to determine job status
 def get_squeue_status( jobId ):
-    job_status = { "state" : "WAITING_TO_RUN",
+    job_status = { "state" : "UNKOWN",
                    "exec_host" : "UNKNOWN",
                    "running_time": "UNKNOWN",
                    "mem_used" : "UNKNOWN" }

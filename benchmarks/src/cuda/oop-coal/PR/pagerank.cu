@@ -287,7 +287,7 @@ int main(int argc, char **argv) {
   for (int i = 0; i < ITER; i++) {
     printf("Start PageRank\n");
     //PageRank<<<grid, threads>>>(vertex, context, i);
-    PageRank_vptr<<<grid, threads>>>(vertex, context, i);
+    PageRank<<<grid, threads>>>(vertex, context, i);
     printf("Finish PageRank\n");
     cudaDeviceSynchronize();
     err = cudaGetLastError();

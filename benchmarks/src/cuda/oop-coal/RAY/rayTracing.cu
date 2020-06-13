@@ -84,7 +84,7 @@ void render(Object** objList, int n)
 {
     sdkStartTimer(&timer); 
     //render<<<gridSize, blockSize>>>(d_output, objList, width, height, obs.getDistance(), n);
-    render_vptr <<<gridSize, blockSize>>>(d_output, objList, width, height, obs.getDistance(), n);
+    render <<<gridSize, blockSize>>>(d_output, objList, width, height, obs.getDistance(), n);
     CUDA_SAFE_CALL( cudaDeviceSynchronize() );
     sdkStopTimer(&timer);
 

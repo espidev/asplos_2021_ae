@@ -2,6 +2,7 @@
 #SBATCH -J REPLACE_NAME
 #SBATCH --threads-per-core=1
 #SBATCH --cpus-per-task=1
+#SBATCH --mem=REPLACE_MEM_USAGE
 #SBATCH --nodes=1
 #SBACTH --time=200:00:00,
 #SBACTH --partition=REPLACE_QUEUE_NAME

@@ -228,7 +228,7 @@ __managed__ range_tree_node *range_tree;
 __managed__ unsigned tree_size_g;
 __managed__ void *temp_coal;
 
-__global__ void ConnectedComponent_vptr(VirtVertex<int, int> **vertex,
+__global__ void ConnectedComponent(VirtVertex<int, int> **vertex,
                                         GraphChiContext *context,
                                         int iteration) {
   int tid = blockDim.x * blockIdx.x + threadIdx.x;
@@ -332,63 +332,6 @@ __global__ void ConnectedComponent_vptr(VirtVertex<int, int> **vertex,
   }
 }
 
-__global__ void ConnectedComponent(VirtVertex<int, int> **vertex,
-                                   GraphChiContext *context, int iteration) {
-  int tid = blockDim.x * blockIdx.x + threadIdx.x;
-  if (tid < context->getNumVertices()) {
-
-    int numEdges;
-    numEdges = vertex[tid]->numEdges();
-    if (iteration == 0) {
-      int vid = vertex[tid]->getId();
-      vertex[tid]->setValue(vid);
-    }
-    int curMin;
-    curMin = vertex[tid]->getValue();
-    for (int i = 0; i < numEdges; i++) {
-      ChiEdge<int> *edge;
-      edge = vertex[tid]->edge(i);
-      int nbLabel;
-      nbLabel = edge->getValue();
-      if (iteration == 0) {
-        nbLabel = edge->getVertexId(); // Note!
-      }
-      if (nbLabel < curMin) {
-        curMin = nbLabel;
-      }
-    }
-
-    /**
-     * Set my new label
-     */
-    vertex[tid]->setValue(curMin);
-    int label = curMin;
-
-    /**
-     * Broadcast my value to neighbors by writing the value to my edges.
-     */
-    if (iteration > 0) {
-      for (int i = 0; i < numEdges; i++) {
-        ChiEdge<int> *edge;
-        edge = vertex[tid]->edge(i);
-        int edgeValue;
-        edgeValue = edge->getValue();
-        if (edgeValue > label) {
-          edge->setValue(label);
-        }
-      }
-    } else {
-      // Special case for first iteration to avoid overwriting
-      int numOutEdge;
-      numOutEdge = vertex[tid]->numOutEdges();
-      for (int i = 0; i < numOutEdge; i++) {
-        ChiEdge<int> *outEdge;
-        outEdge = vertex[tid]->getOutEdge(i);
-        outEdge->setValue(label);
-      }
-    }
-  }
-}
 
 __global__ void copyBack(VirtVertex<int, int> **vertex,
                          GraphChiContext *context, int *cc) {

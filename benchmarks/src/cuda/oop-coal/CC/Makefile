@@ -10,7 +10,7 @@ GENCODE_SM70 ?= -gencode=arch=compute_70,code=\"sm_70,compute_70\"
 
 CPPSRC = ../graph_parser/util.cpp ../graph_parser/parse.cpp
 CUSRC =
-BASEEXE = CCV_COAL
+BASEEXE = CC_COAL
 VARIANT ?= DEFAULT
 # CUDA source files (compiled with cudacc)
 EXECUTABLE = $(BINDIR)/$(BINSUBDIR)/$(BASEEXE)

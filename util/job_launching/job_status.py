@@ -34,13 +34,31 @@ def get_qstat_status( jobId ):
                 job_status[ "exec_host" ] = host_match.group(1)
             mem_used = re.search("resources_used.mem\s=\s([^\s]*)kb", trace_out)
             if mem_used != None:
-                job_status[ "mem_used" ] = mem_used.group(1)
+                job_status[ "mem_used" ] = float(mem_used.group(1))*1024
             time_match = re.search( "resources_used.walltime\s=\s([^\s]*)", trace_out )
             if time_match != None:
                 job_status[ "running_time" ] = time_match.group(1)
         trace_out_file.close()
         os.remove(trace_out_filename)
     return job_status
+
+def get_slurm_memsize( state, jobId ):
+    if state == "RUNNING":
+        sstat_out_filename = os.path.join(this_directory, "sstat_out-{0}.txt".format(os.getpid()))
+        sstat_out_file = open(sstat_out_filename, 'w+')
+        if subprocess.call(["sstat" ,"--format", "MaxVMSize", "-j", jobId],
+            stdout=sstat_out_file, stderr=sstat_out_file) < 0:
+                exit("Error Launching Tracejob Job")
+        else:
+            sstat_out_file.seek(0)
+            sstat_out = sstat_out_file.readlines()
+            if len(sstat_out) > 2:
+                sstat_out = sstat_out[2].strip()
+        sstat_out_file.close()
+        os.remove(sstat_out_filename)
+        return sstat_out
+    else:
+        return "UNKOWN"
 
 # uses squeue to determine job status
 def get_squeue_status( jobId ):
@@ -70,6 +88,7 @@ def get_squeue_status( jobId ):
                 else:
                     job_status[ "state" ] = state_match.group(1)
 
+                job_status[ "mem_used" ] = get_slurm_memsize( job_status[ "state" ], jobId )
                 job_status[ "exec_host" ] = state_match.group(2)
                 job_status[ "running_time" ] = state_match.group(3)
         trace_out_file.close()
@@ -77,6 +96,8 @@ def get_squeue_status( jobId ):
     return job_status
 
 def isNumber( s ):
+    if s[-1] == "K" or s[-1] == "M" or s[-1] == "G" or s[-1] == "T":
+        s = s[:-1]
     try:
         int (s)
         return True
@@ -89,6 +110,12 @@ def isNumber( s ):
 
 millnames = ['',' K',' M',' B',' T']
 def millify(n):
+    count = 0
+    for name in millnames:
+        if n[-1].strip() == name.strip():
+            n = float(n[:-1]) * 10**(3*count)
+            break
+        count += 1
     n = float(n)
     if math.isnan(n):
         return "NaN"
@@ -259,10 +286,13 @@ for logfile in parsed_logfiles:
             elif ( os.path.isfile( outfile ) and job_status[ "state" ] == "UNKOWN" ):
                 files_to_check = [ outfile, errfile ]
                 status_string = "COMPLETE_NO_OTHER_INFO"
+            else:
+                files_to_check = []
+                status_string = "NOT_RUNNING_NO_OUTPUT"
 
             exec_node = job_status[ "exec_host" ]
             try:
-                mem_used = millify(float(job_status[ "mem_used" ])*1024)
+                mem_used = millify(job_status[ "mem_used" ])
             except:
                 mem_used = "UNKNOWN"
             running_time = job_status[ "running_time" ]

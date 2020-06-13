@@ -141,6 +141,11 @@ FCFS:
 PTXPLUS_SM6:
     extra_params: "-gpgpu_ptx_convert_to_ptxplus 1 -gpgpu_ptx_force_max_capability 62 -gpgpu_ptx_force_min_capability 60"
 
+TP:
+    extra_params: ""
+
+TP_NO_LOAD:
+    extra_params: ""
 ##############################################################################
 ##############################################################################
 # Deprecated files in the public repo

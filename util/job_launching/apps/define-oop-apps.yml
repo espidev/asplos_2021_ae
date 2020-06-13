@@ -1,0 +1,58 @@
+#   execs:
+#       - <exec_name_1>:
+#           - <commandline arg_list 1> # Leave blank if no arguments
+#           - <commandline arg_list 2>
+#           ...
+#       - <exec_name_2>
+#           ...
+#       ...
+# If you have a bunch of random benchmarks in random places, then a "suite" can be just one benchmark
+
+
+# oop
+oop_all_ordered:
+    exec_dir: "../../benchmarks/bin/$CUDA_VERSION/release/"
+    data_dirs: "../../benchmarks/data_dirs/"
+    execs:
+        - PR:
+            - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
+        - PR_CONCORD:
+            - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
+        - PR_COAL:
+            - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
+        - PRV:
+            - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
+        - PRV_CONCORD:
+            - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
+        - PRV_COAL:
+            - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
+        - CC:
+            - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
+        - CC_CONCORD:
+            - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
+        - CC_COAL:
+            - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
+        - CCV:
+            - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
+        - CCV_CONCORD:
+            - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
+        - CCV_COAL:
+            - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
+        - BFS:
+            - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
+        - BFS_CONCORD:
+            - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
+        - BFS_COAL:
+            - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
+        - BFSV:
+            - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
+        - BFSV_CONCORD:
+            - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
+        - BFSV_COAL:
+            - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
+        - RAY:
+            - 512 512 100
+        - RAY_CONCORD:
+            - 512 512 100
+        - RAY_COAL:
+            - 512 512 100

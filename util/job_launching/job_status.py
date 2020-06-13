@@ -253,8 +253,7 @@ for logfile in parsed_logfiles:
             elif job_manager == "qstat":
                 job_status = get_qstat_status( jobId )
 
-            if ( job_status[ "state" ] == "WAITING_TO_RUN" or job_status[ "state" ] == "RUNNING" ) \
-                and not os.path.isfile( outfile ):
+            if ( job_status[ "state" ] == "WAITING_TO_RUN" or job_status[ "state" ] == "RUNNING" ):
                 files_to_check = []
                 status_string = job_status[ "state" ]
             elif ( os.path.isfile( outfile ) and job_status[ "state" ] == "UNKOWN" ):

@@ -358,7 +358,7 @@ oop-mem:
 
 oop-coal:
 	mkdir -p $(BINDIR)/$(BINSUBDIR)/
-	$(SETENV) make $(MAKE_ARGS) -C cuda/oop-coal/ubench
+	#$(SETENV) make $(MAKE_ARGS) -C cuda/oop-coal/ubench
 	$(SETENV) make $(MAKE_ARGS) -C cuda/oop-coal/PR
 	$(SETENV) make $(MAKE_ARGS) -C cuda/oop-coal/PRV
 	$(SETENV) make $(MAKE_ARGS) -C cuda/oop-coal/BFS

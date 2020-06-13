@@ -28,6 +28,8 @@ parser.add_option("-O", "--output", dest="output",
                   default=".")
 parser.add_option("-C", "--config", dest="config", action="store",
                   help="Configures to perform traces on", default="search")
+parser.add_option("-L", "--load", dest="load", action="store_true",
+                  help="Add load after special instruction", default=False)
 (options, args) = parser.parse_args()
 
 common.load_defined_yamls()
@@ -74,7 +76,7 @@ for bench in benchmarks:
             if not os.path.exists(output_dir):
                 os.makedirs(output_dir)
             print output_dir
-            replace.replace(run_dir, vfunc_inst_lists, output_dir)
+            replace.replace(run_dir, vfunc_inst_lists, output_dir, options)
 
         if "copy_list" in cfgs:
             output_dir = os.path.join(options.output, exe, common.get_argfoldername(args), "traces")

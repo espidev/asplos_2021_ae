@@ -314,8 +314,8 @@ __global__ void BFS(ChiVertex<int, int> **vertex, GraphChiContext *context) {
 __managed__ range_tree_node *range_tree;
 __managed__ unsigned tree_size_g;
 __managed__ void *temp_copyBack;
-__managed__ void *temp_Bfs;
-__global__ void BFS_vptr(ChiVertex<int, int> **vertex, GraphChiContext *context,
+__managed__ void *temp_coal;
+__global__ void BFS(ChiVertex<int, int> **vertex, GraphChiContext *context,
                          int iteration) {
   int tid = blockDim.x * blockIdx.x + threadIdx.x;
   unsigned tree_size = tree_size_g;
@@ -347,7 +347,7 @@ __global__ void BFS_vptr(ChiVertex<int, int> **vertex, GraphChiContext *context,
 
           outEdge = vertex[tid]->getOutEdge(i);
           vtable2 = get_vfunc(outEdge, table, tree_size);
-          temp_Bfs = vtable2[2];
+          temp_coal = vtable2[2];
 
           outEdge->setValue(1);
         }
@@ -364,7 +364,7 @@ __global__ void BFS_vptr(ChiVertex<int, int> **vertex, GraphChiContext *context,
 
         inEdge = vertex[tid]->getInEdge(i);
         vtable2 = get_vfunc(inEdge, table, tree_size);
-        temp_Bfs = vtable2[1];
+        temp_coal = vtable2[1];
         curmin = min(curmin, inEdge->getValue());
       }
       int vertValue;
@@ -382,54 +382,10 @@ __global__ void BFS_vptr(ChiVertex<int, int> **vertex, GraphChiContext *context,
           outEdge = vertex[tid]->getOutEdge(i);
           int edgeValue;
           vtable2 = get_vfunc(outEdge, table, tree_size);
-          temp_Bfs = vtable2[1];
+          temp_coal = vtable2[1];
           edgeValue = outEdge->getValue();
           if (edgeValue > curmin + 1) {
-            temp_Bfs = vtable2[2];
-            outEdge->setValue(curmin + 1);
-          }
-        }
-      }
-    }
-  }
-}
-__global__ void BFS(ChiVertex<int, int> **vertex, GraphChiContext *context,
-                    int iteration) {
-  int tid = blockDim.x * blockIdx.x + threadIdx.x;
-  if (tid < context->getNumVertices()) {
-    if (iteration == 0) {
-      if (tid == 0) {
-        vertex[tid]->setValue(0);
-        int numOutEdge;
-        numOutEdge = vertex[tid]->numOutEdges();
-        for (int i = 0; i < numOutEdge; i++) {
-          ChiEdge<int> *outEdge;
-          outEdge = vertex[tid]->getOutEdge(i);
-          outEdge->setValue(1);
-        }
-      }
-    } else {
-      int curmin;
-      curmin = vertex[tid]->getValue();
-      int numInEdge;
-      numInEdge = vertex[tid]->numInEdges();
-      for (int i = 0; i < numInEdge; i++) {
-        ChiEdge<int> *inEdge;
-        inEdge = vertex[tid]->getInEdge(i);
-        curmin = min(curmin, inEdge->getValue());
-      }
-      int vertValue;
-      vertValue = vertex[tid]->getValue();
-      if (curmin < vertValue) {
-        vertex[tid]->setValue(curmin);
-        int numOutEdge;
-        numOutEdge = vertex[tid]->numOutEdges();
-        for (int i = 0; i < numOutEdge; i++) {
-          ChiEdge<int> *outEdge;
-          outEdge = vertex[tid]->getOutEdge(i);
-          int edgeValue;
-          edgeValue = outEdge->getValue();
-          if (edgeValue > curmin + 1) {
+            temp_coal = vtable2[2];
             outEdge->setValue(curmin + 1);
           }
         }

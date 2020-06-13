@@ -539,29 +539,39 @@ dynasoar:
         #    -
         #- collision_CONCORD:
         #    -
-        #        - generationV:
-        #            -
-        #        - generationV_MEM:
-        #            -
-        #        - generationV_CONCORD:
-        #            -
-        #        - structureV:
-        #            -
-        #        - structureV_MEM:
-        #            -
-        #        - structureV_CONCORD:
-        #            -
-        #        - trafficV:
-        #            -
-        #        - trafficV_MEM:
-        #            -
-        #        - trafficV_CONCORD:
-        #            -
+        #- collision_COAL:
+        #    -
+        - generationV:
+            -
+        - generationV_MEM:
+            -
+        - generationV_CONCORD:
+            -
+        - generationV_COAL:
+            -
+        - structureV:
+            -
+        - structureV_MEM:
+            -
+        - structureV_CONCORD:
+            -
+        - structureV_COAL:
+            -
+        - trafficV:
+            -
+        - trafficV_MEM:
+            -
+        - trafficV_CONCORD:
+            -
+        - trafficV_COAL:
+            -
         - game-of-life:
             - ./data/tm.pgm
         - game-of-life_MEM:
             - ./data/tm.pgm
         - game-of-life_CONCORD:
+            - ./data/tm.pgm
+        - game-of-life_COAL:
             - ./data/tm.pgm
 
 oop_coal:
@@ -601,8 +611,6 @@ oop_trace:
             - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
         - RAY:
             - 512 512 100
-        - oop_ubench:
-            - 10000 128 1 1
 
 dragon-cdp:
     exec_dir: "../../benchmarks/src/cuda/dragon_li/cdp_bin/$CUDA_VERSION/"

@@ -198,8 +198,8 @@ __global__ void initOutEdge(VirtVertex<float, float> **vertex,
 __managed__ range_tree_node *range_tree;
 __managed__ unsigned tree_size_g;
 __managed__ void *temp_copyBack;
-__managed__ void *temp_PR;
-__global__ void PageRank_vptr(VirtVertex<float, float> **vertex,
+__managed__ void *temp_coal;
+__global__ void PageRank(VirtVertex<float, float> **vertex,
                               GraphChiContext *context, int iteration) {
   int tid = blockDim.x * blockIdx.x + threadIdx.x;
   unsigned tree_size = tree_size_g;
@@ -211,73 +211,43 @@ __global__ void PageRank_vptr(VirtVertex<float, float> **vertex,
 
     if (iteration == 0) {
       vtable = get_vfunc(vertex[tid], table, tree_size);
-      temp_PR = vtable[3];
+      temp_coal = vtable[3];
       vertex[tid]->setValue(1.0f);
     } else {
       float sum = 0.0f;
       int numInEdge;
       vtable = get_vfunc(vertex[tid], table, tree_size);
-      temp_PR = vtable[4];
+      temp_coal = vtable[4];
       numInEdge = vertex[tid]->numInEdges();
       for (int i = 0; i < numInEdge; i++) {
         ChiEdge<float> *inEdge;
         vtable = get_vfunc(vertex[tid], table, tree_size);
-        temp_PR = vtable[6];
+        temp_coal = vtable[6];
         inEdge = vertex[tid]->getInEdge(i);
         vtable2 = get_vfunc(inEdge, table, tree_size);
-        temp_PR = vtable2[1];
+        temp_coal = vtable2[1];
         sum += inEdge->getValue();
       }
       vtable = get_vfunc(vertex[tid], table, tree_size);
-      temp_PR = vtable[3];
+      temp_coal = vtable[3];
       vertex[tid]->setValue(0.15f + 0.85f * sum);
 
       /* Write my value (divided by my out-degree) to my out-edges so neighbors
       * can read it. */
       int numOutEdge;
       vtable = get_vfunc(vertex[tid], table, tree_size);
-      temp_PR = vtable[5];
+      temp_coal = vtable[5];
       numOutEdge = vertex[tid]->numOutEdges();
       vtable = get_vfunc(vertex[tid], table, tree_size);
-      temp_PR = vtable[2];
+      temp_coal = vtable[2];
       float outValue = vertex[tid]->getValue() / numOutEdge;
       for (int i = 0; i < numOutEdge; i++) {
         ChiEdge<float> *outEdge;
         vtable = get_vfunc(vertex[tid], table, tree_size);
-        temp_PR = vtable[7];
+        temp_coal = vtable[7];
         outEdge = vertex[tid]->getOutEdge(i);
         vtable2 = get_vfunc(outEdge, table, tree_size);
-        temp_PR = vtable2[2];
-        outEdge->setValue(outValue);
-      }
-    }
-  }
-}
-__global__ void PageRank(VirtVertex<float, float> **vertex,
-                         GraphChiContext *context, int iteration) {
-  int tid = blockDim.x * blockIdx.x + threadIdx.x;
-  if (tid < context->getNumVertices()) {
-    if (iteration == 0) {
-      vertex[tid]->setValue(1.0f);
-    } else {
-      float sum = 0.0f;
-      int numInEdge;
-      numInEdge = vertex[tid]->numInEdges();
-      for (int i = 0; i < numInEdge; i++) {
-        ChiEdge<float> *inEdge;
-        inEdge = vertex[tid]->getInEdge(i);
-        sum += inEdge->getValue();
-      }
-      vertex[tid]->setValue(0.15f + 0.85f * sum);
-
-      /* Write my value (divided by my out-degree) to my out-edges so neighbors
-       * can read it. */
-      int numOutEdge;
-      numOutEdge = vertex[tid]->numOutEdges();
-      float outValue = vertex[tid]->getValue() / numOutEdge;
-      for (int i = 0; i < numOutEdge; i++) {
-        ChiEdge<float> *outEdge;
-        outEdge = vertex[tid]->getOutEdge(i);
+        temp_coal = vtable2[2];
         outEdge->setValue(outValue);
       }
     }

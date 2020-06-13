@@ -86,7 +86,7 @@ under  *
 #include "../graph_parser/parse.h"
 #include "parse_oo.h"
 #include "../graph_parser/util.h"
-#include "kernel.cu"
+#include "kernel.h"
 
 // Iteration count
 #define ITER 20
@@ -287,7 +287,7 @@ int main(int argc, char **argv) {
   for (int i = 0; i < ITER; i++) {
     printf("Start PageRank\n");
     //PageRank<<<grid, threads>>>(vertex, context,i);
-    PageRank_vptr<<<grid, threads>>>(vertex, context,i);
+    PageRank<<<grid, threads>>>(vertex, context,i);
     printf("Finish PageRank\n");
     cudaDeviceSynchronize();
     err = cudaGetLastError();

@@ -66,7 +66,7 @@
 #include "../graph_parser/parse.h"
 #include "parse_oo.h"
 #include "../graph_parser/util.h"
-#include "kernel.cu"
+#include "kernel.h"
 
 // Iteration count
 #define ITER 20
@@ -248,7 +248,7 @@ int main(int argc, char **argv)
     for (int i = 0; i < ITER; i++) {
 	printf("Start ConnectedComponent\n");
         //ConnectedComponent<<<grid, threads>>>(vertex, context,i);
-        ConnectedComponent_vptr<<<grid, threads>>>(vertex, context,i);
+        ConnectedComponent<<<grid, threads>>>(vertex, context,i);
 	printf("Finish ConnectedComponent\n");
 	cudaDeviceSynchronize();
 	err = cudaGetLastError();

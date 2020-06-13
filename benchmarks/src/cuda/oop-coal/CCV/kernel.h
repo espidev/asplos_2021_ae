@@ -1,61 +1,3 @@
-/*
-__global__ void initContext(GraphChiContext* context, int vertices, int edges) {
-
-        context->setNumIterations(0);
-        context->setNumVertices(vertices);
-        context->setNumEdges(edges);
-
-}
-
-__global__ void initObject(VirtVertex<int, int> **vertex, GraphChiContext*
-context,
-        int* row, int* col, int* inrow, int* incol) {
-    int tid = blockDim.x * blockIdx.x + threadIdx.x;
-    if (tid < context->getNumVertices()) {
-        int out_start = row[tid];
-        int out_end;
-        if (tid + 1 < context->getNumVertices()) {
-            out_end = row[tid + 1];
-        } else {
-            out_end = context->getNumEdges();
-        }
-        int in_start = inrow[tid];
-        int in_end;
-        if (tid + 1 < context->getNumVertices()) {
-            in_end = inrow[tid + 1];
-        } else {
-            in_end = context->getNumEdges();
-        }
-        int indegree = in_end - in_start;
-        int outdegree = out_end - out_start;
-        vertex[tid] = new ChiVertex<int, int>(tid, indegree, outdegree);
-        for (int i = in_start; i < in_end; i++) {
-            vertex[tid]->setInEdge(i - in_start, incol[i], 0);
-        }
-        //for (int i = out_start; i < out_end; i++) {
-        //    vertex[tid]->setOutEdge(vertex, tid, i - out_start, col[i], 0.0f);
-        //}
-    }
-}
-
-__global__ void initOutEdge(VirtVertex<int, int> **vertex, GraphChiContext*
-context,
-        int* row, int* col) {
-    int tid = blockDim.x * blockIdx.x + threadIdx.x;
-    if (tid < context->getNumVertices()) {
-        int out_start = row[tid];
-        int out_end;
-        if (tid + 1 < context->getNumVertices()) {
-            out_end = row[tid + 1];
-        } else {
-            out_end = context->getNumEdges();
-        }
-        for (int i = out_start; i < out_end; i++) {
-            vertex[tid]->setOutEdge(vertex, tid, i - out_start, col[i], 0);
-        }
-    }
-}
-*/
 void initContext(GraphChiContext *context, int vertices, int edges) {
   // int tid = blockDim.x * blockIdx.x + threadIdx.x;
 
@@ -284,9 +226,9 @@ __global__ void kern_initOutEdge(VirtVertex<int, int> **vertex,
 
 __managed__ range_tree_node *range_tree;
 __managed__ unsigned tree_size_g;
-__managed__ void *temp_copyBack;
-__managed__ void *temp_CC;
-__global__ void ConnectedComponent_vptr(VirtVertex<int, int> **vertex,
+__managed__ void *temp_coal;
+
+__global__ void ConnectedComponent(VirtVertex<int, int> **vertex,
                                         GraphChiContext *context,
                                         int iteration) {
   int tid = blockDim.x * blockIdx.x + threadIdx.x;
@@ -310,33 +252,33 @@ __global__ void ConnectedComponent_vptr(VirtVertex<int, int> **vertex,
 
     int numEdges;
     vtable = get_vfunc(vertex[tid], table, tree_size);
-    temp_CC = vtable[4];
+    temp_coal = vtable[4];
     numEdges = vertex[tid]->numEdges();
     if (iteration == 0) {
 
       vtable = get_vfunc(vertex[tid], table, tree_size);
-      temp_CC = vtable[0];
+      temp_coal = vtable[0];
       int vid = vertex[tid]->getId();
       vtable = get_vfunc(vertex[tid], table, tree_size);
-      temp_CC = vtable[3];
+      temp_coal = vtable[3];
       vertex[tid]->setValue(vid);
     }
     int curMin;
     vtable = get_vfunc(vertex[tid], table, tree_size);
-    temp_CC = vtable[2];
+    temp_coal = vtable[2];
     curMin = vertex[tid]->getValue();
     for (int i = 0; i < numEdges; i++) {
       ChiEdge<int> *edge;
       vtable = get_vfunc(vertex[tid], table, tree_size);
-      temp_CC = vtable[11];
+      temp_coal = vtable[11];
       edge = vertex[tid]->edge(i);
       int nbLabel;
       vtable2 = get_vfunc(edge, table, tree_size);
-      temp_CC = vtable2[1];
+      temp_coal = vtable2[1];
       nbLabel = edge->getValue();
       if (iteration == 0) {
         vtable2 = get_vfunc(edge, table, tree_size);
-        temp_CC = vtable2[0];
+        temp_coal = vtable2[0];
         nbLabel = edge->getVertexId(); // Note!
       }
       if (nbLabel < curMin) {
@@ -348,7 +290,7 @@ __global__ void ConnectedComponent_vptr(VirtVertex<int, int> **vertex,
      * Set my new label
          */
     vtable = get_vfunc(vertex[tid], table, tree_size);
-    temp_CC = vtable[3];
+    temp_coal = vtable[3];
     vertex[tid]->setValue(curMin);
     int label = curMin;
 
@@ -359,15 +301,15 @@ __global__ void ConnectedComponent_vptr(VirtVertex<int, int> **vertex,
       for (int i = 0; i < numEdges; i++) {
         ChiEdge<int> *edge;
         vtable = get_vfunc(vertex[tid], table, tree_size);
-        temp_CC = vtable[11];
+        temp_coal = vtable[11];
         edge = vertex[tid]->edge(i);
         int edgeValue;
         vtable2 = get_vfunc(edge, table, tree_size);
-        temp_CC = vtable2[1];
+        temp_coal = vtable2[1];
         edgeValue = edge->getValue();
         if (edgeValue > label) {
           vtable2 = get_vfunc(edge, table, tree_size);
-          temp_CC = vtable2[2];
+          temp_coal = vtable2[2];
           edge->setValue(label);
         }
       }
@@ -375,78 +317,21 @@ __global__ void ConnectedComponent_vptr(VirtVertex<int, int> **vertex,
       // Special case for first iteration to avoid overwriting
       int numOutEdge;
       vtable = get_vfunc(vertex[tid], table, tree_size);
-      temp_CC = vtable[6];
+      temp_coal = vtable[6];
       numOutEdge = vertex[tid]->numOutEdges();
       for (int i = 0; i < numOutEdge; i++) {
         ChiEdge<int> *outEdge;
         vtable = get_vfunc(vertex[tid], table, tree_size);
-        temp_CC = vtable[8];
+        temp_coal = vtable[8];
         outEdge = vertex[tid]->getOutEdge(i);
         vtable2 = get_vfunc(outEdge, table, tree_size);
-        temp_CC = vtable2[2];
+        temp_coal = vtable2[2];
         outEdge->setValue(label);
       }
     }
   }
 }
 
-__global__ void ConnectedComponent(VirtVertex<int, int> **vertex,
-                                   GraphChiContext *context, int iteration) {
-  int tid = blockDim.x * blockIdx.x + threadIdx.x;
-  if (tid < context->getNumVertices()) {
-
-    int numEdges;
-    numEdges = vertex[tid]->numEdges();
-    if (iteration == 0) {
-      int vid = vertex[tid]->getId();
-      vertex[tid]->setValue(vid);
-    }
-    int curMin;
-    curMin = vertex[tid]->getValue();
-    for (int i = 0; i < numEdges; i++) {
-      ChiEdge<int> *edge;
-      edge = vertex[tid]->edge(i);
-      int nbLabel;
-      nbLabel = edge->getValue();
-      if (iteration == 0) {
-        nbLabel = edge->getVertexId(); // Note!
-      }
-      if (nbLabel < curMin) {
-        curMin = nbLabel;
-      }
-    }
-
-    /**
-     * Set my new label
-     */
-    vertex[tid]->setValue(curMin);
-    int label = curMin;
-
-    /**
-     * Broadcast my value to neighbors by writing the value to my edges.
-     */
-    if (iteration > 0) {
-      for (int i = 0; i < numEdges; i++) {
-        ChiEdge<int> *edge;
-        edge = vertex[tid]->edge(i);
-        int edgeValue;
-        edgeValue = edge->getValue();
-        if (edgeValue > label) {
-          edge->setValue(label);
-        }
-      }
-    } else {
-      // Special case for first iteration to avoid overwriting
-      int numOutEdge;
-      numOutEdge = vertex[tid]->numOutEdges();
-      for (int i = 0; i < numOutEdge; i++) {
-        ChiEdge<int> *outEdge;
-        outEdge = vertex[tid]->getOutEdge(i);
-        outEdge->setValue(label);
-      }
-    }
-  }
-}
 
 __global__ void copyBack(VirtVertex<int, int> **vertex,
                          GraphChiContext *context, int *cc) {
@@ -456,7 +341,7 @@ __global__ void copyBack(VirtVertex<int, int> **vertex,
   range_tree_node *table = range_tree;
   if (tid < context->getNumVertices()) {
     vtable = get_vfunc(vertex[tid], table, tree_size);
-    temp_copyBack = vtable[1];
+    temp_coal = vtable[1];
     cc[tid] = vertex[tid]->getValue();
   }
 }

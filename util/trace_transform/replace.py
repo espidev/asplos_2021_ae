@@ -36,7 +36,7 @@ def extract_vfunc_insts(vfunc_lines):
         special_inst = special_inst + str(e) + " "
     return special_inst
 
-def replace(trace_dir, vfc, outpath):
+def replace(trace_dir, vfc, outpath, options):
     for (fname, vfc_traces) in vfc:
         vfc_traces.reset_iterator()
         sf = serial_file.serial_file(trace_dir + '/' + fname, "r")
@@ -46,7 +46,10 @@ def replace(trace_dir, vfc, outpath):
         vfunc_lines_idx = 0
         while line:
             if line[:-1].split(' ')[0] == 'insts':
-                line = "insts = ", str(vfc_traces.get_insts() + vfc_traces.get_vfc_number() * 2)
+                if options.load:
+                    line = "insts = ", str(vfc_traces.get_insts() + vfc_traces.get_vfc_number() * 2)
+                else:
+                    line = "insts = ", str(vfc_traces.get_insts() + vfc_traces.get_vfc_number())
                 out.writelines(line)
                 out.write("\n")
             else:
@@ -54,9 +57,10 @@ def replace(trace_dir, vfc, outpath):
                     if vfunc_lines_idx == 3:
                         vfunc_lines[vfunc_lines_idx] = line
                         vfunc_lines_idx = 0
-                        line = extract_loads(vfunc_lines)
-                        out.writelines(line)
-                        out.write("\n")
+                        if options.load:
+                            line = extract_loads(vfunc_lines)
+                            out.writelines(line)
+                            out.write("\n")
                         line = extract_vfunc_insts(vfunc_lines)
                         out.writelines(line)
                         out.write("\n")

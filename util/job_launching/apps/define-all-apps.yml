@@ -490,21 +490,57 @@ oop:
             - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
         - RAY:
             - 512 512 100
+oop_cuda_tp_no:
+    exec_dir: "../../benchmarks/bin/$CUDA_VERSION/release/"
+    data_dirs: "../../benchmarks/data_dirs/"
+    execs:
+        - PR_CUDA_TP_NO:
+            - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
+        - PRV_CUDA_TP_NO:
+            - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
+        - CC_CUDA_TP_NO:
+            - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
+        - CCV_CUDA_TP_NO:
+            - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
+        - BFS_CUDA_TP_NO:
+            - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
+        - BFSV_CUDA_TP_NO:
+            - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
+        - RAY_CUDA_TP_NO:
+            - 512 512 100
+oop_cuda_tp_load:
+    exec_dir: "../../benchmarks/bin/$CUDA_VERSION/release/"
+    data_dirs: "../../benchmarks/data_dirs/"
+    execs:
+        - PR_CUDA_TP_CUDA_TP_LOAD:
+            - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
+        - PRV_CUDA_TP_CUDA_TP_LOAD:
+            - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
+        - CC_CUDA_TP_CUDA_TP_LOAD:
+            - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
+        - CCV_CUDA_TP_CUDA_TP_LOAD:
+            - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
+        - BFS_CUDA_TP_CUDA_TP_LOAD:
+            - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
+        - BFSV_CUDA_TP_CUDA_TP_LOAD:
+            - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
+        - RAY_CUDA_TP_CUDA_TP_LOAD:
+            - 512 512 100
 
 oop_concord:
     exec_dir: "../../benchmarks/bin/$CUDA_VERSION/release/"
     data_dirs: "../../benchmarks/data_dirs/oop-concord/"
     execs:
-        #- PR_CONCORD:
-        #    - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
-        #- PRV_CONCORD:
-        #    - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
-        #- CC_CONCORD:
-        #    - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
-        #- CCV_CONCORD:
-        #    - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
-        #- BFS_CONCORD:
-        #    - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
+        - PR_CONCORD:
+           - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
+        - PRV_CONCORD:
+           - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
+        - CC_CONCORD:
+           - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
+        - CCV_CONCORD:
+           - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
+        - BFS_CONCORD:
+           - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
         - BFSV_CONCORD:
             - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
         - RAY_CONCORD:
@@ -528,52 +564,255 @@ oop_mem:
             - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
         - RAY_MEM:
             - 512 512 100
+oop_cuda_tp_load:
+    exec_dir: "../../benchmarks/bin/$CUDA_VERSION/release/"
+    data_dirs: "../../benchmarks/data_dirs/oop-mem/"
+    execs:
+        - PR_CUDA_TP_LOAD:
+            - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
+        - PRV_CUDA_TP_LOAD:
+            - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
+        - CC_CUDA_TP_LOAD:
+            - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
+        - CCV_CUDA_TP_LOAD:
+            - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
+        - BFS_CUDA_TP_LOAD:
+            - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
+        - BFSV_CUDA_TP_LOAD:
+            - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
+        - RAY_CUDA_TP_LOAD:
+            - 512 512 100            
+oop_cuda_tp_no:
+    exec_dir: "../../benchmarks/bin/$CUDA_VERSION/release/"
+    data_dirs: "../../benchmarks/data_dirs/oop-mem/"
+    execs:
+        - PR_CUDA_TP_NO:
+            - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
+        - PRV_CUDA_TP_NO:
+            - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
+        - CC_CUDA_TP_NO:
+            - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
+        - CCV_CUDA_TP_NO:
+            - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
+        - BFS_CUDA_TP_NO:
+            - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
+        - BFSV_CUDA_TP_NO:
+            - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
+        - RAY_CUDA_TP_NO:
+            - 512 512 100
 
+dynasoar_cuda:
+    exec_dir: "../../benchmarks/bin/$CUDA_VERSION/release/"
+    data_dirs: "../../benchmarks/data_dirs"
+    execs:
+        # - collision:
+        #    -
+        - generationV:
+            -
+        - structureV:
+            -
+        - trafficV:
+            -
+        - game-of-life:
+            - ./data/data/tm.pgm
+        # - nbodyV_CONCORD:
+        #    -
+dynasoar_cuda_tp_no:
+    exec_dir: "../../benchmarks/bin/$CUDA_VERSION/release/"
+    data_dirs: "../../benchmarks/data_dirs"
+    execs:
+        # - collision:
+        #    -
+        - generationV_CUDA_TP_NO:
+            -
+        - structureV_CUDA_TP_NO:
+            -
+        - trafficV_CUDA_TP_NO:
+            -
+        - game-of-life_CUDA_TP_NO:
+            - ./data/data/tm.pgm
+        # - nbodyV_CONCORD:
+        #    -
+dynasoar_cuda_tp_load:
+    exec_dir: "../../benchmarks/bin/$CUDA_VERSION/release/"
+    data_dirs: "../../benchmarks/data_dirs"
+    execs:
+        # - collision:
+        #    -
+        - generationV_CUDA_TP_LOAD:
+            -
+        - structureV_CUDA_TP_LOAD:
+            -
+        - trafficV_CUDA_TP_LOAD:
+            -
+        - game-of-life_CUDA_TP_LOAD:
+            - ./data/data/tm.pgm
+        # - nbodyV_CONCORD:
+        #    -
 dynasoar:
     exec_dir: "../../benchmarks/bin/$CUDA_VERSION/release/"
     data_dirs: "../../benchmarks/data_dirs"
     execs:
-        #- collision:
-        #    -
-        #- collision_MEM:
-        #    -
-        #- collision_CONCORD:
-        #    -
-        #- collision_COAL:
-        #    -
+        - collision:
+           -
+        - collision_CONCORD:
+           -
+        - collision_MEM:
+           -
+        - collision_TP_LOAD:
+           -
+        - collision_TP_NO:
+           -
+        - collision_COAL:
+           -
         - generationV:
+            -
+        - generationV_CONCORD:
             -
         - generationV_MEM:
             -
-        - generationV_CONCORD:
+        - generationV_TP_LOAD:
+            -
+        - generationV_TP_NO:
             -
         - generationV_COAL:
             -
         - structureV:
             -
+        - structureV_CONCORD:
+            -
         - structureV_MEM:
             -
-        - structureV_CONCORD:
+        - structureV_TP_LOAD:
+            -
+        - structureV_TP_NO:
             -
         - structureV_COAL:
             -
         - trafficV:
             -
+        - trafficV_CONCORD:
+            -
         - trafficV_MEM:
             -
-        - trafficV_CONCORD:
+        - trafficV_TP_LOAD:
+            -
+        - trafficV_TP_NO:
             -
         - trafficV_COAL:
             -
         - game-of-life:
-            - ./data/tm.pgm
-        - game-of-life_MEM:
-            - ./data/tm.pgm
+            - ./data/data/tm.pgm
         - game-of-life_CONCORD:
-            - ./data/tm.pgm
+            - ./data/data/tm.pgm
+        - game-of-life_MEM:
+            - ./data/data/tm.pgm
+        - game-of-life_TP_LOAD:
+            - ./data/data/tm.pgm
+        - game-of-life_TP_NO:
+            - ./data/data/tm.pgm
         - game-of-life_COAL:
-            - ./data/tm.pgm
+            - ./data/data/tm.pgm
+        # - nbodyV:
+        #    -
+        # - nbodyV_MEM:
+        #    -
+        # - nbodyV_CONCORD:
+        #    -
+        # - nbodyV_COAL:
+        #    -
+dynasoar_mem:
+    exec_dir: "../../benchmarks/bin/$CUDA_VERSION/release/"
+    data_dirs: "../../benchmarks/data_dirs"
+    execs:
+        # - collision_MEM:
+        #    -
+        - generationV_MEM:
+            -
+        - structureV_MEM:
+            -
+        - trafficV_MEM:
+            -
+        - game-of-life_MEM:
+            - ./data/data/tm.pgm
+        # - nbodyV_MEM:
+        #    -
+dynasoar_tp_no:
+    exec_dir: "../../benchmarks/bin/$CUDA_VERSION/release/"
+    data_dirs: "../../benchmarks/data_dirs"
+    execs:
+        # - collision_TP_NO:
+        #    -
+        - generationV_TP_NO:
+            -
+        - structureV_TP_NO:
+            -
+        - trafficV_TP_NO:
+            -
+        - game-of-life_TP_NO:
+            - ./data/data/tm.pgm
+        # - nbodyV_TP_NO:
+        #    -
+dynasoar_tp_load:
+    exec_dir: "../../benchmarks/bin/$CUDA_VERSION/release/"
+    data_dirs: "../../benchmarks/data_dirs"
+    execs:
+        # - collision_TP_LOAD:
+        #    -
+        - generationV_TP_LOAD:
+            -
+        - structureV_TP_LOAD:
+            -
+        - trafficV_TP_LOAD:
+            -
+        - game-of-life_TP_LOAD:
+            - ./data/data/tm.pgm
+        # - nbodyV_TP_LOAD:
+        #    -
+dynasoar_coal:
+    exec_dir: "../../benchmarks/bin/$CUDA_VERSION/release/"
+    data_dirs: "../../benchmarks/data_dirs"
+    execs:
+        - collision_COAL:
+           -
+        - generationV_COAL:
+            -
+        # - structureV_COAL:
+        #     -
+        # - trafficV_COAL:
+        #     -
+        # - game-of-life_COAL:
+        #     - ./data/data/tm.pgm
+        # # - nbodyV_COAL:
+        #    -
 
+dynasoar_concord:
+    exec_dir: "../../benchmarks/bin/$CUDA_VERSION/release/"
+    data_dirs: "../../benchmarks/data_dirs"
+    execs:
+        - collision_CONCORD:
+           -
+        # - generationV_CONCORD:
+        #     -
+        # - structureV_CONCORD:
+        #     -
+        # - trafficV_CONCORD:
+        #     -
+        # - game-of-life_CONCORD:
+        #     - ./data/data/tm.pgm
+        # - nbodyV_CONCORD:
+        #    -
+
+
+# dynasoar_gof:
+#     - game-of-life:
+#         - ./data/data/tm.pgm
+#     - game-of-life_CONCORD:
+#         - ./data/data/tm.pgm
+#     - game-of-life_MEM:
+#         - ./data/data/tm.pgm
+#     - game-of-life_COAL:
+#         - ./data/data/tm.pgm
 oop_coal:
     exec_dir: "../../benchmarks/bin/$CUDA_VERSION/release/"
     data_dirs: "../../benchmarks/data_dirs/oop-coal/"

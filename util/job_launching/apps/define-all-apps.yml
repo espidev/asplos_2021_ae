@@ -653,29 +653,29 @@ dynasoar:
     exec_dir: "../../benchmarks/bin/$CUDA_VERSION/release/"
     data_dirs: "../../benchmarks/data_dirs"
     execs:
-        - collision:
-           -
-        - collision_CONCORD:
-           -
-        - collision_MEM:
-           -
-        - collision_TP_LOAD:
-           -
-        - collision_TP_NO:
-           -
-        - collision_COAL:
-           -
+#        - collision:
+#           -
+#        - collision_CONCORD:
+#           -
+#        - collision_MEM:
+#           -
+#        - collision_TP_LOAD:
+#           -
+#        - collision_TP_NO:
+#           -
+#        - collision_COAL:
+#           -
         - generationV:
             -
         - generationV_CONCORD:
             -
         - generationV_MEM:
             -
+        - generationV_COAL:
+            -
         - generationV_TP_LOAD:
             -
         - generationV_TP_NO:
-            -
-        - generationV_COAL:
             -
         - structureV:
             -
@@ -683,11 +683,11 @@ dynasoar:
             -
         - structureV_MEM:
             -
+        - structureV_COAL:
+            -
         - structureV_TP_LOAD:
             -
         - structureV_TP_NO:
-            -
-        - structureV_COAL:
             -
         - trafficV:
             -
@@ -695,11 +695,11 @@ dynasoar:
             -
         - trafficV_MEM:
             -
+        - trafficV_COAL:
+            -
         - trafficV_TP_LOAD:
             -
         - trafficV_TP_NO:
-            -
-        - trafficV_COAL:
             -
         - game-of-life:
             - ./data/data/tm.pgm
@@ -707,11 +707,11 @@ dynasoar:
             - ./data/data/tm.pgm
         - game-of-life_MEM:
             - ./data/data/tm.pgm
+        - game-of-life_COAL:
+            - ./data/data/tm.pgm
         - game-of-life_TP_LOAD:
             - ./data/data/tm.pgm
         - game-of-life_TP_NO:
-            - ./data/data/tm.pgm
-        - game-of-life_COAL:
             - ./data/data/tm.pgm
         # - nbodyV:
         #    -

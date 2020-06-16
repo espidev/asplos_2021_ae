@@ -737,6 +737,61 @@ dynasoar_mem:
             - ./data/data/tm.pgm
         # - nbodyV_MEM:
         #    -
+
+
+multiple_itr:
+    exec_dir: "../../benchmarks/bin/$CUDA_VERSION/release/"
+    data_dirs: "../../benchmarks/data_dirs"
+    execs:
+        - trafficV_5itr_TP_CUDA_LOAD:
+            -
+        - CC_2itr_TP_CUDA_LOAD:
+            - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
+        - BFS_2itr_TP_CUDA_LOAD:
+            - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
+        - trafficV_5itr_TP_CUDA_NO:
+            -
+        - CC_2itr_TP_CUDA_NO:
+            - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
+        - BFS_2itr_TP_CUDA_NO:
+            - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
+        - trafficV_5itr_TP_LOAD:
+            -
+        - CC_2itr_TP_LOAD:
+            - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
+        - BFS_2itr_TP_LOAD:
+            - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
+        - trafficV_5itr_TP_NO:
+            -
+        - CC_2itr_TP_NO:
+            - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
+        - BFS_2itr_TP_NO:
+            - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
+        - trafficV_5itr_CUDA:
+            -
+        - CC_2itr:
+            - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
+        - BFS_2itr:
+            - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
+        - trafficV_5itr_CONCORD:
+            -
+        - CC_2itr_CONCORD:
+            - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
+        - BFS_2itr_CONCORD:
+            - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
+        - trafficV_5itr_COAL:
+            -
+        - CC_2itr_COAL:
+            - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
+        - BFS_2itr_COAL:
+            - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
+        - trafficV_5itr_MEM:
+            -
+        - CC_2itr_MEM:
+            - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
+        - BFS_2itr_MEM:
+            - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
+
 dynasoar_tp_no:
     exec_dir: "../../benchmarks/bin/$CUDA_VERSION/release/"
     data_dirs: "../../benchmarks/data_dirs"

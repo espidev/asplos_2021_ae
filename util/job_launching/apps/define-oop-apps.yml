@@ -70,9 +70,9 @@ oop_all_ordered:
             - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
         - BFS_COAL:
             - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
-        - BFS_TP_NO:
-            - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
         - BFS_TP_LOAD:
+            - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
+        - BFS_TP_NO:
             - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
         - BFSV:
             - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1

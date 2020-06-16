@@ -11,7 +11,7 @@ def extract_loads(vfunc_lines):
     line.append("1")
     line.append(obj_reg)
     line.append("LD.E.64")
-    line.append("1 R1 8 0 0x0000000000fffc04 0 0")
+    line.append("1 R1 8 1 0x0000000000fffc04 0 0")
     special_inst = ""
     for e in line:
         special_inst = special_inst + str(e) + " "

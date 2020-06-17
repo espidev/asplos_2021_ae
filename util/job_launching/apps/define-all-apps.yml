@@ -512,19 +512,19 @@ oop_cuda_tp_load:
     exec_dir: "../../benchmarks/bin/$CUDA_VERSION/release/"
     data_dirs: "../../benchmarks/data_dirs/"
     execs:
-        - PR_CUDA_TP_CUDA_TP_LOAD:
+        - PR_CUDA_TP_LOAD:
             - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
-        - PRV_CUDA_TP_CUDA_TP_LOAD:
+        - PRV_CUDA_TP_LOAD:
             - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
-        - CC_CUDA_TP_CUDA_TP_LOAD:
+        - CC_CUDA_TP_LOAD:
             - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
-        - CCV_CUDA_TP_CUDA_TP_LOAD:
+        - CCV_CUDA_TP_LOAD:
             - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
-        - BFS_CUDA_TP_CUDA_TP_LOAD:
+        - BFS_CUDA_TP_LOAD:
             - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
-        - BFSV_CUDA_TP_CUDA_TP_LOAD:
+        - BFSV_CUDA_TP_LOAD:
             - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
-        - RAY_CUDA_TP_CUDA_TP_LOAD:
+        - RAY_CUDA_TP_LOAD:
             - 512 512 100
 
 oop_concord:
@@ -564,41 +564,41 @@ oop_mem:
             - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
         - RAY_MEM:
             - 512 512 100
-oop_cuda_tp_load:
+oop_tp_load:
     exec_dir: "../../benchmarks/bin/$CUDA_VERSION/release/"
     data_dirs: "../../benchmarks/data_dirs/oop-mem/"
     execs:
-        - PR_CUDA_TP_LOAD:
+        - PR_TP_LOAD:
             - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
-        - PRV_CUDA_TP_LOAD:
+        - PRV_TP_LOAD:
             - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
-        - CC_CUDA_TP_LOAD:
+        - CC_TP_LOAD:
             - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
-        - CCV_CUDA_TP_LOAD:
+        - CCV_TP_LOAD:
             - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
-        - BFS_CUDA_TP_LOAD:
+        - BFS_TP_LOAD:
             - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
-        - BFSV_CUDA_TP_LOAD:
+        - BFSV_TP_LOAD:
             - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
-        - RAY_CUDA_TP_LOAD:
+        - RAY_TP_LOAD:
             - 512 512 100            
-oop_cuda_tp_no:
+oop_tp_no:
     exec_dir: "../../benchmarks/bin/$CUDA_VERSION/release/"
     data_dirs: "../../benchmarks/data_dirs/oop-mem/"
     execs:
-        - PR_CUDA_TP_NO:
+        - PR_TP_NO:
             - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
-        - PRV_CUDA_TP_NO:
+        - PRV_TP_NO:
             - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
-        - CC_CUDA_TP_NO:
+        - CC_TP_NO:
             - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
-        - CCV_CUDA_TP_NO:
+        - CCV_TP_NO:
             - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
-        - BFS_CUDA_TP_NO:
+        - BFS_TP_NO:
             - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
-        - BFSV_CUDA_TP_NO:
+        - BFSV_TP_NO:
             - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
-        - RAY_CUDA_TP_NO:
+        - RAY_TP_NO:
             - 512 512 100
 
 dynasoar_cuda:
@@ -713,14 +713,18 @@ dynasoar:
             - ./data/data/tm.pgm
         - game-of-life_TP_NO:
             - ./data/data/tm.pgm
-        # - nbodyV:
-        #    -
-        # - nbodyV_MEM:
-        #    -
-        # - nbodyV_CONCORD:
-        #    -
-        # - nbodyV_COAL:
-        #    -
+        - trafficV_5itr_CUDA:
+            -
+        - trafficV_5itr_CONCORD:
+            -
+        - trafficV_5itr_MEM:
+            -
+        - trafficV_5itr_COAL:
+            -
+        - trafficV_5itr_TP_LOAD:
+            -
+        - trafficV_5itr_TP_NO:
+           -
 dynasoar_mem:
     exec_dir: "../../benchmarks/bin/$CUDA_VERSION/release/"
     data_dirs: "../../benchmarks/data_dirs"
@@ -737,7 +741,7 @@ dynasoar_mem:
             - ./data/data/tm.pgm
         # - nbodyV_MEM:
         #    -
-
+        
 
 multiple_itr:
     exec_dir: "../../benchmarks/bin/$CUDA_VERSION/release/"
@@ -745,52 +749,52 @@ multiple_itr:
     execs:
         - trafficV_5itr_TP_CUDA_LOAD:
             -
-        - CC_2itr_TP_CUDA_LOAD:
-            - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
-        - BFS_2itr_TP_CUDA_LOAD:
-            - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
-        - trafficV_5itr_TP_CUDA_NO:
-            -
-        - CC_2itr_TP_CUDA_NO:
-            - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
-        - BFS_2itr_TP_CUDA_NO:
-            - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
+        # - CC_2itr_TP_CUDA_LOAD:
+        #     - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
+        # - BFS_2itr_TP_CUDA_LOAD:
+        #     - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
+        # - trafficV_5itr_TP_CUDA_NO:
+        #     -
+        # - CC_2itr_TP_CUDA_NO:
+        #     - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
+        # - BFS_2itr_TP_CUDA_NO:
+        #     - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
         - trafficV_5itr_TP_LOAD:
             -
-        - CC_2itr_TP_LOAD:
-            - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
-        - BFS_2itr_TP_LOAD:
-            - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
-        - trafficV_5itr_TP_NO:
-            -
-        - CC_2itr_TP_NO:
-            - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
-        - BFS_2itr_TP_NO:
-            - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
-        - trafficV_5itr_CUDA:
-            -
-        - CC_2itr:
-            - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
-        - BFS_2itr:
-            - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
-        - trafficV_5itr_CONCORD:
-            -
-        - CC_2itr_CONCORD:
-            - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
-        - BFS_2itr_CONCORD:
-            - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
-        - trafficV_5itr_COAL:
-            -
-        - CC_2itr_COAL:
-            - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
-        - BFS_2itr_COAL:
-            - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
-        - trafficV_5itr_MEM:
-            -
-        - CC_2itr_MEM:
-            - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
-        - BFS_2itr_MEM:
-            - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
+        # - CC_2itr_TP_LOAD:
+        #     - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
+        # - BFS_2itr_TP_LOAD:
+        #     - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
+        # - trafficV_5itr_TP_NO:
+        #     -
+        # - CC_2itr_TP_NO:
+        #     - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
+        # - BFS_2itr_TP_NO:
+        #     - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
+        # - trafficV_5itr_CUDA:
+        #     -
+        # - CC_2itr:
+        #     - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
+        # - BFS_2itr:
+        #     - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
+        # - trafficV_5itr_CONCORD:
+        #     -
+        # - CC_2itr_CONCORD:
+        #     - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
+        # - BFS_2itr_CONCORD:
+        #     - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
+        # - trafficV_5itr_COAL:
+        #     -
+        # - CC_2itr_COAL:
+        #     - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
+        # - BFS_2itr_COAL:
+        #     - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
+        # - trafficV_5itr_MEM:
+        #     -
+        # - CC_2itr_MEM:
+        #     - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
+        # - BFS_2itr_MEM:
+        #     - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
 
 dynasoar_tp_no:
     exec_dir: "../../benchmarks/bin/$CUDA_VERSION/release/"

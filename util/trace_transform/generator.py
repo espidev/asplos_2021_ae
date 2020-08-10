@@ -30,7 +30,9 @@ parser.add_option("-O", "--output", dest="output",
 parser.add_option("-C", "--config", dest="config", action="store",
         help="Configures to perform traces on", default="search")
 parser.add_option("-L", "--load", dest="load", action="store_true",
-        help="Add load after special instruction", default=False)
+        help="Add load before special instruction", default=False)
+parser.add_option("-R", "--risc", dest="risc", action="store_true",
+        help="Add typepointer with risc instruction only", default=False)
 (options, args) = parser.parse_args()
 
 common.load_defined_yamls()
@@ -141,7 +143,7 @@ for bench in benchmarks:
                     "DADD" : 1,
                     "DFMA" : 1,
                     "DMUL" : 1,
-                    "DSETP" : 1,
+            "DSETP" : 1,
                     #Integer Instructions
                     "BMSK" : 1,
                     "BREV" : 1,

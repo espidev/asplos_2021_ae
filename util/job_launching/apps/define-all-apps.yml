@@ -471,7 +471,7 @@ pannotia:
 #            - ./data/USA-road-d.NW.gr 0
 #            - ./data/USA-road-d.NY.gr 0
 
-oop-mem:
+oo-mem:
     exec_dir: "../../benchmarks/bin/$CUDA_VERSION/release/"
     data_dirs: "../../benchmarks/data_dirs/"
     execs:

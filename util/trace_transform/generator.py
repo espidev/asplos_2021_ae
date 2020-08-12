@@ -171,7 +171,6 @@ for bench in benchmarks:
                     "SHR" : 1,
                     "VABSDIFF" : 1,
                     "VABSDIFF4" : 1,
-                    "MOV" : 1,
                     #Conversion Instructions
                     "F2F" : 1,
                     "F2I" : 1,

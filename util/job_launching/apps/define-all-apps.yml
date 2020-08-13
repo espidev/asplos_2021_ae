@@ -498,6 +498,33 @@ oo-mem:
         - RAY_MEM:
             - 512 512 100
 
+oo-cuda:
+    exec_dir: "../../benchmarks/bin/$CUDA_VERSION/release/"
+    data_dirs: "../../benchmarks/data_dirs/"
+    execs:
+        - trafficV:
+            -
+        - game-of-life:
+            - ./data/data/tm.pgm
+        - structureV:
+            -
+        - generationV:
+            -
+        - BFS:
+            - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
+        - CC:
+            - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
+        - PR:
+            - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
+        - BFSV:
+            - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
+        - CCV:
+            - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
+        - PRV:
+            - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
+        - RAY:
+            - 512 512 100
+
 oo-all:
     exec_dir: "../../benchmarks/bin/$CUDA_VERSION/release/"
     data_dirs: "../../benchmarks/data_dirs/"

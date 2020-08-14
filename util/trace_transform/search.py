@@ -19,7 +19,7 @@ def search(path, fname):
     ptrn = pattern(8, "LD.E.64.SYS", 10, "R[0-9]*")
     ptrns.append(ptrn)
     # create buffer
-    buf = ring_buffer(50)
+    buf = ring_buffer(100)
     #search
     res = traces()
     f = open(path + '/' + fname, "r")

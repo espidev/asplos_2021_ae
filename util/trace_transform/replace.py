@@ -2,21 +2,60 @@
 import pattern
 import serial_file
 
+def extract_address(vfunc_lines):
+    obj_reg = vfunc_lines[0].split(' ')[10]
+    call = vfunc_lines[3].split(' ')
+    line = call[0:6]
+    line.append("1")
+    line.append(obj_reg)
+    line.append("SHR")
+    line.append("1")
+    line.append(obj_reg)
+    line.append("0")
+    special_inst = ""
+    for e in line:
+        special_inst = special_inst + str(e) + " "
+    special_inst = special_inst + "\n"
+    obj_reg = vfunc_lines[0].split(' ')[10]
+    call = vfunc_lines[3].split(' ')
+    line = call[0:6]
+    line.append("1")
+    line.append(obj_reg)
+    line.append("IADD3")
+    line.append("1")
+    line.append(obj_reg)
+    line.append("0")
+    for e in line:
+        special_inst = special_inst + str(e) + " "
+    return special_inst
+
 def extract_loads(vfunc_lines):
     obj_reg = vfunc_lines[0].split(' ')[10]
-    offset = vfunc_lines[1].split(' ')[-2]
-    obj_addr = vfunc_lines[0].split(' ')[11:-2]
     call = vfunc_lines[3].split(' ')
     line = call[0:6]
     line.append("1")
     line.append(obj_reg)
     line.append("LD.E.64")
-    line.append("1 R1 8 1 0x0000000000fffc04 0 0")
+    line.append("1")
+    line.append(obj_reg)
+    line.append("8 1 0x0000000000fffc04 0 0")
     special_inst = ""
     for e in line:
         special_inst = special_inst + str(e) + " "
     return special_inst
 
+def extract_branch(vfunc_lines):
+    obj_reg = vfunc_lines[0].split(' ')[10]
+    call = vfunc_lines[3].split(' ')
+    line = call[0:6]
+    line.append("1")
+    line.append(obj_reg)
+    line.append("CALL.REL.NOINC")
+    line.append("0 0")
+    special_inst = ""
+    for e in line:
+        special_inst = special_inst + str(e) + " "
+    return special_inst
 
 def extract_vfunc_insts(vfunc_lines):
     obj_reg = vfunc_lines[0].split(' ')[10]
@@ -48,6 +87,8 @@ def replace(trace_dir, vfc, outpath, options):
             if line[:-1].split(' ')[0] == 'insts':
                 if options.load:
                     line = "insts = ", str(vfc_traces.get_insts() + vfc_traces.get_vfc_number() * 2)
+                elif options.risc:
+                    line = "insts = ", str(vfc_traces.get_insts() + vfc_traces.get_vfc_number() * 4)
                 else:
                     line = "insts = ", str(vfc_traces.get_insts() + vfc_traces.get_vfc_number())
                 out.writelines(line)
@@ -57,13 +98,24 @@ def replace(trace_dir, vfc, outpath, options):
                     if vfunc_lines_idx == 3:
                         vfunc_lines[vfunc_lines_idx] = line
                         vfunc_lines_idx = 0
-                        if options.load:
+                        if options.risc:
+                            line = extract_address(vfunc_lines)
+                            out.writelines(line)
+                            out.write("\n")
                             line = extract_loads(vfunc_lines)
                             out.writelines(line)
                             out.write("\n")
-                        line = extract_vfunc_insts(vfunc_lines)
-                        out.writelines(line)
-                        out.write("\n")
+                            line = extract_branch(vfunc_lines)
+                            out.writelines(line)
+                            out.write("\n")
+                        else:
+                            if options.load:
+                                line = extract_loads(vfunc_lines)
+                                out.writelines(line)
+                                out.write("\n")
+                            line = extract_vfunc_insts(vfunc_lines)
+                            out.writelines(line)
+                            out.write("\n")
                     else:
                         vfunc_lines[vfunc_lines_idx] = line
                         vfunc_lines_idx += 1

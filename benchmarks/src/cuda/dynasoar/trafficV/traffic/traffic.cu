@@ -666,7 +666,14 @@ void compact_car_array() {
 int main(int /*argc*/, char ** /*argv*/) {
   cudaDeviceSetLimit(cudaLimitMallocHeapSize, 4ULL * 1024 * 1024 * 1024);
 
+  high_resolution_clock::time_point t1 = high_resolution_clock::now();
+
   allocate_memory();
+  high_resolution_clock::time_point t2 = high_resolution_clock::now();
+  duration<double> alloc_time = duration_cast<duration<double>>(t2 - t1);
+
+  printf("alloc_time : %f \nvptr patching : %f \n",alloc_time.count() );
+
   printf("mem alloc done\n");
   create_street_network();
 

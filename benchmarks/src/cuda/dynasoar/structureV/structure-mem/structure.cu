@@ -483,12 +483,14 @@ void load_dataset(Dataset &dataset) {
     cudaFree(host_springs);
 }
 
-int main(int /*argc*/, char ** /*argv*/) {
+int main(int /*argc*/, char ** argv) {
     // Allocate memory.
 
     cudaDeviceSetLimit(cudaLimitMallocHeapSize, 4ULL * 1024 * 1024 * 1024);
     mem_alloc shared_mem(4ULL * 1024 * 1024 * 1024);
-    obj_alloc my_obj_alloc(&shared_mem);
+    obj_alloc my_obj_alloc(&shared_mem, atoll(argv[1]));
+    high_resolution_clock::time_point t1 = high_resolution_clock::now();
+
     dev_nodes =    (NodeBase **) my_obj_alloc.calloc<NodeBase *> (kMaxNodes);
     dev_springs = (SpringBase **) my_obj_alloc.calloc<SpringBase *> (kMaxSprings);
     // cudaMalloc(&dev_nodes, sizeof(NodeBase *) * kMaxNodes);
@@ -502,7 +504,15 @@ int main(int /*argc*/, char ** /*argv*/) {
     // cudaMemcpyToSymbol(dev_springs, &host_springs, sizeof(Spring *), 0,
     //                    cudaMemcpyHostToDevice);
     initialize_memory(&my_obj_alloc);
+    high_resolution_clock::time_point t2 = high_resolution_clock::now();
+
     my_obj_alloc.toDevice();
+    high_resolution_clock::time_point t3 = high_resolution_clock::now();
+    duration<double> alloc_time = duration_cast<duration<double>>(t2 - t1);
+    duration<double> vptr_time = duration_cast<duration<double>>(t3 - t2);
+  
+    printf("alloc_time : %f \nvptr patching : %f \n",alloc_time.count(),vptr_time.count() );
+    printf("number of objs:%d\n", kMaxNodes + kMaxSprings);
     Dataset dataset;
     random_dataset(dataset);
     load_dataset(dataset);

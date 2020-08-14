@@ -97,7 +97,7 @@ void print_vectorf(float *vector, int num);
 int main(int argc, char **argv) {
     char *tmpchar;
     mem_alloc shared_mem(4ULL * 1024 * 1024 * 1024);
-    obj_alloc my_obj_alloc(&shared_mem);
+    obj_alloc my_obj_alloc(&shared_mem, atoll(argv[3]));
     int num_nodes;
     int num_edges;
     int file_format = 1;
@@ -105,7 +105,7 @@ int main(int argc, char **argv) {
 
     cudaError_t err = cudaSuccess;
 
-    if (argc == 3) {
+    if (argc == 4) {
         tmpchar = argv[1];            // Graph inputfile
         file_format = atoi(argv[2]);  // File format
     } else {

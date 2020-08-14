@@ -509,12 +509,12 @@ void load_dataset(Dataset &dataset) {
     cudaFree(host_springs);
 }
 
-int main(int /*argc*/, char ** /*argv*/) {
+int main(int /*argc*/, char ** argv) {
     // Allocate memory.
 
     cudaDeviceSetLimit(cudaLimitMallocHeapSize, 4ULL * 1024 * 1024 * 1024);
     mem_alloc shared_mem(4ULL * 1024 * 1024 * 1024);
-    obj_alloc my_obj_alloc(&shared_mem);
+    obj_alloc my_obj_alloc(&shared_mem, atoll(argv[1]));
     dev_nodes = (NodeBase **)my_obj_alloc.calloc<NodeBase *>(kMaxNodes);
     dev_springs = (SpringBase **)my_obj_alloc.calloc<SpringBase *>(kMaxSprings);
     // cudaMalloc(&dev_nodes, sizeof(NodeBase *) * kMaxNodes);

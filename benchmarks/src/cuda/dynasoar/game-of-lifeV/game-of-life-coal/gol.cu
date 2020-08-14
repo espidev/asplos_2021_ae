@@ -300,7 +300,7 @@ int checksum() {
 }
 
 int main(int argc, char **argv) {
-    if (argc != 2) {
+    if (argc != 3) {
         printf("Usage: %s filename.pgm\n", argv[0]);
         exit(1);
     } else {
@@ -309,7 +309,7 @@ int main(int argc, char **argv) {
     }
     cudaDeviceSetLimit(cudaLimitMallocHeapSize, 4ULL * 1024 * 1024 * 1024);
     mem_alloc shared_mem(4ULL * 1024 * 1024 * 1024);
-    obj_alloc my_obj_alloc(&shared_mem);
+    obj_alloc my_obj_alloc(&shared_mem, atoll(argv[2]));
     cudaMemcpyToSymbol(SIZE_X, &dataset.x, sizeof(int), 0,
                        cudaMemcpyHostToDevice);
     cudaMemcpyToSymbol(SIZE_Y, &dataset.y, sizeof(int), 0,

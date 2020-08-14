@@ -312,14 +312,14 @@ int checksum() {
     return result;
 }
 
-int main(int /*argc*/, char ** /*argv*/) {
+int main(int argc, char ** argv) {
 #ifdef OPTION_RENDER
     init_renderer();
 #endif  // OPTION_RENDER
 
     // Allocate memory.
     mem_alloc shared_mem(4ULL * 1024 * 1024 * 1024);
-    obj_alloc my_obj_alloc(&shared_mem);
+    obj_alloc my_obj_alloc(&shared_mem, atoll(argv[1]));
     d_bodies = (BodyType **)my_obj_alloc.calloc<BodyType *>(kNumBodies);
 
     for (int i = 0; i < kNumBodies; i++) {

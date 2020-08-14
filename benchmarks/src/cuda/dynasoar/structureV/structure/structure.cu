@@ -492,8 +492,10 @@ void load_dataset(Dataset &dataset) {
 
 int main(int /*argc*/, char ** /*argv*/) {
   // Allocate memory.
+  using namespace std::chrono;
 
   cudaDeviceSetLimit(cudaLimitMallocHeapSize, 4ULL * 1024 * 1024 * 1024);
+  high_resolution_clock::time_point t1 = high_resolution_clock::now();
   cudaMalloc(&dev_nodes, sizeof(NodeBase *) * kMaxNodes);
   // cudaMemcpyToSymbol(dev_nodes, &host_nodes, sizeof(Node *), 0,
   //                    cudaMemcpyHostToDevice);
@@ -505,6 +507,10 @@ int main(int /*argc*/, char ** /*argv*/) {
   // cudaMemcpyToSymbol(dev_springs, &host_springs, sizeof(Spring *), 0,
   //                    cudaMemcpyHostToDevice);
   initialize_memory();
+  high_resolution_clock::time_point t2 = high_resolution_clock::now();
+  duration<double> alloc_time = duration_cast<duration<double>>(t2 - t1);
+  printf("alloc_time : %f \n",alloc_time.count() );
+
   Dataset dataset;
   random_dataset(dataset);
   load_dataset(dataset);

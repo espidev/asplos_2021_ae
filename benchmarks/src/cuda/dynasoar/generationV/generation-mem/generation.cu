@@ -283,7 +283,7 @@ int checksum() {
     return host_checksum + host_num_candidates;
 }
 
-int main(int /*argc*/, char ** /*argv*/) {
+int main(int /*argc*/, char ** argv) {
     // Load data set.
     dataset = load_burst();
 
@@ -300,16 +300,27 @@ int main(int /*argc*/, char ** /*argv*/) {
 
     cudaDeviceSetLimit(cudaLimitMallocHeapSize, 4ULL * 1024 * 1024 * 1024);
     mem_alloc shared_mem(4ULL * 1024 * 1024 * 1024);
-    obj_alloc my_obj_alloc(&shared_mem);
+    obj_alloc my_obj_alloc(&shared_mem, atoll(argv[1]));
     // cudaMalloc(&cells, sizeof(Cell *) * dataset.x * dataset.y);
     // cudaMalloc(&cells2, sizeof(Cell) * dataset.x * dataset.y);
+    high_resolution_clock::time_point t1 = high_resolution_clock::now();
+
     cells = (CellV **)my_obj_alloc.calloc<CellV *>(dataset.x * dataset.y);
     for (int i = 0; i < dataset.x * dataset.y; i++) {
         cells[i] = (Cell *)my_obj_alloc.my_new<Cell>();
         cells[i]->inst_cell(&my_obj_alloc);
         // assert(cells[i] != nullptr);
     }
+    high_resolution_clock::time_point t2 = high_resolution_clock::now();
+
     my_obj_alloc.toDevice();
+    high_resolution_clock::time_point t3 = high_resolution_clock::now();
+    duration<double> alloc_time = duration_cast<duration<double>>(t2 - t1);
+    duration<double> vptr_time = duration_cast<duration<double>>(t3 - t2);
+  
+    printf("alloc_time : %f \nvptr patching : %f \n",alloc_time.count(),vptr_time.count() );
+    printf("number of objs:%d\n", dataset.x * dataset.y);
+
     // Initialize cells.
     // create_cells<<<1024, 1024>>>();
     gpuErrchk(cudaDeviceSynchronize());

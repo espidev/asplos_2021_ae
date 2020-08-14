@@ -9,7 +9,7 @@
 #include "makebmp.h"
 #include <new>
 
-#include "../mem_alloc/mem_alloc_2.h"
+#include "../../mem_alloc/mem_alloc.h"
 #include <cutil.h>
 #include <helper_timer.h>
 #include <rayTracing_kernel.cu>
@@ -126,7 +126,7 @@ int main( int argc, char** argv)
   // initialise card and timer
   int deviceCount;
   mem_alloc shared_mem(4ULL * 1024 * 1024 * 1024);
-  obj_alloc my_obj_alloc(&shared_mem);
+  obj_alloc my_obj_alloc(&shared_mem,atoll(argv[4]));
   CUDA_SAFE_CALL(cudaGetDeviceCount(&deviceCount));
   if (deviceCount == 0) {
       fprintf(stderr, "There is no device.\n");
@@ -148,10 +148,10 @@ int main( int argc, char** argv)
 	int i, commandline_error;
 	commandline_error = 0;
 	g_verbose = 0;
-	if (argc >= 4) {
+	if (argc >= 5) {
 		width = atoi(argv[1]);
         height = atoi(argv[2]);
-		for (i=4; i < argc;i++) {
+		for (i=5; i < argc;i++) {
 			if (argv[i][0] == '-') {
 				switch (argv[i][1]) {
 				case 'v': g_verbose = 1;
@@ -164,7 +164,7 @@ int main( int argc, char** argv)
 	} else commandline_error=1;
 
 	if (commandline_error || !width || !height) {
-		printf("Usage: ./rayTracing <WIDTH> <HEIGHT> [-v]\n");
+		printf("Usage: ./rayTracing <WIDTH> <HEIGHT> [-v]\n %d ", argc);
 		printf("where WIDTH and HEIGHT are the screen dimensions and -v is used to display an abstract representation of the output.\n");
 		return 1;
 	}

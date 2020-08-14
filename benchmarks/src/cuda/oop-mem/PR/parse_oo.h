@@ -46,10 +46,10 @@ class ChiVertex {
         this->id = id;
         this->nInedges = inDegree;
         this->nOutedges = outDegree;
-        this->inEdgeDataArray =
-            (ChiEdge<EdgeValue> **)alloc->my_new<Edge<EdgeValue>>(inDegree);
-        this->outEdgeDataArray =
-            (ChiEdge<EdgeValue> **)alloc->my_new<Edge<EdgeValue>>(outDegree);
+        // this->inEdgeDataArray =
+        //     (ChiEdge<EdgeValue> **)alloc->my_new<Edge<EdgeValue>>(inDegree);
+        // this->outEdgeDataArray =
+        //     (ChiEdge<EdgeValue> **)alloc->my_new<Edge<EdgeValue>>(outDegree);
     }
     void set_in_out(obj_alloc *alloc) {
         this->inEdgeDataArray =

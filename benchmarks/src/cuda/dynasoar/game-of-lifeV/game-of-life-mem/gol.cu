@@ -259,7 +259,7 @@ int checksum() {
 }
 
 int main(int argc, char **argv) {
-  if (argc != 2) {
+  if (argc != 3) {
     printf("Usage: %s filename.pgm\n", argv[0]);
     exit(1);
   } else {
@@ -268,7 +268,7 @@ int main(int argc, char **argv) {
   }
   cudaDeviceSetLimit(cudaLimitMallocHeapSize, 4ULL * 1024 * 1024 * 1024);
   mem_alloc shared_mem(4ULL * 1024 * 1024 * 1024);
-  obj_alloc my_obj_alloc(&shared_mem);
+  obj_alloc my_obj_alloc(&shared_mem, atoll(argv[2]));
   cudaMemcpyToSymbol(SIZE_X, &dataset.x, sizeof(int), 0,
                      cudaMemcpyHostToDevice);
   cudaMemcpyToSymbol(SIZE_Y, &dataset.y, sizeof(int), 0,
@@ -279,14 +279,21 @@ int main(int argc, char **argv) {
   // cudaMalloc(&host_cells, sizeof(Cell *) * dataset.x * dataset.y);
   // cudaMemcpyToSymbol(cells, &host_cells, sizeof(Cell **), 0,
   //                    cudaMemcpyHostToDevice);
-
+  high_resolution_clock::time_point t1 = high_resolution_clock::now();
   cells = (CellV **)my_obj_alloc.calloc<CellV *>(dataset.x * dataset.y);
   for (int i = 0; i < dataset.x * dataset.y; i++) {
       cells[i] = (Cell *)my_obj_alloc.my_new<Cell>();
       cells[i]->inst_cell(&my_obj_alloc);
       // assert(cells[i] != nullptr);
   }
+  high_resolution_clock::time_point t2 = high_resolution_clock::now();
   my_obj_alloc.toDevice();
+  high_resolution_clock::time_point t3 = high_resolution_clock::now();
+  duration<double> alloc_time = duration_cast<duration<double>>(t2 - t1);
+  duration<double> vptr_time = duration_cast<duration<double>>(t3 - t2);
+
+  printf("alloc_time : %f \nvptr patching : %f \n",alloc_time.count(),vptr_time.count() );
+  printf("number of objs:%d\n", dataset.x * dataset.y);
   // Initialize cells.
   //create_cells<<<128, 128>>>();
   gpuErrchk(cudaDeviceSynchronize());

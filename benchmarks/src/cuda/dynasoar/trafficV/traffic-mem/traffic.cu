@@ -690,12 +690,23 @@ void init(obj_alloc *alloc) {
 
     create_street_network(alloc);
 }
-int main(int /*argc*/, char ** /*argv*/) {
+int main(int /*argc*/, char ** argv) {
     cudaDeviceSetLimit(cudaLimitMallocHeapSize, 4ULL * 1024 * 1024 * 1024);
     mem_alloc shared_mem(4ULL * 1024 * 1024 * 1024);
-    obj_alloc my_obj_alloc(&shared_mem);
+    obj_alloc my_obj_alloc(&shared_mem, atoll(argv[1]));
+    high_resolution_clock::time_point t1 = high_resolution_clock::now();
+
     init(&my_obj_alloc);
+    high_resolution_clock::time_point t2 = high_resolution_clock::now();
+
     my_obj_alloc.toDevice();
+    high_resolution_clock::time_point t3 = high_resolution_clock::now();
+    duration<double> alloc_time = duration_cast<duration<double>>(t2 - t1);
+    duration<double> vptr_time = duration_cast<duration<double>>(t3 - t2);
+  
+    printf("alloc_time : %f \nvptr patching : %f \n",alloc_time.count(),vptr_time.count() );
+    printf("number of objs:%d\n", kNumIntersections+kMaxNumCells + 2* kMaxNumCars);
+    
     printf("mem alloc done\n");
     auto time_start = std::chrono::system_clock::now();
 

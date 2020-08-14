@@ -312,7 +312,7 @@ int checksum() {
     return host_checksum + host_num_candidates;
 }
 
-int main(int /*argc*/, char ** /*argv*/) {
+int main(int argc, char ** argv) {
     // Load data set.
     dataset = load_burst();
 
@@ -329,7 +329,7 @@ int main(int /*argc*/, char ** /*argv*/) {
 
     cudaDeviceSetLimit(cudaLimitMallocHeapSize, 4ULL * 1024 * 1024 * 1024);
     mem_alloc shared_mem(4ULL * 1024 * 1024 * 1024);
-    obj_alloc my_obj_alloc(&shared_mem);
+    obj_alloc my_obj_alloc(&shared_mem, atoll(argv[1]));
     // cudaMalloc(&cells, sizeof(Cell *) * dataset.x * dataset.y);
     // cudaMalloc(&cells2, sizeof(Cell) * dataset.x * dataset.y);
     cells = (CellV **)my_obj_alloc.calloc<CellV *>(dataset.x * dataset.y);

@@ -2,9 +2,12 @@
 
 #include "../configuration.h"
 #include "../dataset_loader.h"
-
+#include <ctime>
 #include "gol.h"
-
+#include <iostream>
+#include <ctime>
+#include <ratio>
+#include <chrono>
 #ifdef OPTION_RENDER
 // Rendering array.
 // TODO: Fix variable names.
@@ -275,6 +278,9 @@ int main(int argc, char **argv) {
 
   // Allocate memory.
   Cell **host_cells;
+  using namespace std::chrono;
+
+  high_resolution_clock::time_point t1 = high_resolution_clock::now();
   cudaMalloc(&host_cells, sizeof(Cell *) * dataset.x * dataset.y);
   cudaMemcpyToSymbol(cells, &host_cells, sizeof(Cell **), 0,
                      cudaMemcpyHostToDevice);
@@ -282,6 +288,9 @@ int main(int argc, char **argv) {
   // Initialize cells.
   create_cells<<<128, 128>>>();
   gpuErrchk(cudaDeviceSynchronize());
+  high_resolution_clock::time_point t2 = high_resolution_clock::now();
+  duration<double> alloc_time = duration_cast<duration<double>>(t2 - t1);
+  printf("alloc_time : %f  \n",alloc_time.count() );
 
   transfer_dataset();
 

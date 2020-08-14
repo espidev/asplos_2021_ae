@@ -18,7 +18,7 @@
  */
 
  #include <stdio.h>
- #include "../mem_alloc/mem_alloc_2.h"
+ #include "../../mem_alloc/mem_alloc.h"
  // For the CUDA runtime routines (prefixed with "cuda_")
  #include <cuda_runtime.h>
  

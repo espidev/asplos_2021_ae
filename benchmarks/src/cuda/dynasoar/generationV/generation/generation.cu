@@ -298,15 +298,22 @@ int main(int /*argc*/, char ** /*argv*/) {
 #endif  // OPTION_RENDER
 
     // Allocate memory.
+    using namespace std::chrono;
 
     cudaDeviceSetLimit(cudaLimitMallocHeapSize, 4ULL * 1024 * 1024 * 1024);
+    high_resolution_clock::time_point t1 = high_resolution_clock::now();
 
     cudaMalloc(&cells, sizeof(Cell *) * dataset.x * dataset.y);
     cudaMalloc(&cells2, sizeof(Cell) * dataset.x * dataset.y);
 
     // Initialize cells.
     create_cells<<<1024, 1024>>>();
+   
+
     gpuErrchk(cudaDeviceSynchronize());
+    high_resolution_clock::time_point t2 = high_resolution_clock::now();
+    duration<double> alloc_time = duration_cast<duration<double>>(t2 - t1);
+    printf("alloc_time : %f \nvptr patching : \n",alloc_time.count());
 
     transfer_dataset();
 

@@ -179,6 +179,57 @@
 	ret;
 }
 
+	// .globl	_Z9vptrPatchPvS_ji
+.visible .entry _Z9vptrPatchPvS_ji(
+	.param .u64 _Z9vptrPatchPvS_ji_param_0,
+	.param .u64 _Z9vptrPatchPvS_ji_param_1,
+	.param .u32 _Z9vptrPatchPvS_ji_param_2,
+	.param .u32 _Z9vptrPatchPvS_ji_param_3
+)
+{
+	.reg .pred 	%p<2>;
+	.reg .b16 	%rs<9>;
+	.reg .b32 	%r<8>;
+	.reg .b64 	%rd<7>;
+
+
+	ld.param.u64 	%rd1, [_Z9vptrPatchPvS_ji_param_0];
+	ld.param.u64 	%rd2, [_Z9vptrPatchPvS_ji_param_1];
+	ld.param.u32 	%r2, [_Z9vptrPatchPvS_ji_param_2];
+	ld.param.u32 	%r3, [_Z9vptrPatchPvS_ji_param_3];
+	mov.u32 	%r4, %tid.x;
+	mov.u32 	%r5, %ntid.x;
+	mov.u32 	%r6, %ctaid.x;
+	mad.lo.s32 	%r1, %r5, %r6, %r4;
+	setp.ge.s32	%p1, %r1, %r3;
+	@%p1 bra 	BB3_2;
+
+	cvta.to.global.u64 	%rd3, %rd1;
+	mul.lo.s32 	%r7, %r1, %r2;
+	cvt.u64.u32	%rd4, %r7;
+	add.s64 	%rd5, %rd3, %rd4;
+	cvta.to.global.u64 	%rd6, %rd2;
+	ld.global.u8 	%rs1, [%rd6];
+	st.global.u8 	[%rd5], %rs1;
+	ld.global.u8 	%rs2, [%rd6+1];
+	st.global.u8 	[%rd5+1], %rs2;
+	ld.global.u8 	%rs3, [%rd6+2];
+	st.global.u8 	[%rd5+2], %rs3;
+	ld.global.u8 	%rs4, [%rd6+3];
+	st.global.u8 	[%rd5+3], %rs4;
+	ld.global.u8 	%rs5, [%rd6+4];
+	st.global.u8 	[%rd5+4], %rs5;
+	ld.global.u8 	%rs6, [%rd6+5];
+	st.global.u8 	[%rd5+5], %rs6;
+	ld.global.u8 	%rs7, [%rd6+6];
+	st.global.u8 	[%rd5+6], %rs7;
+	ld.global.u8 	%rs8, [%rd6+7];
+	st.global.u8 	[%rd5+7], %rs8;
+
+BB3_2:
+	ret;
+}
+
 	// .globl	_Z21part_kern0_initObjectPP9ChiVertexIiiEP15GraphChiContextPiS5_S5_S5_
 .visible .entry _Z21part_kern0_initObjectPP9ChiVertexIiiEP15GraphChiContextPiS5_S5_S5_(
 	.param .u64 _Z21part_kern0_initObjectPP9ChiVertexIiiEP15GraphChiContextPiS5_S5_S5__param_0,
@@ -222,7 +273,7 @@
 	//{
 	}// Callseq End 0
 	setp.ge.s32	%p1, %r1, %r17;
-	@%p1 bra 	BB3_9;
+	@%p1 bra 	BB4_9;
 
 	cvta.to.global.u64 	%rd10, %rd6;
 	mul.wide.s32 	%rd11, %r1, 4;
@@ -246,14 +297,14 @@
 	}// Callseq End 1
 	add.s32 	%r4, %r1, 1;
 	setp.lt.s32	%p2, %r4, %r18;
-	@%p2 bra 	BB3_3;
-	bra.uni 	BB3_2;
+	@%p2 bra 	BB4_3;
+	bra.uni 	BB4_2;
 
-BB3_3:
+BB4_3:
 	ld.global.u32 	%r22, [%rd2+4];
-	bra.uni 	BB3_4;
+	bra.uni 	BB4_4;
 
-BB3_2:
+BB4_2:
 	ld.global.u32 	%r19, [%rd1+4];
 	// Callseq Start 2
 	{
@@ -272,7 +323,7 @@ BB3_2:
 	//{
 	}// Callseq End 2
 
-BB3_4:
+BB4_4:
 	cvta.to.global.u64 	%rd12, %rd7;
 	add.s64 	%rd3, %rd12, %rd11;
 	ld.global.u32 	%r8, [%rd3];
@@ -293,14 +344,14 @@ BB3_4:
 	//{
 	}// Callseq End 3
 	setp.lt.s32	%p3, %r4, %r20;
-	@%p3 bra 	BB3_6;
-	bra.uni 	BB3_5;
+	@%p3 bra 	BB4_6;
+	bra.uni 	BB4_5;
 
-BB3_6:
+BB4_6:
 	ld.global.u32 	%r23, [%rd3+4];
-	bra.uni 	BB3_7;
+	bra.uni 	BB4_7;
 
-BB3_5:
+BB4_5:
 	ld.global.u32 	%r21, [%rd1+4];
 	// Callseq Start 4
 	{
@@ -319,7 +370,7 @@ BB3_5:
 	//{
 	}// Callseq End 4
 
-BB3_7:
+BB4_7:
 	cvta.to.global.u64 	%rd14, %rd5;
 	sub.s32 	%r12, %r23, %r8;
 	sub.s32 	%r13, %r22, %r3;
@@ -327,7 +378,7 @@ BB3_7:
 	add.s64 	%rd16, %rd14, %rd15;
 	ld.global.u64 	%rd4, [%rd16];
 	setp.eq.s64	%p4, %rd4, 0;
-	@%p4 bra 	BB3_9;
+	@%p4 bra 	BB4_9;
 
 	// Callseq Start 5
 	{
@@ -353,7 +404,7 @@ BB3_7:
 	//{
 	}// Callseq End 5
 
-BB3_9:
+BB4_9:
 	ret;
 }
 
@@ -445,7 +496,7 @@ BB3_9:
 	//{
 	}// Callseq End 6
 	setp.ge.s32	%p1, %r1, %r20;
-	@%p1 bra 	BB7_13;
+	@%p1 bra 	BB8_13;
 
 	cvta.to.global.u64 	%rd10, %rd6;
 	add.s32 	%r21, %r1, 1;
@@ -469,14 +520,14 @@ BB3_9:
 	//{
 	}// Callseq End 7
 	setp.lt.s32	%p2, %r21, %r22;
-	@%p2 bra 	BB7_3;
-	bra.uni 	BB7_2;
+	@%p2 bra 	BB8_3;
+	bra.uni 	BB8_2;
 
-BB7_3:
+BB8_3:
 	ld.global.u32 	%r44, [%rd3+4];
-	bra.uni 	BB7_4;
+	bra.uni 	BB8_4;
 
-BB7_2:
+BB8_2:
 	ld.global.u32 	%r23, [%rd2+4];
 	// Callseq Start 8
 	{
@@ -495,9 +546,9 @@ BB7_2:
 	//{
 	}// Callseq End 8
 
-BB7_4:
+BB8_4:
 	setp.le.s32	%p3, %r44, %r3;
-	@%p3 bra 	BB7_13;
+	@%p3 bra 	BB8_13;
 
 	cvta.to.global.u64 	%rd12, %rd5;
 	mul.wide.s32 	%rd13, %r1, 8;
@@ -506,15 +557,15 @@ BB7_4:
 	and.b32  	%r8, %r7, 3;
 	setp.eq.s32	%p4, %r8, 0;
 	mov.u32 	%r48, %r3;
-	@%p4 bra 	BB7_11;
+	@%p4 bra 	BB8_11;
 
 	setp.eq.s32	%p5, %r8, 1;
 	mov.u32 	%r46, %r3;
-	@%p5 bra 	BB7_10;
+	@%p5 bra 	BB8_10;
 
 	setp.eq.s32	%p6, %r8, 2;
 	mov.u32 	%r45, %r3;
-	@%p6 bra 	BB7_9;
+	@%p6 bra 	BB8_9;
 
 	ld.global.u64 	%rd14, [%rd4];
 	mul.wide.s32 	%rd15, %r3, 4;
@@ -547,7 +598,7 @@ BB7_4:
 	}// Callseq End 9
 	add.s32 	%r45, %r3, 1;
 
-BB7_9:
+BB8_9:
 	mul.wide.s32 	%rd18, %r45, 4;
 	add.s64 	%rd19, %rd1, %rd18;
 	ld.global.u32 	%r26, [%rd19];
@@ -580,7 +631,7 @@ BB7_9:
 	}// Callseq End 10
 	add.s32 	%r46, %r45, 1;
 
-BB7_10:
+BB8_10:
 	mul.wide.s32 	%rd22, %r46, 4;
 	add.s64 	%rd23, %rd1, %rd22;
 	ld.global.u32 	%r29, [%rd23];
@@ -613,11 +664,11 @@ BB7_10:
 	}// Callseq End 11
 	add.s32 	%r48, %r46, 1;
 
-BB7_11:
+BB8_11:
 	setp.lt.u32	%p7, %r7, 4;
-	@%p7 bra 	BB7_13;
+	@%p7 bra 	BB8_13;
 
-BB7_12:
+BB8_12:
 	mul.wide.s32 	%rd26, %r48, 4;
 	add.s64 	%rd27, %rd1, %rd26;
 	ld.global.u32 	%r32, [%rd27];
@@ -734,9 +785,9 @@ BB7_12:
 	}// Callseq End 15
 	add.s32 	%r48, %r48, 4;
 	setp.lt.s32	%p8, %r48, %r44;
-	@%p8 bra 	BB7_12;
+	@%p8 bra 	BB8_12;
 
-BB7_13:
+BB8_13:
 	ret;
 }
 
@@ -760,7 +811,7 @@ BB7_13:
 	add.s64 	%rd4, %rd2, %rd3;
 	ld.u64 	%rd1, [%rd4];
 	setp.eq.s64	%p1, %rd1, 0;
-	@%p1 bra 	BB8_2;
+	@%p1 bra 	BB9_2;
 
 	// Callseq Start 16
 	{
@@ -783,7 +834,7 @@ BB7_13:
 	//{
 	}// Callseq End 16
 
-BB8_2:
+BB9_2:
 	ret;
 }
 
@@ -832,7 +883,7 @@ BB8_2:
 	//{
 	}// Callseq End 17
 	setp.ge.s32	%p1, %r1, %r26;
-	@%p1 bra 	BB9_18;
+	@%p1 bra 	BB10_18;
 
 	cvta.to.global.u64 	%rd13, %rd8;
 	mul.wide.s32 	%rd14, %r1, 4;
@@ -856,14 +907,14 @@ BB8_2:
 	}// Callseq End 18
 	add.s32 	%r4, %r1, 1;
 	setp.lt.s32	%p2, %r4, %r27;
-	@%p2 bra 	BB9_3;
-	bra.uni 	BB9_2;
+	@%p2 bra 	BB10_3;
+	bra.uni 	BB10_2;
 
-BB9_3:
+BB10_3:
 	ld.global.u32 	%r53, [%rd3+4];
-	bra.uni 	BB9_4;
+	bra.uni 	BB10_4;
 
-BB9_2:
+BB10_2:
 	ld.global.u32 	%r28, [%rd2+4];
 	// Callseq Start 19
 	{
@@ -882,7 +933,7 @@ BB9_2:
 	//{
 	}// Callseq End 19
 
-BB9_4:
+BB10_4:
 	cvta.to.global.u64 	%rd15, %rd9;
 	add.s64 	%rd4, %rd15, %rd14;
 	ld.global.u32 	%r8, [%rd4];
@@ -903,14 +954,14 @@ BB9_4:
 	//{
 	}// Callseq End 20
 	setp.lt.s32	%p3, %r4, %r29;
-	@%p3 bra 	BB9_6;
-	bra.uni 	BB9_5;
+	@%p3 bra 	BB10_6;
+	bra.uni 	BB10_5;
 
-BB9_6:
+BB10_6:
 	ld.global.u32 	%r54, [%rd4+4];
-	bra.uni 	BB9_7;
+	bra.uni 	BB10_7;
 
-BB9_5:
+BB10_5:
 	ld.global.u32 	%r30, [%rd2+4];
 	// Callseq Start 21
 	{
@@ -929,13 +980,13 @@ BB9_5:
 	//{
 	}// Callseq End 21
 
-BB9_7:
+BB10_7:
 	sub.s32 	%r12, %r54, %r8;
 	sub.s32 	%r13, %r53, %r3;
 	mul.wide.s32 	%rd17, %r1, 32;
 	add.s64 	%rd5, %rd7, %rd17;
 	setp.eq.s64	%p4, %rd5, 0;
-	@%p4 bra 	BB9_9;
+	@%p4 bra 	BB10_9;
 
 	// Callseq Start 22
 	{
@@ -961,7 +1012,7 @@ BB9_7:
 	//{
 	}// Callseq End 22
 
-BB9_9:
+BB10_9:
 	mov.u32 	%r31, 2147483647;
 	// Callseq Start 23
 	{
@@ -981,7 +1032,7 @@ BB9_9:
 	//{
 	}// Callseq End 23
 	setp.le.s32	%p5, %r54, %r8;
-	@%p5 bra 	BB9_18;
+	@%p5 bra 	BB10_18;
 
 	cvta.to.global.u64 	%rd18, %rd7;
 	add.s64 	%rd20, %rd18, %rd17;
@@ -989,15 +1040,15 @@ BB9_9:
 	and.b32  	%r14, %r12, 3;
 	setp.eq.s32	%p6, %r14, 0;
 	mov.u32 	%r58, %r8;
-	@%p6 bra 	BB9_16;
+	@%p6 bra 	BB10_16;
 
 	setp.eq.s32	%p7, %r14, 1;
 	mov.u32 	%r56, %r8;
-	@%p7 bra 	BB9_15;
+	@%p7 bra 	BB10_15;
 
 	setp.eq.s32	%p8, %r14, 2;
 	mov.u32 	%r55, %r8;
-	@%p8 bra 	BB9_14;
+	@%p8 bra 	BB10_14;
 
 	mul.wide.s32 	%rd21, %r8, 4;
 	add.s64 	%rd22, %rd1, %rd21;
@@ -1029,7 +1080,7 @@ BB9_9:
 	}// Callseq End 24
 	add.s32 	%r55, %r8, 1;
 
-BB9_14:
+BB10_14:
 	mul.wide.s32 	%rd24, %r55, 4;
 	add.s64 	%rd25, %rd1, %rd24;
 	ld.global.u32 	%r35, [%rd25];
@@ -1060,7 +1111,7 @@ BB9_14:
 	}// Callseq End 25
 	add.s32 	%r56, %r55, 1;
 
-BB9_15:
+BB10_15:
 	mul.wide.s32 	%rd27, %r56, 4;
 	add.s64 	%rd28, %rd1, %rd27;
 	ld.global.u32 	%r38, [%rd28];
@@ -1091,11 +1142,11 @@ BB9_15:
 	}// Callseq End 26
 	add.s32 	%r58, %r56, 1;
 
-BB9_16:
+BB10_16:
 	setp.lt.u32	%p9, %r12, 4;
-	@%p9 bra 	BB9_18;
+	@%p9 bra 	BB10_18;
 
-BB9_17:
+BB10_17:
 	mul.wide.s32 	%rd30, %r58, 4;
 	add.s64 	%rd31, %rd1, %rd30;
 	ld.global.u32 	%r41, [%rd31];
@@ -1207,9 +1258,9 @@ BB9_17:
 	}// Callseq End 30
 	add.s32 	%r58, %r58, 4;
 	setp.lt.s32	%p10, %r58, %r54;
-	@%p10 bra 	BB9_17;
+	@%p10 bra 	BB10_17;
 
-BB9_18:
+BB10_18:
 	ret;
 }
 
@@ -1270,7 +1321,7 @@ BB9_18:
 	//{
 	}// Callseq End 31
 	setp.ge.s32	%p1, %r1, %r20;
-	@%p1 bra 	BB11_13;
+	@%p1 bra 	BB12_13;
 
 	cvta.to.global.u64 	%rd10, %rd6;
 	mul.wide.s32 	%rd11, %r1, 4;
@@ -1294,14 +1345,14 @@ BB9_18:
 	}// Callseq End 32
 	add.s32 	%r22, %r1, 1;
 	setp.lt.s32	%p2, %r22, %r21;
-	@%p2 bra 	BB11_3;
-	bra.uni 	BB11_2;
+	@%p2 bra 	BB12_3;
+	bra.uni 	BB12_2;
 
-BB11_3:
+BB12_3:
 	ld.global.u32 	%r41, [%rd3+4];
-	bra.uni 	BB11_4;
+	bra.uni 	BB12_4;
 
-BB11_2:
+BB12_2:
 	ld.global.u32 	%r23, [%rd2+4];
 	// Callseq Start 33
 	{
@@ -1320,9 +1371,9 @@ BB11_2:
 	//{
 	}// Callseq End 33
 
-BB11_4:
+BB12_4:
 	setp.le.s32	%p3, %r41, %r3;
-	@%p3 bra 	BB11_13;
+	@%p3 bra 	BB12_13;
 
 	cvta.to.global.u64 	%rd12, %rd5;
 	mul.wide.s32 	%rd13, %r1, 8;
@@ -1331,15 +1382,15 @@ BB11_4:
 	and.b32  	%r8, %r7, 3;
 	setp.eq.s32	%p4, %r8, 0;
 	mov.u32 	%r45, %r3;
-	@%p4 bra 	BB11_11;
+	@%p4 bra 	BB12_11;
 
 	setp.eq.s32	%p5, %r8, 1;
 	mov.u32 	%r43, %r3;
-	@%p5 bra 	BB11_10;
+	@%p5 bra 	BB12_10;
 
 	setp.eq.s32	%p6, %r8, 2;
 	mov.u32 	%r42, %r3;
-	@%p6 bra 	BB11_9;
+	@%p6 bra 	BB12_9;
 
 	ld.global.u64 	%rd14, [%rd4];
 	mul.wide.s32 	%rd15, %r3, 4;
@@ -1374,7 +1425,7 @@ BB11_4:
 	}// Callseq End 34
 	add.s32 	%r42, %r3, 1;
 
-BB11_9:
+BB12_9:
 	ld.global.u64 	%rd17, [%rd4];
 	mul.wide.s32 	%rd18, %r42, 4;
 	add.s64 	%rd19, %rd1, %rd18;
@@ -1408,7 +1459,7 @@ BB11_9:
 	}// Callseq End 35
 	add.s32 	%r43, %r42, 1;
 
-BB11_10:
+BB12_10:
 	ld.global.u64 	%rd20, [%rd4];
 	mul.wide.s32 	%rd21, %r43, 4;
 	add.s64 	%rd22, %rd1, %rd21;
@@ -1442,11 +1493,11 @@ BB11_10:
 	}// Callseq End 36
 	add.s32 	%r45, %r43, 1;
 
-BB11_11:
+BB12_11:
 	setp.lt.u32	%p7, %r7, 4;
-	@%p7 bra 	BB11_13;
+	@%p7 bra 	BB12_13;
 
-BB11_12:
+BB12_12:
 	ld.global.u64 	%rd23, [%rd4];
 	mul.wide.s32 	%rd24, %r45, 4;
 	add.s64 	%rd25, %rd1, %rd24;
@@ -1570,9 +1621,9 @@ BB11_12:
 	}// Callseq End 40
 	add.s32 	%r45, %r45, 4;
 	setp.lt.s32	%p8, %r45, %r41;
-	@%p8 bra 	BB11_12;
+	@%p8 bra 	BB12_12;
 
-BB11_13:
+BB12_13:
 	ret;
 }
 
@@ -1616,9 +1667,9 @@ BB11_13:
 	}// Callseq End 41
 	mov.u32 	%r12, 0;
 	setp.lt.s32	%p1, %r8, 1;
-	@%p1 bra 	BB12_4;
+	@%p1 bra 	BB13_4;
 
-BB12_1:
+BB13_1:
 	ld.u64 	%rd9, [%rd18+16];
 	// Callseq Start 42
 	{
@@ -1663,7 +1714,7 @@ BB12_1:
 	add.s32 	%r2, %r12, 1;
 	ld.u64 	%rd18, [%rd1];
 	add.s64 	%rd5, %rd18, 4;
-	@%p2 bra 	BB12_3;
+	@%p2 bra 	BB13_3;
 
 	ld.u32 	%r10, [%rd5];
 	// Callseq Start 44
@@ -1684,10 +1735,10 @@ BB12_1:
 	}// Callseq End 44
 	setp.lt.s32	%p3, %r2, %r11;
 	mov.u32 	%r12, %r2;
-	@%p3 bra 	BB12_1;
-	bra.uni 	BB12_4;
+	@%p3 bra 	BB13_1;
+	bra.uni 	BB13_4;
 
-BB12_3:
+BB13_3:
 	ld.u64 	%rd13, [%rd5+12];
 	// Callseq Start 45
 	{
@@ -1713,7 +1764,7 @@ BB12_3:
 	add.s64 	%rd17, %rd15, %rd16;
 	st.u64 	[%rd17], %rd14;
 
-BB12_4:
+BB13_4:
 	ret;
 }
 
@@ -1725,55 +1776,56 @@ BB12_4:
 )
 {
 	.reg .pred 	%p<37>;
-	.reg .b32 	%r<113>;
-	.reg .b64 	%rd<129>;
+	.reg .b16 	%rs<21>;
+	.reg .b32 	%r<128>;
+	.reg .b64 	%rd<98>;
 
 
-	ld.param.u64 	%rd29, [_Z18ConnectedComponentPP9ChiVertexIiiEP15GraphChiContexti_param_0];
-	ld.param.u64 	%rd30, [_Z18ConnectedComponentPP9ChiVertexIiiEP15GraphChiContexti_param_1];
-	ld.param.u32 	%r43, [_Z18ConnectedComponentPP9ChiVertexIiiEP15GraphChiContexti_param_2];
-	cvta.to.global.u64 	%rd31, %rd30;
-	mov.u32 	%r44, %ctaid.x;
-	mov.u32 	%r45, %ntid.x;
-	mov.u32 	%r46, %tid.x;
-	mad.lo.s32 	%r1, %r44, %r45, %r46;
+	ld.param.u64 	%rd28, [_Z18ConnectedComponentPP9ChiVertexIiiEP15GraphChiContexti_param_0];
+	ld.param.u64 	%rd29, [_Z18ConnectedComponentPP9ChiVertexIiiEP15GraphChiContexti_param_1];
+	ld.param.u32 	%r48, [_Z18ConnectedComponentPP9ChiVertexIiiEP15GraphChiContexti_param_2];
+	cvta.to.global.u64 	%rd30, %rd29;
+	mov.u32 	%r49, %ctaid.x;
+	mov.u32 	%r50, %ntid.x;
+	mov.u32 	%r51, %tid.x;
+	mad.lo.s32 	%r1, %r49, %r50, %r51;
 	ld.global.u32 	%r2, [tree_size_g];
 	ld.global.u64 	%rd1, [range_tree];
-	ld.global.u32 	%r47, [%rd31+4];
+	ld.global.u32 	%r52, [%rd30+4];
 	// Callseq Start 46
 	{
 	.reg .b32 temp_param_reg;
 	// <end>}
 	.param .b32 param0;
-	st.param.b32	[param0+0], %r47;
+	st.param.b32	[param0+0], %r52;
 	.param .b32 retval0;
 	call.uni (retval0), 
 	_ZN15GraphChiContext14getNumVerticesEv, 
 	(
 	param0
 	);
-	ld.param.b32	%r48, [retval0+0];
+	ld.param.b32	%r53, [retval0+0];
 	
 	//{
 	}// Callseq End 46
-	setp.ge.s32	%p1, %r1, %r48;
-	@%p1 bra 	BB13_28;
+	setp.ge.s32	%p1, %r1, %r53;
+	@%p1 bra 	BB14_38;
 
-	cvta.to.global.u64 	%rd32, %rd29;
-	mul.wide.s32 	%rd33, %r1, 8;
-	add.s64 	%rd2, %rd32, %rd33;
-	ld.global.u64 	%rd124, [%rd2];
-	add.s64 	%rd4, %rd124, 4;
-	ld.u32 	%r49, [%rd124+4];
-	ld.u32 	%r50, [%rd124+8];
+	cvta.to.global.u64 	%rd31, %rd28;
+	mul.wide.s32 	%rd32, %r1, 8;
+	add.s64 	%rd2, %rd31, %rd32;
+	ld.global.u64 	%rd96, [%rd2];
+	add.s64 	%rd4, %rd96, 4;
+	ld.u32 	%r54, [%rd96+4];
+	ld.u32 	%r55, [%rd96+8];
 	// Callseq Start 47
 	{
 	.reg .b32 temp_param_reg;
 	// <end>}
 	.param .b32 param0;
-	st.param.b32	[param0+0], %r49;
+	st.param.b32	[param0+0], %r54;
 	.param .b32 param1;
-	st.param.b32	[param1+0], %r50;
+	st.param.b32	[param1+0], %r55;
 	.param .b32 retval0;
 	call.uni (retval0), 
 	_ZN9ChiVertexIiiE8numEdgesEv, 
@@ -1785,23 +1837,23 @@ BB12_4:
 	
 	//{
 	}// Callseq End 47
-	setp.ne.s32	%p2, %r43, 0;
-	@%p2 bra 	BB13_3;
+	setp.ne.s32	%p2, %r48, 0;
+	@%p2 bra 	BB14_3;
 
-	ld.u32 	%r51, [%rd4+-4];
+	ld.u32 	%r56, [%rd4+-4];
 	// Callseq Start 48
 	{
 	.reg .b32 temp_param_reg;
 	// <end>}
 	.param .b32 param0;
-	st.param.b32	[param0+0], %r51;
+	st.param.b32	[param0+0], %r56;
 	.param .b32 retval0;
 	call.uni (retval0), 
 	_ZN9ChiVertexIiiE5getIdEv, 
 	(
 	param0
 	);
-	ld.param.b32	%r52, [retval0+0];
+	ld.param.b32	%r57, [retval0+0];
 	
 	//{
 	}// Callseq End 48
@@ -1810,9 +1862,9 @@ BB12_4:
 	.reg .b32 temp_param_reg;
 	// <end>}
 	.param .b64 param0;
-	st.param.b64	[param0+0], %rd124;
+	st.param.b64	[param0+0], %rd96;
 	.param .b32 param1;
-	st.param.b32	[param1+0], %r52;
+	st.param.b32	[param1+0], %r57;
 	call.uni 
 	_ZN9ChiVertexIiiE8setValueEi, 
 	(
@@ -1822,45 +1874,45 @@ BB12_4:
 	
 	//{
 	}// Callseq End 49
-	ld.global.u64 	%rd124, [%rd2];
+	ld.global.u64 	%rd96, [%rd2];
 
-BB13_3:
-	ld.u32 	%r53, [%rd124+12];
+BB14_3:
+	ld.u32 	%r58, [%rd96+12];
 	// Callseq Start 50
 	{
 	.reg .b32 temp_param_reg;
 	// <end>}
 	.param .b32 param0;
-	st.param.b32	[param0+0], %r53;
+	st.param.b32	[param0+0], %r58;
 	.param .b32 retval0;
 	call.uni (retval0), 
 	_ZN9ChiVertexIiiE8getValueEv, 
 	(
 	param0
 	);
-	ld.param.b32	%r104, [retval0+0];
+	ld.param.b32	%r116, [retval0+0];
 	
 	//{
 	}// Callseq End 50
 	setp.lt.s32	%p3, %r3, 1;
-	@%p3 bra 	BB13_12;
+	@%p3 bra 	BB14_16;
 
-	mov.u32 	%r54, 0;
-	mov.u32 	%r97, %r54;
+	mov.u32 	%r59, 0;
+	mov.u32 	%r107, %r59;
 
-BB13_5:
-	ld.u32 	%r56, [%rd124+4];
-	ld.u64 	%rd35, [%rd124+16];
+BB14_5:
+	ld.u32 	%r63, [%rd96+4];
+	ld.u64 	%rd33, [%rd96+16];
 	// Callseq Start 51
 	{
 	.reg .b32 temp_param_reg;
 	// <end>}
 	.param .b32 param0;
-	st.param.b32	[param0+0], %r56;
+	st.param.b32	[param0+0], %r63;
 	.param .b64 param1;
-	st.param.b64	[param1+0], %rd35;
+	st.param.b64	[param1+0], %rd33;
 	.param .b32 param2;
-	st.param.b32	[param2+0], %r97;
+	st.param.b32	[param2+0], %r107;
 	.param .b64 retval0;
 	call.uni (retval0), 
 	_ZN9ChiVertexIiiE4edgeEi, 
@@ -1873,37 +1925,40 @@ BB13_5:
 	
 	//{
 	}// Callseq End 51
-	ld.u64 	%rd36, [%rd1+16];
-	setp.gt.u64	%p4, %rd36, %rd8;
-	selp.b32	%r99, 1, 2, %p4;
-	mov.u64 	%rd122, 0;
-	setp.ge.u32	%p5, %r99, %r2;
-	mov.u32 	%r100, %r54;
-	@%p5 bra 	BB13_7;
+	mov.u32 	%r109, 1;
+	setp.lt.u32	%p4, %r2, 2;
+	mov.u32 	%r110, %r59;
+	mov.u32 	%r111, %r59;
+	@%p4 bra 	BB14_9;
 
-BB13_6:
-	mul.wide.u32 	%rd37, %r99, 32;
+BB14_6:
+	cvt.u64.u32	%rd9, %r109;
+	mul.wide.u32 	%rd34, %r109, 40;
+	add.s64 	%rd10, %rd1, %rd34;
+	ld.u64 	%rd35, [%rd10];
+	setp.gt.u64	%p5, %rd35, %rd8;
+	mov.u16 	%rs16, 0;
+	@%p5 bra 	BB14_8;
+
+	ld.u64 	%rd36, [%rd10+8];
+	setp.ge.u64	%p6, %rd36, %rd8;
+	selp.u16	%rs16, 1, 0, %p6;
+
+BB14_8:
+	add.s32 	%r64, %r110, 2;
+	setp.eq.s16	%p7, %rs16, 0;
+	cvt.u32.u64	%r65, %rd9;
+	selp.b32	%r111, %r64, %r65, %p7;
+	shl.b32 	%r110, %r111, 1;
+	add.s32 	%r109, %r110, 1;
+	setp.lt.u32	%p8, %r109, %r2;
+	@%p8 bra 	BB14_6;
+
+BB14_9:
+	mul.wide.u32 	%rd37, %r111, 40;
 	add.s64 	%rd38, %rd1, %rd37;
-	ld.u64 	%rd39, [%rd38+16];
-	setp.eq.s64	%p6, %rd39, 0;
-	add.s32 	%r57, %r100, 1;
-	selp.b32	%r58, %r57, %r99, %p6;
-	cvt.u64.u32	%rd122, %r58;
-	mul.wide.u32 	%rd40, %r58, 32;
-	add.s64 	%rd41, %rd1, %rd40;
-	ld.u64 	%rd42, [%rd41+16];
-	setp.gt.u64	%p7, %rd42, %rd8;
-	shl.b32 	%r100, %r58, 1;
-	selp.b32	%r59, 1, 2, %p7;
-	add.s32 	%r99, %r59, %r100;
-	setp.lt.u32	%p8, %r99, %r2;
-	@%p8 bra 	BB13_6;
-
-BB13_7:
-	shl.b64 	%rd43, %rd122, 5;
-	add.s64 	%rd44, %rd1, %rd43;
-	ld.u64 	%rd45, [%rd44+24];
-	ld.u64 	%rd46, [%rd45+24];
+	ld.u64 	%rd39, [%rd38+24];
+	ld.u64 	%rd40, [%rd39+24];
 
 
 	// Callseq Start 52
@@ -1915,48 +1970,50 @@ BB13_7:
 	.param .b32 retval0;
 	prototype_52 : .callprototype (.param .b32 _) _ (.param .b64 _) ;
 	call (retval0), 
-%rd46,
+%rd40,
 	(
 	param0
 	)
 	, prototype_52;
-	ld.param.b32	%r103, [retval0+0];
+	ld.param.b32	%r115, [retval0+0];
 	
 	//{
 	}// Callseq End 52
-	@%p2 bra 	BB13_11;
+	@%p2 bra 	BB14_15;
 
-	ld.u64 	%rd50, [%rd1+16];
-	setp.gt.u64	%p10, %rd50, %rd8;
-	selp.b32	%r101, 1, 2, %p10;
-	mov.u64 	%rd123, 0;
-	mov.u32 	%r102, 0;
-	setp.ge.u32	%p11, %r101, %r2;
-	@%p11 bra 	BB13_10;
+	mov.u32 	%r113, 0;
+	mov.u32 	%r112, 1;
+	mov.u32 	%r114, %r113;
+	@%p4 bra 	BB14_14;
 
-BB13_9:
-	mul.wide.u32 	%rd51, %r101, 32;
-	add.s64 	%rd52, %rd1, %rd51;
-	ld.u64 	%rd53, [%rd52+16];
-	setp.eq.s64	%p12, %rd53, 0;
-	add.s32 	%r61, %r102, 1;
-	selp.b32	%r62, %r61, %r101, %p12;
-	cvt.u64.u32	%rd123, %r62;
-	mul.wide.u32 	%rd54, %r62, 32;
-	add.s64 	%rd55, %rd1, %rd54;
-	ld.u64 	%rd56, [%rd55+16];
-	setp.gt.u64	%p13, %rd56, %rd8;
-	shl.b32 	%r102, %r62, 1;
-	selp.b32	%r63, 1, 2, %p13;
-	add.s32 	%r101, %r63, %r102;
-	setp.lt.u32	%p14, %r101, %r2;
-	@%p14 bra 	BB13_9;
+BB14_11:
+	cvt.u64.u32	%rd12, %r112;
+	mul.wide.u32 	%rd43, %r112, 40;
+	add.s64 	%rd13, %rd1, %rd43;
+	ld.u64 	%rd44, [%rd13];
+	setp.gt.u64	%p11, %rd44, %rd8;
+	mov.u16 	%rs17, 0;
+	@%p11 bra 	BB14_13;
 
-BB13_10:
-	shl.b64 	%rd57, %rd123, 5;
-	add.s64 	%rd58, %rd1, %rd57;
-	ld.u64 	%rd59, [%rd58+24];
-	ld.u64 	%rd60, [%rd59+16];
+	ld.u64 	%rd45, [%rd13+8];
+	setp.ge.u64	%p12, %rd45, %rd8;
+	selp.u16	%rs17, 1, 0, %p12;
+
+BB14_13:
+	add.s32 	%r69, %r113, 2;
+	setp.eq.s16	%p13, %rs17, 0;
+	cvt.u32.u64	%r70, %rd12;
+	selp.b32	%r114, %r69, %r70, %p13;
+	shl.b32 	%r113, %r114, 1;
+	add.s32 	%r112, %r113, 1;
+	setp.lt.u32	%p14, %r112, %r2;
+	@%p14 bra 	BB14_11;
+
+BB14_14:
+	mul.wide.u32 	%rd46, %r114, 40;
+	add.s64 	%rd47, %rd1, %rd46;
+	ld.u64 	%rd48, [%rd47+24];
+	ld.u64 	%rd49, [%rd48+16];
 
 
 	// Callseq Start 53
@@ -1968,32 +2025,32 @@ BB13_10:
 	.param .b32 retval0;
 	prototype_53 : .callprototype (.param .b32 _) _ (.param .b64 _) ;
 	call (retval0), 
-%rd60,
+%rd49,
 	(
 	param0
 	)
 	, prototype_53;
-	ld.param.b32	%r103, [retval0+0];
+	ld.param.b32	%r115, [retval0+0];
 	
 	//{
 	}// Callseq End 53
 
-BB13_11:
-	min.s32 	%r104, %r103, %r104;
-	add.s32 	%r97, %r97, 1;
-	setp.lt.s32	%p15, %r97, %r3;
-	ld.global.u64 	%rd124, [%rd2];
-	@%p15 bra 	BB13_5;
+BB14_15:
+	min.s32 	%r116, %r115, %r116;
+	add.s32 	%r107, %r107, 1;
+	setp.lt.s32	%p15, %r107, %r3;
+	ld.global.u64 	%rd96, [%rd2];
+	@%p15 bra 	BB14_5;
 
-BB13_12:
+BB14_16:
 	// Callseq Start 54
 	{
 	.reg .b32 temp_param_reg;
 	// <end>}
 	.param .b64 param0;
-	st.param.b64	[param0+0], %rd124;
+	st.param.b64	[param0+0], %rd96;
 	.param .b32 param1;
-	st.param.b32	[param1+0], %r104;
+	st.param.b32	[param1+0], %r116;
 	call.uni 
 	_ZN9ChiVertexIiiE8setValueEi, 
 	(
@@ -2003,30 +2060,30 @@ BB13_12:
 	
 	//{
 	}// Callseq End 54
-	setp.gt.s32	%p16, %r43, 0;
-	@%p16 bra 	BB13_19;
-	bra.uni 	BB13_13;
+	setp.gt.s32	%p16, %r48, 0;
+	@%p16 bra 	BB14_25;
+	bra.uni 	BB14_17;
 
-BB13_19:
-	@%p3 bra 	BB13_28;
+BB14_25:
+	@%p3 bra 	BB14_38;
 
-	mov.u32 	%r82, 0;
-	mov.u32 	%r108, %r82;
+	mov.u32 	%r90, 0;
+	mov.u32 	%r121, %r90;
 
-BB13_21:
-	ld.global.u64 	%rd91, [%rd2];
-	ld.u32 	%r88, [%rd91+4];
-	ld.u64 	%rd92, [%rd91+16];
+BB14_27:
+	ld.global.u64 	%rd74, [%rd2];
+	ld.u32 	%r98, [%rd74+4];
+	ld.u64 	%rd75, [%rd74+16];
 	// Callseq Start 58
 	{
 	.reg .b32 temp_param_reg;
 	// <end>}
 	.param .b32 param0;
-	st.param.b32	[param0+0], %r88;
+	st.param.b32	[param0+0], %r98;
 	.param .b64 param1;
-	st.param.b64	[param1+0], %rd92;
+	st.param.b64	[param1+0], %rd75;
 	.param .b32 param2;
-	st.param.b32	[param2+0], %r108;
+	st.param.b32	[param2+0], %r121;
 	.param .b64 retval0;
 	call.uni (retval0), 
 	_ZN9ChiVertexIiiE4edgeEi, 
@@ -2035,41 +2092,44 @@ BB13_21:
 	param1, 
 	param2
 	);
-	ld.param.b64	%rd23, [retval0+0];
+	ld.param.b64	%rd22, [retval0+0];
 	
 	//{
 	}// Callseq End 58
-	ld.u64 	%rd93, [%rd1+16];
-	setp.gt.u64	%p25, %rd93, %rd23;
-	selp.b32	%r109, 1, 2, %p25;
-	mov.u64 	%rd127, 0;
-	setp.ge.u32	%p26, %r109, %r2;
-	mov.u32 	%r110, %r82;
-	@%p26 bra 	BB13_23;
+	mov.u32 	%r122, 1;
+	setp.lt.u32	%p25, %r2, 2;
+	mov.u32 	%r123, %r90;
+	mov.u32 	%r124, %r90;
+	@%p25 bra 	BB14_31;
 
-BB13_22:
-	mul.wide.u32 	%rd94, %r109, 32;
-	add.s64 	%rd95, %rd1, %rd94;
-	ld.u64 	%rd96, [%rd95+16];
-	setp.eq.s64	%p27, %rd96, 0;
-	add.s32 	%r89, %r110, 1;
-	selp.b32	%r90, %r89, %r109, %p27;
-	cvt.u64.u32	%rd127, %r90;
-	mul.wide.u32 	%rd97, %r90, 32;
-	add.s64 	%rd98, %rd1, %rd97;
-	ld.u64 	%rd99, [%rd98+16];
-	setp.gt.u64	%p28, %rd99, %rd23;
-	shl.b32 	%r110, %r90, 1;
-	selp.b32	%r91, 1, 2, %p28;
-	add.s32 	%r109, %r91, %r110;
-	setp.lt.u32	%p29, %r109, %r2;
-	@%p29 bra 	BB13_22;
+BB14_28:
+	cvt.u64.u32	%rd23, %r122;
+	mul.wide.u32 	%rd76, %r122, 40;
+	add.s64 	%rd24, %rd1, %rd76;
+	ld.u64 	%rd77, [%rd24];
+	setp.gt.u64	%p26, %rd77, %rd22;
+	mov.u16 	%rs19, 0;
+	@%p26 bra 	BB14_30;
 
-BB13_23:
-	shl.b64 	%rd100, %rd127, 5;
-	add.s64 	%rd101, %rd1, %rd100;
-	ld.u64 	%rd102, [%rd101+24];
-	ld.u64 	%rd103, [%rd102+24];
+	ld.u64 	%rd78, [%rd24+8];
+	setp.ge.u64	%p27, %rd78, %rd22;
+	selp.u16	%rs19, 1, 0, %p27;
+
+BB14_30:
+	add.s32 	%r99, %r123, 2;
+	setp.eq.s16	%p28, %rs19, 0;
+	cvt.u32.u64	%r100, %rd23;
+	selp.b32	%r124, %r99, %r100, %p28;
+	shl.b32 	%r123, %r124, 1;
+	add.s32 	%r122, %r123, 1;
+	setp.lt.u32	%p29, %r122, %r2;
+	@%p29 bra 	BB14_28;
+
+BB14_31:
+	mul.wide.u32 	%rd79, %r124, 40;
+	add.s64 	%rd80, %rd1, %rd79;
+	ld.u64 	%rd81, [%rd80+24];
+	ld.u64 	%rd82, [%rd81+24];
 
 
 	// Callseq Start 59
@@ -2077,53 +2137,55 @@ BB13_23:
 	.reg .b32 temp_param_reg;
 	// <end>}
 	.param .b64 param0;
-	st.param.b64	[param0+0], %rd23;
+	st.param.b64	[param0+0], %rd22;
 	.param .b32 retval0;
 	prototype_59 : .callprototype (.param .b32 _) _ (.param .b64 _) ;
 	call (retval0), 
-%rd103,
+%rd82,
 	(
 	param0
 	)
 	, prototype_59;
-	ld.param.b32	%r92, [retval0+0];
+	ld.param.b32	%r101, [retval0+0];
 	
 	//{
 	}// Callseq End 59
-	setp.le.s32	%p30, %r92, %r104;
-	@%p30 bra 	BB13_27;
+	setp.le.s32	%p30, %r101, %r116;
+	@%p30 bra 	BB14_37;
 
-	ld.u64 	%rd107, [%rd1+16];
-	setp.gt.u64	%p31, %rd107, %rd23;
-	selp.b32	%r111, 1, 2, %p31;
-	mov.u64 	%rd128, 0;
-	mov.u32 	%r112, 0;
-	setp.ge.u32	%p32, %r111, %r2;
-	@%p32 bra 	BB13_26;
+	mov.u32 	%r126, 0;
+	mov.u32 	%r125, 1;
+	mov.u32 	%r127, %r126;
+	@%p25 bra 	BB14_36;
 
-BB13_25:
-	mul.wide.u32 	%rd108, %r111, 32;
-	add.s64 	%rd109, %rd1, %rd108;
-	ld.u64 	%rd110, [%rd109+16];
-	setp.eq.s64	%p33, %rd110, 0;
-	add.s32 	%r94, %r112, 1;
-	selp.b32	%r95, %r94, %r111, %p33;
-	cvt.u64.u32	%rd128, %r95;
-	mul.wide.u32 	%rd111, %r95, 32;
-	add.s64 	%rd112, %rd1, %rd111;
-	ld.u64 	%rd113, [%rd112+16];
-	setp.gt.u64	%p34, %rd113, %rd23;
-	shl.b32 	%r112, %r95, 1;
-	selp.b32	%r96, 1, 2, %p34;
-	add.s32 	%r111, %r96, %r112;
-	setp.lt.u32	%p35, %r111, %r2;
-	@%p35 bra 	BB13_25;
+BB14_33:
+	cvt.u64.u32	%rd26, %r125;
+	mul.wide.u32 	%rd85, %r125, 40;
+	add.s64 	%rd27, %rd1, %rd85;
+	ld.u64 	%rd86, [%rd27];
+	setp.gt.u64	%p32, %rd86, %rd22;
+	mov.u16 	%rs20, 0;
+	@%p32 bra 	BB14_35;
 
-BB13_26:
-	shl.b64 	%rd114, %rd128, 5;
-	add.s64 	%rd115, %rd1, %rd114;
-	ld.u64 	%rd116, [%rd115+24];
-	ld.u64 	%rd117, [%rd116+32];
+	ld.u64 	%rd87, [%rd27+8];
+	setp.ge.u64	%p33, %rd87, %rd22;
+	selp.u16	%rs20, 1, 0, %p33;
+
+BB14_35:
+	add.s32 	%r105, %r126, 2;
+	setp.eq.s16	%p34, %rs20, 0;
+	cvt.u32.u64	%r106, %rd26;
+	selp.b32	%r127, %r105, %r106, %p34;
+	shl.b32 	%r126, %r127, 1;
+	add.s32 	%r125, %r126, 1;
+	setp.lt.u32	%p35, %r125, %r2;
+	@%p35 bra 	BB14_33;
+
+BB14_36:
+	mul.wide.u32 	%rd88, %r127, 40;
+	add.s64 	%rd89, %rd1, %rd88;
+	ld.u64 	%rd90, [%rd89+24];
+	ld.u64 	%rd91, [%rd90+32];
 
 
 	// Callseq Start 60
@@ -2131,12 +2193,12 @@ BB13_26:
 	.reg .b32 temp_param_reg;
 	// <end>}
 	.param .b64 param0;
-	st.param.b64	[param0+0], %rd23;
+	st.param.b64	[param0+0], %rd22;
 	.param .b32 param1;
-	st.param.b32	[param1+0], %r104;
+	st.param.b32	[param1+0], %r116;
 	prototype_60 : .callprototype ()_ (.param .b64 _, .param .b32 _) ;
 	call 
-%rd117,
+%rd91,
 	(
 	param0, 
 	param1
@@ -2146,52 +2208,51 @@ BB13_26:
 	//{
 	}// Callseq End 60
 
-BB13_27:
-	add.s32 	%r108, %r108, 1;
-	setp.lt.s32	%p36, %r108, %r3;
-	@%p36 bra 	BB13_21;
-	bra.uni 	BB13_28;
+BB14_37:
+	add.s32 	%r121, %r121, 1;
+	setp.lt.s32	%p36, %r121, %r3;
+	@%p36 bra 	BB14_27;
+	bra.uni 	BB14_38;
 
-BB13_13:
-	ld.global.u64 	%rd125, [%rd2];
-	ld.u32 	%r72, [%rd125+8];
+BB14_17:
+	ld.global.u64 	%rd97, [%rd2];
+	ld.u32 	%r79, [%rd97+8];
 	// Callseq Start 55
 	{
 	.reg .b32 temp_param_reg;
 	// <end>}
 	.param .b32 param0;
-	st.param.b32	[param0+0], %r72;
+	st.param.b32	[param0+0], %r79;
 	.param .b32 retval0;
 	call.uni (retval0), 
 	_ZN9ChiVertexIiiE11numOutEdgesEv, 
 	(
 	param0
 	);
-	ld.param.b32	%r23, [retval0+0];
+	ld.param.b32	%r25, [retval0+0];
 	
 	//{
 	}// Callseq End 55
-	setp.lt.s32	%p17, %r23, 1;
-	@%p17 bra 	BB13_28;
+	setp.lt.s32	%p17, %r25, 1;
+	@%p17 bra 	BB14_38;
 
-	add.s64 	%rd17, %rd1, 16;
-	mov.u32 	%r73, 0;
-	mov.u32 	%r105, %r73;
-	bra.uni 	BB13_15;
+	mov.u32 	%r80, 0;
+	mov.u32 	%r117, %r80;
+	bra.uni 	BB14_19;
 
-BB13_18:
-	ld.global.u64 	%rd125, [%rd2];
+BB14_24:
+	ld.global.u64 	%rd97, [%rd2];
 
-BB13_15:
-	ld.u64 	%rd70, [%rd125+24];
+BB14_19:
+	ld.u64 	%rd58, [%rd97+24];
 	// Callseq Start 56
 	{
 	.reg .b32 temp_param_reg;
 	// <end>}
 	.param .b64 param0;
-	st.param.b64	[param0+0], %rd70;
+	st.param.b64	[param0+0], %rd58;
 	.param .b32 param1;
-	st.param.b32	[param1+0], %r105;
+	st.param.b32	[param1+0], %r117;
 	.param .b64 retval0;
 	call.uni (retval0), 
 	_ZN9ChiVertexIiiE10getOutEdgeEi, 
@@ -2199,41 +2260,44 @@ BB13_15:
 	param0, 
 	param1
 	);
-	ld.param.b64	%rd19, [retval0+0];
+	ld.param.b64	%rd18, [retval0+0];
 	
 	//{
 	}// Callseq End 56
-	ld.u64 	%rd71, [%rd17];
-	setp.gt.u64	%p18, %rd71, %rd19;
-	selp.b32	%r106, 1, 2, %p18;
-	mov.u64 	%rd126, 0;
-	setp.ge.u32	%p19, %r106, %r2;
-	mov.u32 	%r107, %r73;
-	@%p19 bra 	BB13_17;
+	mov.u32 	%r118, 1;
+	setp.lt.u32	%p18, %r2, 2;
+	mov.u32 	%r119, %r80;
+	mov.u32 	%r120, %r80;
+	@%p18 bra 	BB14_23;
 
-BB13_16:
-	mul.wide.u32 	%rd72, %r106, 32;
-	add.s64 	%rd73, %rd1, %rd72;
-	ld.u64 	%rd74, [%rd73+16];
-	setp.eq.s64	%p20, %rd74, 0;
-	add.s32 	%r75, %r107, 1;
-	selp.b32	%r76, %r75, %r106, %p20;
-	cvt.u64.u32	%rd126, %r76;
-	mul.wide.u32 	%rd75, %r76, 32;
-	add.s64 	%rd76, %rd1, %rd75;
-	ld.u64 	%rd77, [%rd76+16];
-	setp.gt.u64	%p21, %rd77, %rd19;
-	shl.b32 	%r107, %r76, 1;
-	selp.b32	%r77, 1, 2, %p21;
-	add.s32 	%r106, %r77, %r107;
-	setp.lt.u32	%p22, %r106, %r2;
-	@%p22 bra 	BB13_16;
+BB14_20:
+	cvt.u64.u32	%rd19, %r118;
+	mul.wide.u32 	%rd59, %r118, 40;
+	add.s64 	%rd20, %rd1, %rd59;
+	ld.u64 	%rd60, [%rd20];
+	setp.gt.u64	%p19, %rd60, %rd18;
+	mov.u16 	%rs18, 0;
+	@%p19 bra 	BB14_22;
 
-BB13_17:
-	shl.b64 	%rd78, %rd126, 5;
-	add.s64 	%rd79, %rd1, %rd78;
-	ld.u64 	%rd80, [%rd79+24];
-	ld.u64 	%rd81, [%rd80+32];
+	ld.u64 	%rd61, [%rd20+8];
+	setp.ge.u64	%p20, %rd61, %rd18;
+	selp.u16	%rs18, 1, 0, %p20;
+
+BB14_22:
+	add.s32 	%r84, %r119, 2;
+	setp.eq.s16	%p21, %rs18, 0;
+	cvt.u32.u64	%r85, %rd19;
+	selp.b32	%r120, %r84, %r85, %p21;
+	shl.b32 	%r119, %r120, 1;
+	add.s32 	%r118, %r119, 1;
+	setp.lt.u32	%p22, %r118, %r2;
+	@%p22 bra 	BB14_20;
+
+BB14_23:
+	mul.wide.u32 	%rd62, %r120, 40;
+	add.s64 	%rd63, %rd1, %rd62;
+	ld.u64 	%rd64, [%rd63+24];
+	ld.u64 	%rd65, [%rd64+32];
 
 
 	// Callseq Start 57
@@ -2241,12 +2305,12 @@ BB13_17:
 	.reg .b32 temp_param_reg;
 	// <end>}
 	.param .b64 param0;
-	st.param.b64	[param0+0], %rd19;
+	st.param.b64	[param0+0], %rd18;
 	.param .b32 param1;
-	st.param.b32	[param1+0], %r104;
+	st.param.b32	[param1+0], %r116;
 	prototype_57 : .callprototype ()_ (.param .b64 _, .param .b32 _) ;
 	call 
-%rd81,
+%rd65,
 	(
 	param0, 
 	param1
@@ -2255,12 +2319,12 @@ BB13_17:
 	
 	//{
 	}// Callseq End 57
-	add.s32 	%r105, %r105, 1;
-	setp.ge.s32	%p23, %r105, %r23;
-	@%p23 bra 	BB13_28;
-	bra.uni 	BB13_18;
+	add.s32 	%r117, %r117, 1;
+	setp.ge.s32	%p23, %r117, %r25;
+	@%p23 bra 	BB14_38;
+	bra.uni 	BB14_24;
 
-BB13_28:
+BB14_38:
 	ret;
 }
 
@@ -2318,22 +2382,22 @@ BB13_28:
 	ld.param.u64 	%rd4, [_ZN9ChiVertexIiiE4edgeEi_param_1];
 	ld.param.u32 	%r2, [_ZN9ChiVertexIiiE4edgeEi_param_2];
 	setp.lt.s32	%p1, %r2, %r1;
-	@%p1 bra 	BB17_2;
-	bra.uni 	BB17_1;
+	@%p1 bra 	BB18_2;
+	bra.uni 	BB18_1;
 
-BB17_2:
+BB18_2:
 	mul.wide.s32 	%rd7, %r2, 8;
 	add.s64 	%rd8, %rd4, %rd7;
 	ld.u64 	%rd9, [%rd8];
-	bra.uni 	BB17_3;
+	bra.uni 	BB18_3;
 
-BB17_1:
+BB18_1:
 	sub.s32 	%r3, %r2, %r1;
 	mul.wide.s32 	%rd5, %r3, 8;
 	add.s64 	%rd6, %rd4, %rd5;
 	ld.u64 	%rd9, [%rd6];
 
-BB17_3:
+BB18_3:
 	st.param.b64	[func_retval0+0], %rd9;
 	ret;
 }
@@ -2406,7 +2470,7 @@ BB17_3:
 	//{
 	}// Callseq End 61
 	setp.ge.s32	%p1, %r1, %r6;
-	@%p1 bra 	BB20_2;
+	@%p1 bra 	BB21_2;
 
 	cvta.to.global.u64 	%rd5, %rd1;
 	mul.wide.s32 	%rd6, %r1, 8;
@@ -2434,25 +2498,29 @@ BB17_3:
 	add.s64 	%rd11, %rd9, %rd10;
 	st.global.u32 	[%rd11], %r8;
 
-BB20_2:
+BB21_2:
 	ret;
 }
 
-	// .globl	_Z11dump_vtableI4EdgeIiEEvPPv
-.visible .entry _Z11dump_vtableI4EdgeIiEEvPPv(
-	.param .u64 _Z11dump_vtableI4EdgeIiEEvPPv_param_0
+	// .globl	_Z11dump_vtableI4EdgeIiEEvPPvS3_
+.visible .entry _Z11dump_vtableI4EdgeIiEEvPPvS3_(
+	.param .u64 _Z11dump_vtableI4EdgeIiEEvPPvS3__param_0,
+	.param .u64 _Z11dump_vtableI4EdgeIiEEvPPvS3__param_1
 )
 {
-	.reg .pred 	%p<2>;
-	.reg .b64 	%rd<39>;
+	.reg .pred 	%p<13>;
+	.reg .b16 	%rs<9>;
+	.reg .b32 	%r<15>;
+	.reg .b64 	%rd<56>;
 
 
-	ld.param.u64 	%rd2, [_Z11dump_vtableI4EdgeIiEEvPPv_param_0];
-	mov.u64 	%rd38, 0;
-	mov.u64 	%rd4, buf5;
-	cvta.global.u64 	%rd5, %rd4;
-	setp.eq.s64	%p1, %rd5, 0;
-	@%p1 bra 	BB21_2;
+	ld.param.u64 	%rd17, [_Z11dump_vtableI4EdgeIiEEvPPvS3__param_0];
+	ld.param.u64 	%rd18, [_Z11dump_vtableI4EdgeIiEEvPPvS3__param_1];
+	mov.u64 	%rd55, 0;
+	mov.u64 	%rd20, buf5;
+	cvta.global.u64 	%rd21, %rd20;
+	setp.eq.s64	%p1, %rd21, 0;
+	@%p1 bra 	BB22_2;
 
 	// Callseq Start 63
 	{
@@ -2465,55 +2533,127 @@ BB20_2:
 	
 	//{
 	}// Callseq End 63
-	mov.u64 	%rd38, %rd4;
+	mov.u64 	%rd55, %rd20;
 
-BB21_2:
-	cvta.to.global.u64 	%rd7, %rd2;
-	ld.global.u64 	%rd8, [%rd38];
-	ld.u64 	%rd9, [%rd8];
-	st.global.u64 	[%rd7], %rd9;
-	ld.global.u64 	%rd10, [%rd38];
-	ld.u64 	%rd11, [%rd10+8];
-	st.global.u64 	[%rd7+8], %rd11;
-	ld.global.u64 	%rd12, [%rd38];
-	ld.u64 	%rd13, [%rd12+16];
-	st.global.u64 	[%rd7+16], %rd13;
-	ld.global.u64 	%rd14, [%rd38];
-	ld.u64 	%rd15, [%rd14+24];
-	st.global.u64 	[%rd7+24], %rd15;
-	ld.global.u64 	%rd16, [%rd38];
-	ld.u64 	%rd17, [%rd16+32];
-	st.global.u64 	[%rd7+32], %rd17;
-	ld.global.u64 	%rd18, [%rd38];
-	ld.u64 	%rd19, [%rd18+40];
-	st.global.u64 	[%rd7+40], %rd19;
-	ld.global.u64 	%rd20, [%rd38];
-	ld.u64 	%rd21, [%rd20+48];
-	st.global.u64 	[%rd7+48], %rd21;
-	ld.global.u64 	%rd22, [%rd38];
-	ld.u64 	%rd23, [%rd22+56];
-	st.global.u64 	[%rd7+56], %rd23;
-	ld.global.u64 	%rd24, [%rd38];
-	ld.u64 	%rd25, [%rd24+64];
-	st.global.u64 	[%rd7+64], %rd25;
-	ld.global.u64 	%rd26, [%rd38];
-	ld.u64 	%rd27, [%rd26+72];
-	st.global.u64 	[%rd7+72], %rd27;
-	ld.global.u64 	%rd28, [%rd38];
-	ld.u64 	%rd29, [%rd28+80];
-	st.global.u64 	[%rd7+80], %rd29;
-	ld.global.u64 	%rd30, [%rd38];
-	ld.u64 	%rd31, [%rd30+88];
-	st.global.u64 	[%rd7+88], %rd31;
-	ld.global.u64 	%rd32, [%rd38];
-	ld.u64 	%rd33, [%rd32+96];
-	st.global.u64 	[%rd7+96], %rd33;
-	ld.global.u64 	%rd34, [%rd38];
-	ld.u64 	%rd35, [%rd34+104];
-	st.global.u64 	[%rd7+104], %rd35;
-	ld.global.u64 	%rd36, [%rd38];
-	ld.u64 	%rd37, [%rd36+112];
-	st.global.u64 	[%rd7+112], %rd37;
+BB22_2:
+	cvta.to.global.u64 	%rd2, %rd17;
+	ld.global.u8 	%rs1, [%rd55];
+	cvta.to.global.u64 	%rd23, %rd18;
+	st.global.u8 	[%rd23], %rs1;
+	ld.global.u8 	%rs2, [%rd55+1];
+	st.global.u8 	[%rd23+1], %rs2;
+	ld.global.u8 	%rs3, [%rd55+2];
+	st.global.u8 	[%rd23+2], %rs3;
+	ld.global.u8 	%rs4, [%rd55+3];
+	st.global.u8 	[%rd23+3], %rs4;
+	ld.global.u8 	%rs5, [%rd55+4];
+	st.global.u8 	[%rd23+4], %rs5;
+	ld.global.u8 	%rs6, [%rd55+5];
+	st.global.u8 	[%rd23+5], %rs6;
+	ld.global.u8 	%rs7, [%rd55+6];
+	st.global.u8 	[%rd23+6], %rs7;
+	ld.global.u8 	%rs8, [%rd55+7];
+	st.global.u8 	[%rd23+7], %rs8;
+	mov.u32 	%r14, 0;
+
+BB22_3:
+	cvt.s64.s32	%rd4, %r14;
+	ld.global.u64 	%rd24, [%rd55];
+	mul.wide.s32 	%rd25, %r14, 8;
+	add.s64 	%rd26, %rd24, %rd25;
+	ld.u64 	%rd5, [%rd26];
+	setp.eq.s64	%p2, %rd5, 0;
+	@%p2 bra 	BB22_14;
+
+	add.s64 	%rd6, %rd2, %rd25;
+	st.global.u64 	[%rd6], %rd5;
+	add.s32 	%r4, %r14, 1;
+	ld.global.u64 	%rd28, [%rd55];
+	mul.wide.s32 	%rd29, %r4, 8;
+	add.s64 	%rd30, %rd28, %rd29;
+	ld.u64 	%rd7, [%rd30];
+	setp.eq.s64	%p3, %rd7, 0;
+	@%p3 bra 	BB22_14;
+
+	st.global.u64 	[%rd6+8], %rd7;
+	add.s32 	%r5, %r14, 2;
+	ld.global.u64 	%rd31, [%rd55];
+	mul.wide.s32 	%rd32, %r5, 8;
+	add.s64 	%rd33, %rd31, %rd32;
+	ld.u64 	%rd9, [%rd33];
+	setp.eq.s64	%p4, %rd9, 0;
+	@%p4 bra 	BB22_14;
+
+	st.global.u64 	[%rd6+16], %rd9;
+	add.s32 	%r6, %r14, 3;
+	ld.global.u64 	%rd34, [%rd55];
+	mul.wide.s32 	%rd35, %r6, 8;
+	add.s64 	%rd36, %rd34, %rd35;
+	ld.u64 	%rd10, [%rd36];
+	setp.eq.s64	%p5, %rd10, 0;
+	@%p5 bra 	BB22_14;
+
+	st.global.u64 	[%rd6+24], %rd10;
+	add.s32 	%r7, %r14, 4;
+	ld.global.u64 	%rd37, [%rd55];
+	mul.wide.s32 	%rd38, %r7, 8;
+	add.s64 	%rd39, %rd37, %rd38;
+	ld.u64 	%rd11, [%rd39];
+	setp.eq.s64	%p6, %rd11, 0;
+	@%p6 bra 	BB22_14;
+
+	st.global.u64 	[%rd6+32], %rd11;
+	add.s32 	%r8, %r14, 5;
+	ld.global.u64 	%rd40, [%rd55];
+	mul.wide.s32 	%rd41, %r8, 8;
+	add.s64 	%rd42, %rd40, %rd41;
+	ld.u64 	%rd12, [%rd42];
+	setp.eq.s64	%p7, %rd12, 0;
+	@%p7 bra 	BB22_14;
+
+	st.global.u64 	[%rd6+40], %rd12;
+	add.s32 	%r9, %r14, 6;
+	ld.global.u64 	%rd43, [%rd55];
+	mul.wide.s32 	%rd44, %r9, 8;
+	add.s64 	%rd45, %rd43, %rd44;
+	ld.u64 	%rd13, [%rd45];
+	setp.eq.s64	%p8, %rd13, 0;
+	@%p8 bra 	BB22_14;
+
+	st.global.u64 	[%rd6+48], %rd13;
+	add.s32 	%r10, %r14, 7;
+	ld.global.u64 	%rd46, [%rd55];
+	mul.wide.s32 	%rd47, %r10, 8;
+	add.s64 	%rd48, %rd46, %rd47;
+	ld.u64 	%rd14, [%rd48];
+	setp.eq.s64	%p9, %rd14, 0;
+	@%p9 bra 	BB22_14;
+
+	st.global.u64 	[%rd6+56], %rd14;
+	add.s32 	%r11, %r14, 8;
+	ld.global.u64 	%rd49, [%rd55];
+	mul.wide.s32 	%rd50, %r11, 8;
+	add.s64 	%rd51, %rd49, %rd50;
+	ld.u64 	%rd15, [%rd51];
+	setp.eq.s64	%p10, %rd15, 0;
+	@%p10 bra 	BB22_14;
+
+	st.global.u64 	[%rd6+64], %rd15;
+	add.s32 	%r12, %r14, 9;
+	ld.global.u64 	%rd52, [%rd55];
+	mul.wide.s32 	%rd53, %r12, 8;
+	add.s64 	%rd54, %rd52, %rd53;
+	ld.u64 	%rd16, [%rd54];
+	setp.eq.s64	%p11, %rd16, 0;
+	@%p11 bra 	BB22_14;
+
+	cvt.u32.u64	%r13, %rd4;
+	st.global.u64 	[%rd6+72], %rd16;
+	add.s32 	%r14, %r13, 10;
+	setp.lt.s32	%p12, %r14, 30;
+	@%p12 bra 	BB22_3;
+
+BB22_14:
 	ret;
 }
 

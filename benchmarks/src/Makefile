@@ -323,6 +323,9 @@ heterosync:
 	cd heterosync && git checkout 22bc0eb
 	$(SETENV) make $(MAKE_ARGS) CUDA_DIR=$(CUDA_INSTALL_PATH) -C cuda/heterosync/cuda/syncPrims/uvm/
 	mv cuda/heterosync/cuda/syncPrims/uvm/allSyncPrims-1kernel $(BINDIR)/$(BINSUBDIR)/
+dynasoar:
+	mkdir -p $(BINDIR)/$(BINSUBDIR)/
+	$(SETENV) make $(MAKE_ARGS) -C cuda/dynasoar
 
 oop:
 	mkdir -p $(BINDIR)/$(BINSUBDIR)/
@@ -366,6 +369,16 @@ oop-coal:
 	$(SETENV) make $(MAKE_ARGS) -C cuda/oop-coal/CC
 	$(SETENV) make $(MAKE_ARGS) -C cuda/oop-coal/CCV
 	$(SETENV) make $(MAKE_ARGS) noinline=$(noinline) -C cuda/oop-coal/RAY
+oop-tp:
+	mkdir -p $(BINDIR)/$(BINSUBDIR)/
+	#$(SETENV) make $(MAKE_ARGS) -C cuda/oop-coal/ubench
+	$(SETENV) make $(MAKE_ARGS) -C cuda/oop-tp/PR
+	$(SETENV) make $(MAKE_ARGS) -C cuda/oop-tp/PRV
+	$(SETENV) make $(MAKE_ARGS) -C cuda/oop-tp/BFS
+	$(SETENV) make $(MAKE_ARGS) -C cuda/oop-tp/BFSV
+	$(SETENV) make $(MAKE_ARGS) -C cuda/oop-tp/CC
+	$(SETENV) make $(MAKE_ARGS) -C cuda/oop-tp/CCV
+	$(SETENV) make $(MAKE_ARGS) noinline=$(noinline) -C cuda/oop-tp/RAY
 
 oop-ideal:
 	mkdir -p $(BINDIR)/$(BINSUBDIR)/

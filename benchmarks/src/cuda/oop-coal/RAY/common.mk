@@ -419,6 +419,7 @@ CUBINS +=  $(patsubst %.cu,$(CUBINDIR)/%.cubin,$(notdir $(CUBINFILES)))
 ################################################################################
 PTXDIR := $(SRCDIR)data
 PTXBINS +=  $(patsubst %.cu,$(PTXDIR)/%.ptx,$(notdir $(PTXFILES)))
+PTX_GEN =  ../../../../../util/ptx_transform_coal/
 
 ################################################################################
 # Rules
@@ -431,10 +432,12 @@ $(OBJDIR)/%.cpp.o : $(SRCDIR)%.cpp $(C_DEPS) makedirectories
 
 # Default arch includes gencode for sm_10, sm_20, sm_30, and other archs from GENCODE_ARCH declared in the makefile
 $(OBJDIR)/%.cu.o : $(SRCDIR)%.cu $(CU_DEPS) makedirectories
-	$(VERBOSE)$(NVCC) --keep  $(GENCODE_SM10) $(GENCODE_SM13) $(GENCODE_ARCH) $(GENCODE_SM20) $(GENCODE_SM30) $(GENCODE_SM35) $(GENCODE_SM50) $(GENCODE_SM60) $(GENCODE_SM62) $(GENCODE_SM70) $(NVCCFLAGS) $(SMVERSIONFLAGS) -o $@ -c $< 
-	cp rayTracing.ptx_vptr rayTracing.ptx
+	$(VERBOSE)$(NVCC) --keep $(GENCODE_SM10) $(GENCODE_SM13) $(GENCODE_ARCH) $(GENCODE_SM20) $(GENCODE_SM30) $(GENCODE_SM35) $(GENCODE_SM50) $(GENCODE_SM60) $(GENCODE_SM62) $(GENCODE_SM70) $(NVCCFLAGS) $(SMVERSIONFLAGS) -o $@ -c $< 
+	$(PTX_GEN)/generator.py rayTracing.ptx
+	cp rayTracing.ptx_coal rayTracing.ptx
 	sh dryrun_10_1.sh
-	rm -f *cpp* *fatbin* *cudafe*  *cubin* *.o *.module_id *dlink*
+	rm -f  *fatbin* *cudafe*  *cubin* *.o *.module_id *dlink*
+
 # Default arch includes gencode for sm_10, sm_20, sm_30, and other archs from GENCODE_ARCH declared in the makefile
 $(CUBINDIR)/%.cubin : $(SRCDIR)%.cu cubindirectory makedirectories
 	$(VERBOSE)$(NVCC) $(GENCODE_SM10) $(GENCODE_SM13) $(GENCODE_ARCH) $(GENCODE_SM20) $(GENCODE_SM30) $(GENCODE_SM35) $(GENCODE_SM50) $(GENCODE_SM60) $(GENCODE_SM62) $(GENCODE_SM70) $(CUBIN_ARCH_FLAG) $(NVCCFLAGS) $(SMVERSIONFLAGS) -o $@ -cubin $<

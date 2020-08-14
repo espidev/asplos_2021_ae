@@ -118,7 +118,7 @@ int main(int argc, char **argv) {
     // initialise card and timer
     int deviceCount;
     mem_alloc shared_mem(4ULL * 1024 * 1024 * 1024);
-    obj_alloc my_obj_alloc(&shared_mem);
+    obj_alloc my_obj_alloc(&shared_mem, atoll(argv[4]));
     CUDA_SAFE_CALL(cudaGetDeviceCount(&deviceCount));
     if (deviceCount == 0) {
         fprintf(stderr, "There is no device.\n");
@@ -138,10 +138,10 @@ int main(int argc, char **argv) {
     int i, commandline_error;
     commandline_error = 0;
     g_verbose = 0;
-    if (argc >= 4) {
+    if (argc >= 5) {
         width = atoi(argv[1]);
         height = atoi(argv[2]);
-        for (i = 4; i < argc; i++) {
+        for (i = 5; i < argc; i++) {
             if (argv[i][0] == '-') {
                 switch (argv[i][1]) {
                     case 'v':

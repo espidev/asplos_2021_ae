@@ -82,8 +82,8 @@ int main(int argc, char **argv) {
 
     cudaError_t err = cudaSuccess;
     mem_alloc shared_mem(4ULL * 1024 * 1024 * 1024);
-    obj_alloc my_obj_alloc(&shared_mem);
-    if (argc == 3) {
+    obj_alloc my_obj_alloc(&shared_mem, atoll(argv[3]));
+    if (argc == 4) {
         tmpchar = argv[1];            // Graph inputfile
         file_format = atoi(argv[2]);  // File format
     } else {

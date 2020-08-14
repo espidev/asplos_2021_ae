@@ -293,8 +293,8 @@ __global__ void BFS(VirtVertex<int, int> **vertex, GraphChiContext *context,int 
   if (tid < context->getNumVertices()) {
     if (iteration == 0) {
       if (tid == 0) {
-        vtable = get_vfunc(vertex[tid], table, tree_size);
-        temp_coal = vtable[3];
+        // vtable = get_vfunc(vertex[tid], table, tree_size);
+        // temp_coal = vtable[3];
         vertex[tid]->setValue(0);
         int numOutEdge;
         vtable = get_vfunc(vertex[tid], table, tree_size);

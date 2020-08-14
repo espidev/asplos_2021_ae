@@ -771,10 +771,10 @@ void init(obj_alloc *alloc) {
 
     create_street_network(alloc);
 }
-int main(int /*argc*/, char ** /*argv*/) {
+int main(int /*argc*/, char ** argv) {
     cudaDeviceSetLimit(cudaLimitMallocHeapSize, 4ULL * 1024 * 1024 * 1024);
     mem_alloc shared_mem(4ULL * 1024 * 1024 * 1024);
-    obj_alloc my_obj_alloc(&shared_mem);
+    obj_alloc my_obj_alloc(&shared_mem, atoll(argv[1]));
     init(&my_obj_alloc);
     my_obj_alloc.toDevice();
     printf("mem alloc done\n");

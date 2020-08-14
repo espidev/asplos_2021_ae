@@ -62,7 +62,7 @@
 #include <sys/time.h>
 #include <new>
 
-#include "../mem_alloc/mem_alloc_2.h"
+#include "../../mem_alloc/mem_alloc.h"
 #include "../graph_parser/parse.h"
 #include "parse_oo.h"
 #include "../graph_parser/util.h"
@@ -82,10 +82,10 @@ int main(int argc, char **argv)
     int file_format = 1;
     bool directed = 0;
     mem_alloc shared_mem(4ULL * 1024 * 1024 * 1024);
-    obj_alloc my_obj_alloc(&shared_mem);
+    obj_alloc my_obj_alloc(&shared_mem, atoll(argv[3]));
     cudaError_t err = cudaSuccess;
 
-    if (argc == 3) {
+    if (argc == 4) {
         tmpchar = argv[1]; // Graph inputfile
         file_format = atoi(argv[2]); // File format
     } else {

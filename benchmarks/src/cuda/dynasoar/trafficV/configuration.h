@@ -16,6 +16,8 @@ static const int kSeed = 42;
 static const int kMaxVelocity = 10;
 static const int kMaxDegree = 4;
 
+#include <ctime>
+using namespace std::chrono;
 #ifndef PARAM_SIZE
 static const int kNumIntersections = 850;
 #else
@@ -25,11 +27,11 @@ static const int kNumIntersections = PARAM_SIZE;
 static const float kCellLength = 0.005f;
 static const float kProducerRatio = 0.02f;
 static const float kTargetRatio = 0.003f;
-#define PARAM_NUM_ITER 1
+// #define PARAM_NUM_ITER 1
 #ifdef PARAM_NUM_ITER
 static const int kNumIterations = PARAM_NUM_ITER;
 #else
-static const int kNumIterations = 1200;
+static const int kNumIterations = 5000;
 #endif  // PARAM_NUM_ITER
 static const float kCarAllocationRatio = 0.02f;
 

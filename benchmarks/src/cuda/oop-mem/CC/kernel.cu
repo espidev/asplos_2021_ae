@@ -349,12 +349,10 @@ __global__ void ConnectedComponent(ChiVertex<int, int> **vertex,
 __global__ void copyBack(ChiVertex<int, int> **vertex, GraphChiContext *context,
                          int *cc) {
     int tid = blockDim.x * blockIdx.x + threadIdx.x;
-    unsigned tree_size = tree_size_g;
-    void **vtable;
-    range_tree_node *table = range_tree;
+   
     if (tid < context->getNumVertices()) {
-        vtable = get_vfunc(vertex[tid], table, tree_size);
-        temp_copyBack = vtable[1];
+        
+        
         cc[tid] = vertex[tid]->getValue();
     }
 }

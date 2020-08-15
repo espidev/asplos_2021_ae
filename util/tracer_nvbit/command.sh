@@ -74,6 +74,15 @@ export DYNAMIC_KERNEL_LIMIT_START=9081;export DYNAMIC_KERNEL_LIMIT_END=9084;
 (export DYNAMIC_KERNEL_LIMIT_START=9081;export DYNAMIC_KERNEL_LIMIT_END=9084;./run_hw_trace.py -B dynasoar:trafficV -D 7 ;       export DYNAMIC_KERNEL_LIMIT_START=307;export DYNAMIC_KERNEL_LIMIT_END=309;./run_hw_trace.py -B dynasoar:generationV_COAL -D 7 ;) &
 
 
+
+
+
+(export DYNAMIC_KERNEL_LIMIT_START=208; export DYNAMIC_KERNEL_LIMIT_END=211;./run_hw_trace.py -B dynasoar:game-of-life_MEM -D 0;) &
+(export DYNAMIC_KERNEL_LIMIT_START=205;export DYNAMIC_KERNEL_LIMIT_END=208; ./run_hw_trace.py -B dynasoar:game-of-life -D 1 ; ) &
+(export DYNAMIC_KERNEL_LIMIT_START=205;export DYNAMIC_KERNEL_LIMIT_END=208;./run_hw_trace.py -B dynasoar:game-of-life_CONCORD -D 2 ;) &
+(export DYNAMIC_KERNEL_LIMIT_START=208;export DYNAMIC_KERNEL_LIMIT_END=211;./run_hw_trace.py -B dynasoar:game-of-life_COAL -D 3 ;) &
+(export DYNAMIC_KERNEL_LIMIT_START=208;export DYNAMIC_KERNEL_LIMIT_END=211;./run_hw_trace.py -B dynasoar:game-of-life_TP -D 5 ;) &
+
 squeue -u aalawneh
 
 ./run_simulations.py -T ~/traces_selected_itr/dynasoar_concord/ -C QV100-TRACE -N DYNASOAR_CONCORD -B dynasoar_concord -M 50000
@@ -97,6 +106,15 @@ squeue -u aalawneh
 ### transform to type pointer load
 ./generator.py -B dynasoar_mem -T /home/tgrogers-raid/a/aalawneh/traces_selected_itr/ -O /home/tgrogers-raid/a/aalawneh/type_pointer_load -L -C search,replace,copy_list &
 ./generator.py -B oop_mem -T /home/tgrogers-raid/a/aalawneh/traces_selected_itr/ -O /home/tgrogers-raid/a/aalawneh/type_pointer_load -L -C search,replace,copy_list &
+
+
+
+( export DYNAMIC_KERNEL_LIMIT_START=0;export DYNAMIC_KERNEL_LIMIT_END=306;./run_hw_trace.py -B oop -D 0 ; ) &
+( export DYNAMIC_KERNEL_LIMIT_START=0;export DYNAMIC_KERNEL_LIMIT_END=306;./run_hw_trace.py -B oop_mem -D 1 ; ) &
+( export DYNAMIC_KERNEL_LIMIT_START=0;export DYNAMIC_KERNEL_LIMIT_END=306;./run_hw_trace.py -B oop_concord -D 2 ; ) &
+( export DYNAMIC_KERNEL_LIMIT_START=0;export DYNAMIC_KERNEL_LIMIT_END=306;./run_hw_trace.py -B oop_coal -D 3 ; ) &
+( export DYNAMIC_KERNEL_LIMIT_START=0;export DYNAMIC_KERNEL_LIMIT_END=306;./run_hw_trace.py -B oop_tp -D 5 ; ) &
+
 
 
 
@@ -188,30 +206,27 @@ squeue -u aalawneh
 
 
 
-export DYNAMIC_KERNEL_LIMIT_START=43630;export DYNAMIC_KERNEL_LIMIT_END=43674;./run_hw_trace.py -B dynasoar:trafficV_MEM -D 0  &
-export DYNAMIC_KERNEL_LIMIT_START=43634;export DYNAMIC_KERNEL_LIMIT_END=43678;./run_hw_trace.py -B dynasoar:trafficV_COAL -D 1  &
-export DYNAMIC_KERNEL_LIMIT_START=43623;export DYNAMIC_KERNEL_LIMIT_END=43667;./run_hw_trace.py -B dynasoar:trafficV_CONCORD -D 2  &
-export DYNAMIC_KERNEL_LIMIT_START=43623;export DYNAMIC_KERNEL_LIMIT_END=43667;./run_hw_trace.py -B dynasoar:trafficV -D 3  &
-export DYNAMIC_KERNEL_LIMIT_START=43634;export DYNAMIC_KERNEL_LIMIT_END=43678;./run_hw_trace.py -B dynasoar:trafficV_TP -D 4  &
-
-export DYNAMIC_KERNEL_LIMIT_START=307; export DYNAMIC_KERNEL_LIMIT_END=309;./run_hw_trace.py -B dynasoar:generationV_MEM -D 1 ;
-export DYNAMIC_KERNEL_LIMIT_START=304; export DYNAMIC_KERNEL_LIMIT_END=306;./run_hw_trace.py -B dynasoar:generationV -D 5  ;
-export DYNAMIC_KERNEL_LIMIT_START=304;export DYNAMIC_KERNEL_LIMIT_END=306;./run_hw_trace.py -B dynasoar:generationV_CONCORD -D 2 ;
-export DYNAMIC_KERNEL_LIMIT_START=307;export DYNAMIC_KERNEL_LIMIT_END=309;./run_hw_trace.py -B dynasoar:generationV_COAL -D 7 ;
-export DYNAMIC_KERNEL_LIMIT_START=307;export DYNAMIC_KERNEL_LIMIT_END=309;./run_hw_trace.py -B dynasoar:generationV_TP -D 7 ;
+(export DYNAMIC_KERNEL_LIMIT_START=43630;export DYNAMIC_KERNEL_LIMIT_END=43674;./run_hw_trace.py -B dynasoar:trafficV_MEM -D 0   ;export DYNAMIC_KERNEL_LIMIT_START=22;  export DYNAMIC_KERNEL_LIMIT_END=36;./run_hw_trace.py -B dynasoar:structureV_MEM -D 0 ;  export DYNAMIC_KERNEL_LIMIT_START=307;export DYNAMIC_KERNEL_LIMIT_END=309;./run_hw_trace.py -B dynasoar:generationV_COAL -D 0 ;   ) &
+(export DYNAMIC_KERNEL_LIMIT_START=43634;export DYNAMIC_KERNEL_LIMIT_END=43678;./run_hw_trace.py -B dynasoar:trafficV_COAL -D 1   ;export DYNAMIC_KERNEL_LIMIT_START=20;export DYNAMIC_KERNEL_LIMIT_END=34;./run_hw_trace.py -B dynasoar:structureV_CONCORD -D 1  ; export DYNAMIC_KERNEL_LIMIT_START=307;export DYNAMIC_KERNEL_LIMIT_END=309;./run_hw_trace.py -B dynasoar:generationV_TP -D 1 ;) &
+(export DYNAMIC_KERNEL_LIMIT_START=43623;export DYNAMIC_KERNEL_LIMIT_END=43667;./run_hw_trace.py -B dynasoar:trafficV_CONCORD -D 2   ; export DYNAMIC_KERNEL_LIMIT_START=22;export DYNAMIC_KERNEL_LIMIT_END=36;./run_hw_trace.py -B dynasoar:structureV_COAL -D 2 ;  export DYNAMIC_KERNEL_LIMIT_START=205;export DYNAMIC_KERNEL_LIMIT_END=208; ./run_hw_trace.py -B dynasoar:game-of-life -D 2 ;  ) &
+(export DYNAMIC_KERNEL_LIMIT_START=43623;export DYNAMIC_KERNEL_LIMIT_END=43667;./run_hw_trace.py -B dynasoar:trafficV -D 3   ;export DYNAMIC_KERNEL_LIMIT_START=22;export DYNAMIC_KERNEL_LIMIT_END=36;./run_hw_trace.py -B dynasoar:structureV_TP -D 3 ; export DYNAMIC_KERNEL_LIMIT_START=205;export DYNAMIC_KERNEL_LIMIT_END=208;./run_hw_trace.py -B dynasoar:game-of-life_CONCORD -D 3 ;    ) &
+(export DYNAMIC_KERNEL_LIMIT_START=43634;export DYNAMIC_KERNEL_LIMIT_END=43678;./run_hw_trace.py -B dynasoar:trafficV_TP -D 4   ; export DYNAMIC_KERNEL_LIMIT_START=208; export DYNAMIC_KERNEL_LIMIT_END=211;./run_hw_trace.py -B dynasoar:game-of-life_MEM -D 4;   ) &
+(export DYNAMIC_KERNEL_LIMIT_START=307; export DYNAMIC_KERNEL_LIMIT_END=309;./run_hw_trace.py -B dynasoar:generationV_MEM -D 5 ; export DYNAMIC_KERNEL_LIMIT_START=208;export DYNAMIC_KERNEL_LIMIT_END=211;./run_hw_trace.py -B dynasoar:game-of-life_COAL -D 5 ;    ) &
+(export DYNAMIC_KERNEL_LIMIT_START=304; export DYNAMIC_KERNEL_LIMIT_END=306;./run_hw_trace.py -B dynasoar:generationV -D 6  ;  export DYNAMIC_KERNEL_LIMIT_START=208;export DYNAMIC_KERNEL_LIMIT_END=211;./run_hw_trace.py -B dynasoar:game-of-life_TP -D 6 ;   ) &
+(export DYNAMIC_KERNEL_LIMIT_START=304;export DYNAMIC_KERNEL_LIMIT_END=306;./run_hw_trace.py -B dynasoar:generationV_CONCORD -D 7 ;   export DYNAMIC_KERNEL_LIMIT_START=20;  export DYNAMIC_KERNEL_LIMIT_END=34;./run_hw_trace.py -B dynasoar:structureV -D 7  ; ) &
 
 
-export DYNAMIC_KERNEL_LIMIT_START=205;export DYNAMIC_KERNEL_LIMIT_END=208; ./run_hw_trace.py -B dynasoar:game-of-life -D 0 ;
-export DYNAMIC_KERNEL_LIMIT_START=205;export DYNAMIC_KERNEL_LIMIT_END=208;./run_hw_trace.py -B dynasoar:game-of-life_CONCORD -D 5 ;
-export DYNAMIC_KERNEL_LIMIT_START=208; export DYNAMIC_KERNEL_LIMIT_END=211;./run_hw_trace.py -B dynasoar:game-of-life_MEM -D 4;
-export DYNAMIC_KERNEL_LIMIT_START=208;export DYNAMIC_KERNEL_LIMIT_END=211;./run_hw_trace.py -B dynasoar:game-of-life_COAL -D 3 ;
-export DYNAMIC_KERNEL_LIMIT_START=208;export DYNAMIC_KERNEL_LIMIT_END=211;./run_hw_trace.py -B dynasoar:game-of-life_TP -D 3 ;
 
-export DYNAMIC_KERNEL_LIMIT_START=20;  export DYNAMIC_KERNEL_LIMIT_END=34;./run_hw_trace.py -B dynasoar:structureV -D 6  ; 
-export DYNAMIC_KERNEL_LIMIT_START=22;  export DYNAMIC_KERNEL_LIMIT_END=36;./run_hw_trace.py -B dynasoar:structureV_MEM -D 3 ; 
-export DYNAMIC_KERNEL_LIMIT_START=20;export DYNAMIC_KERNEL_LIMIT_END=34;./run_hw_trace.py -B dynasoar:structureV_CONCORD -D 3  ;
-export DYNAMIC_KERNEL_LIMIT_START=22;export DYNAMIC_KERNEL_LIMIT_END=36;./run_hw_trace.py -B dynasoar:structureV_COAL -D 0 ;
-export DYNAMIC_KERNEL_LIMIT_START=22;export DYNAMIC_KERNEL_LIMIT_END=36;./run_hw_trace.py -B dynasoar:structureV_TP -D 0 ;
+
+
+( export DYNAMIC_KERNEL_LIMIT_START=0;export DYNAMIC_KERNEL_LIMIT_END=306;./run_hw_trace.py -B oop -D 0 ; ) &
+( export DYNAMIC_KERNEL_LIMIT_START=0;export DYNAMIC_KERNEL_LIMIT_END=306;./run_hw_trace.py -B oop_mem -D 1 ; ) &
+( export DYNAMIC_KERNEL_LIMIT_START=0;export DYNAMIC_KERNEL_LIMIT_END=306;./run_hw_trace.py -B oop_concord -D 2 ; ) &
+( export DYNAMIC_KERNEL_LIMIT_START=0;export DYNAMIC_KERNEL_LIMIT_END=306;./run_hw_trace.py -B oop_coal -D 3 ; ) &
+( export DYNAMIC_KERNEL_LIMIT_START=0;export DYNAMIC_KERNEL_LIMIT_END=306;./run_hw_trace.py -B oop_tp -D 4 ; ) &
+( export DYNAMIC_KERNEL_LIMIT_START=208;export DYNAMIC_KERNEL_LIMIT_END=211;./run_hw_trace.py -B dynasoar:game-of-life_TP -D 5 ;) &
+
+
 
 
 

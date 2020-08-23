@@ -471,60 +471,6 @@ pannotia:
 #            - ./data/USA-road-d.NW.gr 0
 #            - ./data/USA-road-d.NY.gr 0
 
-oo-mem:
-    exec_dir: "../../benchmarks/bin/$CUDA_VERSION/release/"
-    data_dirs: "../../benchmarks/data_dirs/"
-    execs:
-        - trafficV_MEM:
-            -
-        - game-of-life_MEM:
-            - ./data/data/tm.pgm
-        - structureV_MEM:
-            -
-        - generationV_MEM:
-            -
-        - BFS_MEM:
-            - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
-        - CC_MEM:
-            - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
-        - PR_MEM:
-            - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
-        - BFSV_MEM:
-            - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
-        - CCV_MEM:
-            - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
-        - PRV_MEM:
-            - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
-        - RAY_MEM:
-            - 512 512 100
-
-oo-cuda:
-    exec_dir: "../../benchmarks/bin/$CUDA_VERSION/release/"
-    data_dirs: "../../benchmarks/data_dirs/"
-    execs:
-        - trafficV:
-            -
-        - game-of-life:
-            - ./data/data/tm.pgm
-        - structureV:
-            -
-        - generationV:
-            -
-        - BFS:
-            - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
-        - CC:
-            - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
-        - PR:
-            - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
-        - BFSV:
-            - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
-        - CCV:
-            - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
-        - PRV:
-            - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
-        - RAY:
-            - 512 512 100
-
 oo-all:
     exec_dir: "../../benchmarks/bin/$CUDA_VERSION/release/"
     data_dirs: "../../benchmarks/data_dirs/"
@@ -596,33 +542,6 @@ oo-all:
         - RAY_COAL:
             - 512 512 100
 
-
-oo-tp:
-    exec_dir: "../../benchmarks/bin/$CUDA_VERSION/release/"
-    data_dirs: "../../benchmarks/data_dirs/"
-    execs:
-        - trafficV_TP_LOAD:
-            -
-        - game-of-life_TP_LOAD:
-            - ./data/data/tm.pgm
-        - structureV_TP_LOAD:
-            -
-        - generationV_TP_LOAD:
-            -
-        - BFS_TP_LOAD:
-            - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
-        - CC_TP_LOAD:
-            - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
-        - PR_TP_LOAD:
-            - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
-        - BFSV_TP_LOAD:
-            - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
-        - CCV_TP_LOAD:
-            - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
-        - PRV_TP_LOAD:
-            - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
-        - RAY_TP_LOAD:
-            - 512 512 100
 # oop
 oop:
     exec_dir: "../../benchmarks/bin/$CUDA_VERSION/release/"

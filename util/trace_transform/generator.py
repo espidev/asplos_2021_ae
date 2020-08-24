@@ -62,6 +62,14 @@ for bench in benchmarks:
                     vfunc_inst_lists.append([line[:-1], traces])
                     print line[:-1]
 
+        if "search_call" in cfgs:
+            pattern = '^kernel*'
+            for line in lines:
+                if re.search(pattern, line):
+                    traces = search.search_call(run_dir, line[:-1])
+                    vfunc_inst_lists.append([line[:-1], traces])
+                    print line[:-1]
+
         if "dump" in cfgs:
             filename = "dump.log"
             dump.dump(run_dir, vfunc_inst_lists, filename)

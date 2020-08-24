@@ -52,3 +52,37 @@ def search(path, fname):
 
     sf.close()
     return res
+
+def search_call(path, fname):
+    print path, fname
+    # create pattern
+    ptrns = []
+    ptrn = pattern(8, "CALL.REL.NOINC", 7, "R[0-9]*")
+    ptrns.append(ptrn)
+    ptrn = pattern(8, "LOP3.LUT", 7, "R[0-9]*")
+    ptrns.append(ptrn)
+    # create buffer
+    buf = ring_buffer(100)
+    #search
+    res = traces()
+    f = open(path + '/' + fname, "r")
+    sf = serial_file(path + '/' + fname, "r")
+    line = sf.readline()
+    while line:
+        buf.append(line)
+        if line[:-1].split(' ')[0] == 'insts':
+            vf_trace = trace(int(line.split(' ')[2]))
+            res.append(vf_trace)
+        if ptrns[0].match(line):
+            inst = []
+            offset = buf.find(ptrns[1])
+            if offset != -1:
+                inst = [sf.get_linenum() - offset]
+                res.tail().func_list.append(inst)
+                res.tail().insts -= len(inst)
+            else:
+                print "Warning: Cannot find pattern LOP.LUT in buf at line", sf.get_linenum()
+        line = sf.readline()
+
+    sf.close()
+    return res

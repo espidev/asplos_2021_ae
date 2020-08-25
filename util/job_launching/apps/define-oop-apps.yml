@@ -123,3 +123,296 @@ oop_all_ordered:
         - BFS_2itr_TP_NO:
             - ./data_dirs/pannotia/pagerank/data/coAuthorsDBLP.graph 1
         
+oo-mem:
+    exec_dir: "../../benchmarks/bin/$CUDA_VERSION/release/"
+    data_dirs: "../../benchmarks/data_dirs/"
+    execs:
+        - trafficV_MEM:
+            - 2397152
+        - game-of-life_MEM:
+            - ./data/data/tm.pgm 2397152
+        - structureV_MEM:
+            - 2397152
+        - generationV_MEM:
+            - 2397152
+        - BFS_MEM:
+            - ./data/pannotia/pagerank/data/coAuthorsDBLP.graph 1 2397152
+        - CC_MEM:
+            - ./data/pannotia/pagerank/data/coAuthorsDBLP.graph 1 2397152
+        - PR_MEM:
+            - ./data/pannotia/pagerank/data/coAuthorsDBLP.graph 1 2397152
+        - BFSV_MEM:
+            - ./data/pannotia/pagerank/data/coAuthorsDBLP.graph 1 2397152
+        - CCV_MEM:
+            - ./data/pannotia/pagerank/data/coAuthorsDBLP.graph 1 2397152
+        - PRV_MEM:
+            - ./data/pannotia/pagerank/data/coAuthorsDBLP.graph 1 2397152
+        - RAY_MEM:
+            - 512 512 100 2397152
+
+oo-tp-hw:
+    exec_dir: "../../benchmarks/bin/$CUDA_VERSION/release/"
+    data_dirs: "../../benchmarks/data_dirs/"
+    execs:
+        - trafficV_TPHW:
+            - 2397152
+        - game-of-life_TPHW:
+            - ./data/data/tm.pgm 2397152
+        - structureV_TPHW:
+            - 2397152
+        - generationV_TPHW:
+            - 2397152
+        - BFS_TPHW:
+            - ./data/pannotia/pagerank/data/coAuthorsDBLP.graph 1 2397152
+        - CC_TPHW:
+            - ./data/pannotia/pagerank/data/coAuthorsDBLP.graph 1 2397152
+        - PR_TPHW:
+            - ./data/pannotia/pagerank/data/coAuthorsDBLP.graph 1 2397152
+        - BFSV_TPHW:
+            - ./data/pannotia/pagerank/data/coAuthorsDBLP.graph 1 2397152
+        - CCV_TPHW:
+            - ./data/pannotia/pagerank/data/coAuthorsDBLP.graph 1 2397152
+        - PRV_TPHW:
+            - ./data/pannotia/pagerank/data/coAuthorsDBLP.graph 1 2397152
+        - RAY_TPHW:
+            - 512 512 100 2397152
+
+oo-tp:
+    exec_dir: "../../benchmarks/bin/$CUDA_VERSION/release/"
+    data_dirs: "../../benchmarks/data_dirs/"
+    execs:
+        - trafficV_TP:
+            - 2397152
+        - game-of-life_TP:
+            - ./data/data/tm.pgm 2397152
+        - structureV_TP:
+            - 2397152
+        - generationV_TP:
+            - 2397152
+        - BFS_TP:
+            - ./data/pannotia/pagerank/data/coAuthorsDBLP.graph 1 2397152
+        - CC_TP:
+            - ./data/pannotia/pagerank/data/coAuthorsDBLP.graph 1 2397152
+        - PR_TP:
+            - ./data/pannotia/pagerank/data/coAuthorsDBLP.graph 1 2397152
+        - BFSV_TP:
+            - ./data/pannotia/pagerank/data/coAuthorsDBLP.graph 1 2397152
+        - CCV_TP:
+            - ./data/pannotia/pagerank/data/coAuthorsDBLP.graph 1 2397152
+        - PRV_TP:
+            - ./data/pannotia/pagerank/data/coAuthorsDBLP.graph 1 2397152
+        - RAY_TP:
+            - 512 512 100 2397152
+
+oo-all-ordered:
+    exec_dir: "../../benchmarks/bin/$CUDA_VERSION/release/"
+    data_dirs: "../../benchmarks/data_dirs/"
+    execs:
+        - trafficV:
+            -
+        - trafficV_CONCORD:
+            -
+        - trafficV_COAL:
+            - 2397152
+        - trafficV_TP:
+            - 2397152
+        - game-of-life:
+            - ./data/data/tm.pgm
+        - game-of-life_CONCORD:
+            - ./data/data/tm.pgm
+        - game-of-life_COAL:
+            - ./data/data/tm.pgm 2397152
+        - game-of-life_TP:
+            - ./data/data/tm.pgm 2397152
+        - structureV:
+            -
+        - structureV_CONCORD:
+            -
+        - structureV_COAL:
+            - 2397152
+        - structureV_TP:
+            - 2397152
+        - generationV:
+            -
+        - generationV_CONCORD:
+            -
+        - generationV_COAL:
+            - 2397152
+        - generationV_TP:
+            - 2397152
+        - BFS:
+            - ./data/pannotia/pagerank/data/coAuthorsDBLP.graph 1
+        - BFS_CONCORD:
+            - ./data/pannotia/pagerank/data/coAuthorsDBLP.graph 1
+        - BFS_COAL:
+            - ./data/pannotia/pagerank/data/coAuthorsDBLP.graph 1 2397152
+        - BFS_TP:
+            - ./data/pannotia/pagerank/data/coAuthorsDBLP.graph 1 2397152
+        - CC:
+            - ./data/pannotia/pagerank/data/coAuthorsDBLP.graph 1
+        - CC_CONCORD:
+            - ./data/pannotia/pagerank/data/coAuthorsDBLP.graph 1
+        - CC_COAL:
+            - ./data/pannotia/pagerank/data/coAuthorsDBLP.graph 1 2397152
+        - CC_TP:
+            - ./data/pannotia/pagerank/data/coAuthorsDBLP.graph 1 2397152
+        - PR:
+            - ./data/pannotia/pagerank/data/coAuthorsDBLP.graph 1
+        - PR_CONCORD:
+            - ./data/pannotia/pagerank/data/coAuthorsDBLP.graph 1
+        - PR_COAL:
+            - ./data/pannotia/pagerank/data/coAuthorsDBLP.graph 1 2397152
+        - PR_TP:
+            - ./data/pannotia/pagerank/data/coAuthorsDBLP.graph 1 2397152
+        - BFSV:
+            - ./data/pannotia/pagerank/data/coAuthorsDBLP.graph 1
+        - BFSV_CONCORD:
+            - ./data/pannotia/pagerank/data/coAuthorsDBLP.graph 1
+        - BFSV_COAL:
+            - ./data/pannotia/pagerank/data/coAuthorsDBLP.graph 1 2397152
+        - BFSV_TP:
+            - ./data/pannotia/pagerank/data/coAuthorsDBLP.graph 1 2397152
+        - CCV:
+            - ./data/pannotia/pagerank/data/coAuthorsDBLP.graph 1
+        - CCV_CONCORD:
+            - ./data/pannotia/pagerank/data/coAuthorsDBLP.graph 1
+        - CCV_COAL:
+            - ./data/pannotia/pagerank/data/coAuthorsDBLP.graph 1 2397152
+        - CCV_TP:
+            - ./data/pannotia/pagerank/data/coAuthorsDBLP.graph 1 2397152
+        - PRV:
+            - ./data/pannotia/pagerank/data/coAuthorsDBLP.graph 1
+        - PRV_CONCORD:
+            - ./data/pannotia/pagerank/data/coAuthorsDBLP.graph 1
+        - PRV_COAL:
+            - ./data/pannotia/pagerank/data/coAuthorsDBLP.graph 1 2397152
+        - PRV_TP:
+            - ./data/pannotia/pagerank/data/coAuthorsDBLP.graph 1 2397152
+        - RAY:
+            - 512 512 100
+        - RAY_CONCORD:
+            - 512 512 100
+        - RAY_COAL:
+            - 512 512 100 2397152
+        - RAY_TP:
+            - 512 512 100 2397152
+
+oo-all-sim:
+    exec_dir: "../../benchmarks/bin/$CUDA_VERSION/release/"
+    data_dirs: "../../benchmarks/data_dirs/"
+    execs:
+        - trafficV:
+            -
+        - game-of-life:
+            - ./data/data/tm.pgm
+        - structureV:
+            -
+        - generationV:
+            -
+        - BFS:
+            - ./data/pannotia/pagerank/data/coAuthorsDBLP.graph 1
+        - CC:
+            - ./data/pannotia/pagerank/data/coAuthorsDBLP.graph 1
+        - PR:
+            - ./data/pannotia/pagerank/data/coAuthorsDBLP.graph 1
+        - BFSV:
+            - ./data/pannotia/pagerank/data/coAuthorsDBLP.graph 1
+        - CCV:
+            - ./data/pannotia/pagerank/data/coAuthorsDBLP.graph 1
+        - PRV:
+            - ./data/pannotia/pagerank/data/coAuthorsDBLP.graph 1
+        - RAY:
+            - 512 512 100
+        - trafficV_CONCORD:
+            -
+        - game-of-life_CONCORD:
+            - ./data/data/tm.pgm
+        - structureV_CONCORD:
+            -
+        - generationV_CONCORD:
+            -
+        - BFS_CONCORD:
+            - ./data/pannotia/pagerank/data/coAuthorsDBLP.graph 1
+        - CC_CONCORD:
+            - ./data/pannotia/pagerank/data/coAuthorsDBLP.graph 1
+        - PR_CONCORD:
+            - ./data/pannotia/pagerank/data/coAuthorsDBLP.graph 1
+        - BFSV_CONCORD:
+            - ./data/pannotia/pagerank/data/coAuthorsDBLP.graph 1
+        - CCV_CONCORD:
+            - ./data/pannotia/pagerank/data/coAuthorsDBLP.graph 1
+        - PRV_CONCORD:
+            - ./data/pannotia/pagerank/data/coAuthorsDBLP.graph 1
+        - RAY_CONCORD:
+            - 512 512 100
+        - trafficV_COAL:
+            - 2397152
+        - game-of-life_COAL:
+            - ./data/data/tm.pgm 2397152
+        - structureV_COAL:
+            - 2397152
+        - generationV_COAL:
+            - 2397152
+        - BFS_COAL:
+            - ./data/pannotia/pagerank/data/coAuthorsDBLP.graph 1 2397152
+        - CC_COAL:
+            - ./data/pannotia/pagerank/data/coAuthorsDBLP.graph 1 2397152
+        - PR_COAL:
+            - ./data/pannotia/pagerank/data/coAuthorsDBLP.graph 1 2397152
+        - BFSV_COAL:
+            - ./data/pannotia/pagerank/data/coAuthorsDBLP.graph 1 2397152
+        - CCV_COAL:
+            - ./data/pannotia/pagerank/data/coAuthorsDBLP.graph 1 2397152
+        - PRV_COAL:
+            - ./data/pannotia/pagerank/data/coAuthorsDBLP.graph 1 2397152
+        - RAY_COAL:
+            - 512 512 100 2397152
+        - trafficV_TP:
+            - 2397152
+        - game-of-life_TP:
+            - ./data/data/tm.pgm 2397152
+        - structureV_TP:
+            - 2397152
+        - generationV_TP:
+            - 2397152
+        - BFS_TP:
+            - ./data/pannotia/pagerank/data/coAuthorsDBLP.graph 1 2397152
+        - CC_TP:
+            - ./data/pannotia/pagerank/data/coAuthorsDBLP.graph 1 2397152
+        - PR_TP:
+            - ./data/pannotia/pagerank/data/coAuthorsDBLP.graph 1 2397152
+        - BFSV_TP:
+            - ./data/pannotia/pagerank/data/coAuthorsDBLP.graph 1 2397152
+        - CCV_TP:
+            - ./data/pannotia/pagerank/data/coAuthorsDBLP.graph 1 2397152
+        - PRV_TP:
+            - ./data/pannotia/pagerank/data/coAuthorsDBLP.graph 1 2397152
+        - RAY_TP:
+            - 512 512 100 2397152
+
+oo-cuda:
+    exec_dir: "../../benchmarks/bin/$CUDA_VERSION/release/"
+    data_dirs: "../../benchmarks/data_dirs/"
+    execs:
+        - trafficV:
+            -
+        - game-of-life:
+            - ./data/data/tm.pgm
+        - structureV:
+            -
+        - generationV:
+            -
+        - BFS:
+            - ./data/pannotia/pagerank/data/coAuthorsDBLP.graph 1
+        - CC:
+            - ./data/pannotia/pagerank/data/coAuthorsDBLP.graph 1
+        - PR:
+            - ./data/pannotia/pagerank/data/coAuthorsDBLP.graph 1
+        - BFSV:
+            - ./data/pannotia/pagerank/data/coAuthorsDBLP.graph 1
+        - CCV:
+            - ./data/pannotia/pagerank/data/coAuthorsDBLP.graph 1
+        - PRV:
+            - ./data/pannotia/pagerank/data/coAuthorsDBLP.graph 1
+        - RAY:
+            - 512 512 100

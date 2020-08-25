@@ -9,7 +9,7 @@
 GENCODE_SM70 ?= -gencode=arch=compute_70,code=\"sm_70,compute_70\"
 
 CUSRC =
-BASEEXE = oop_ubench_MEM
+BASEEXE = oop_ubench_TP
 # CUDA source files (compiled with cudacc)
 EXECUTABLE = $(BINDIR)/$(BINSUBDIR)/$(BASEEXE)
 CUSRC += oo-vfunc-complete.cu
@@ -17,9 +17,12 @@ OPTS = -O3
 CUOPTS = $(GENCODE_ARCH) $(GENCODE_SM20) $(GENCODE_SM30) $(GENCODE_SM35) $(GENCODE_SM50) $(GENCODE_SM60) $(GENCODE_SM62) $(GENCODE_SM70)
 INC = -I$(CUDA_INSTALL_PATH)/include
 LIBS = -lcudart
-
+PTX_GEN =  ../../../../../util/ptx_transform_tp/
 all:
-	nvcc $(NVOPTS) $(OPTS) $(CUOPTS) $(CUSRC) $(INC) -o $(EXECUTABLE) $(LIBS)
-
+	nvcc --keep  $(NVOPTS) $(OPTS) $(CUOPTS) $(CUSRC) $(INC) -o $(EXECUTABLE) $(LIBS) 
+	$(PTX_GEN)/generator.py oo-vfunc-complete.ptx
+	cp oo-vfunc-complete.ptx_tp oo-vfunc-complete.ptx
+	sh dryrun.sh
+	rm -f *cpp* *fatbin* *cudafe*  *cubin* *.o *.module_id *dlink*
 clean:
 	rm -f $(EXECUTABLE)

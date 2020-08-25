@@ -17,10 +17,14 @@ OPTS = -O3
 CUOPTS = $(GENCODE_ARCH) $(GENCODE_SM20) $(GENCODE_SM30) $(GENCODE_SM35) $(GENCODE_SM50) $(GENCODE_SM60) $(GENCODE_SM62) $(GENCODE_SM70)
 INC = -I$(CUDA_INSTALL_PATH)/include
 LIBS = -lcudart
+PTX_GEN =  ../../../../../util/ptx_transform_coal/
 
 all:
 	nvcc --keep  $(NVOPTS) $(OPTS) $(CUOPTS) $(CUSRC) $(INC) -o $(EXECUTABLE) $(LIBS) 
-	cp oo-vfunc-complete.ptx_vptr oo-vfunc-complete.ptx
+	$(PTX_GEN)/generator.py oo-vfunc-complete.ptx
+	cp oo-vfunc-complete.ptx_coal oo-vfunc-complete.ptx
 	sh dryrun.sh
+	rm -f *cpp* *fatbin* *cudafe*  *cubin* *.o *.module_id *dlink*
+
 clean:
 	rm -f $(EXECUTABLE) *cpp* *fatbin* *cudafe* *ptx *cubin* *.o *.module_id *dlink*

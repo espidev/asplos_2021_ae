@@ -18,7 +18,7 @@
  */
 
 #include <stdio.h>
-#include "../../mem_alloc/mem_alloc.h"
+#include "../../mem_alloc/mem_alloc_tp.h"
 // For the CUDA runtime routines (prefixed with "cuda_")
 #include <cuda_runtime.h>
 
@@ -75,12 +75,17 @@ Derived(31);
             break;                                             \
         }
 
-#define ObjCase(A)                     \
-    case A:                            \
-        if (numElements > i) {         \
-            new (array[i]) Class##A(); \
-            break;                     \
+#define ObjCase(A)                                            \
+    case A:                                                   \
+        if (numElements > i) {                                \
+            new (CLEANPTR(array[i], BaseClass *)) Class##A(); \
+            break;                                            \
         }
+
+__managed__ obj_info_tuble *vfun_table;
+__managed__ unsigned tree_size_g;
+__managed__ void *temp_copyBack;
+__managed__ void *temp_TP;
 
 void initialize_0(BaseClass **pointerArray, int numElements, int numClasses,
                   int threadsPerBlock, obj_alloc *alloc) {
@@ -88,7 +93,8 @@ void initialize_0(BaseClass **pointerArray, int numElements, int numClasses,
     int threadIdx;
     BaseClass **array = pointerArray;
     for (i = 0; i < numElements; i++) {
-        threadIdx = i / threadsPerBlock;
+        threadIdx = i;// / threadsPerBlock;
+        
         switch (threadIdx % numClasses) {
             ObjCase_cpu(0);
             ObjCase_cpu(1);
@@ -175,8 +181,12 @@ __global__ void ooVectorAdd(const float *A, float *C, int numElements,
                             BaseClass **classes, int numCompute) {
     int i = blockDim.x * blockIdx.x + threadIdx.x;
     BaseClass *myClass = classes[i];
+    void **vtable;
     if (i < numElements) {
-        myClass->doTheMath(C[i], A[i], numCompute);
+        vtable = get_vfunc_type(myClass, vfun_table);
+        
+        temp_TP = vtable[0];
+        CLEANPTR(myClass, BaseClass *)->doTheMath(C[i], A[i], numCompute);
     }
 }
 
@@ -240,7 +250,7 @@ int main(int argc, char **argv) {
     // Allocate the device output vector C
     float *d_C = NULL;
     err = cudaMalloc((void **)&d_C, size);
-
+    printf("Device C %p \n", d_C);
     if (err != cudaSuccess) {
         fprintf(stderr, "Failed to allocate device vector C (error code %s)!\n",
                 cudaGetErrorString(err));
@@ -281,6 +291,7 @@ int main(int argc, char **argv) {
                  &my_obj_alloc);
     initialize_1<<<blocksPerGrid, threadsPerBlock>>>(classes, numElements,
                                                      numClasses);
+    cudaDeviceSynchronize();
     err = cudaGetLastError();
 
     if (err != cudaSuccess) {
@@ -289,10 +300,15 @@ int main(int argc, char **argv) {
         exit(EXIT_FAILURE);
     }
 
+
+    my_obj_alloc.create_table();
+    vfun_table = my_obj_alloc.get_vfun_table();
+
     printf("CUDA kernel launch with %d blocks of %d threads\n", blocksPerGrid,
            threadsPerBlock);
     ooVectorAdd<<<blocksPerGrid, threadsPerBlock>>>(d_A, d_C, numElements,
                                                     classes, numCompute);
+    cudaDeviceSynchronize();
     err = cudaGetLastError();
 
     if (err != cudaSuccess) {
@@ -308,10 +324,10 @@ int main(int argc, char **argv) {
     err = cudaMemcpy(h_C, d_C, size, cudaMemcpyDeviceToHost);
 
     if (err != cudaSuccess) {
-        fprintf(
-            stderr,
-            "Failed to copy vector C from device to host (error code %s)!\n",
-            cudaGetErrorString(err));
+        fprintf(stderr,
+                "Failed to copy vector C from device to host (error code "
+                "%s)!\n %p %p",
+                cudaGetErrorString(err), h_C, d_C);
         exit(EXIT_FAILURE);
     }
 

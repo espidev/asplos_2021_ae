@@ -323,6 +323,7 @@ heterosync:
 	cd heterosync && git checkout 22bc0eb
 	$(SETENV) make $(MAKE_ARGS) CUDA_DIR=$(CUDA_INSTALL_PATH) -C cuda/heterosync/cuda/syncPrims/uvm/
 	mv cuda/heterosync/cuda/syncPrims/uvm/allSyncPrims-1kernel $(BINDIR)/$(BINSUBDIR)/
+
 dynasoar:
 	mkdir -p $(BINDIR)/$(BINSUBDIR)/
 	$(SETENV) make $(MAKE_ARGS) -C cuda/dynasoar
@@ -400,6 +401,8 @@ oop-bench:
 	$(SETENV) make $(MAKE_ARGS) -C cuda/oop-bench/ubench-mem
 	$(SETENV) make $(MAKE_ARGS) -C cuda/oop-bench/ubench-coal
 
+clean_dynasoar:
+	$(SETENV) make $(MAKE_ARGS) -C cuda/dynasoar clean
 clean_oop-concord:
 	mkdir -p $(BINDIR)/$(BINSUBDIR)/
 	# $(SETENV) make $(MAKE_ARGS) clean -C cuda/oop-concord/ubench

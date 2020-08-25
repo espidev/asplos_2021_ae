@@ -329,7 +329,7 @@ dynasoar:
 
 oop:
 	mkdir -p $(BINDIR)/$(BINSUBDIR)/
-	$(SETENV) make $(MAKE_ARGS) -C cuda/oop/ubench
+	# $(SETENV) make $(MAKE_ARGS) -C cuda/oop/ubench
 	$(SETENV) make $(MAKE_ARGS) -C cuda/oop/PR
 	$(SETENV) make $(MAKE_ARGS) -C cuda/oop/PRV
 	$(SETENV) make $(MAKE_ARGS) -C cuda/oop/BFS
@@ -340,7 +340,7 @@ oop:
 
 oop-concord:
 	mkdir -p $(BINDIR)/$(BINSUBDIR)/
-	$(SETENV) make $(MAKE_ARGS) -C cuda/oop-concord/ubench
+	# $(SETENV) make $(MAKE_ARGS) -C cuda/oop-concord/ubench
 	$(SETENV) make $(MAKE_ARGS) -C cuda/oop-concord/PR
 	$(SETENV) make $(MAKE_ARGS) -C cuda/oop-concord/PRV
 	$(SETENV) make $(MAKE_ARGS) -C cuda/oop-concord/BFS
@@ -351,7 +351,7 @@ oop-concord:
 
 oop-mem:
 	mkdir -p $(BINDIR)/$(BINSUBDIR)/
-	$(SETENV) make $(MAKE_ARGS) -C cuda/oop-mem/ubench
+	# $(SETENV) make $(MAKE_ARGS) -C cuda/oop-mem/ubench
 	$(SETENV) make $(MAKE_ARGS) -C cuda/oop-mem/PR
 	$(SETENV) make $(MAKE_ARGS) -C cuda/oop-mem/PRV
 	$(SETENV) make $(MAKE_ARGS) -C cuda/oop-mem/BFS
@@ -384,7 +384,7 @@ oop-tp:
 
 oop-ideal:
 	mkdir -p $(BINDIR)/$(BINSUBDIR)/
-	$(SETENV) make $(MAKE_ARGS) -C cuda/oop-ideal/ubench
+	# $(SETENV) make $(MAKE_ARGS) -C cuda/oop-ideal/ubench
 	$(SETENV) make $(MAKE_ARGS) -C cuda/oop-ideal/PR
 	$(SETENV) make $(MAKE_ARGS) -C cuda/oop-ideal/PRV
 	$(SETENV) make $(MAKE_ARGS) -C cuda/oop-ideal/BFS
@@ -402,7 +402,7 @@ oop-bench:
 
 clean_oop-concord:
 	mkdir -p $(BINDIR)/$(BINSUBDIR)/
-	$(SETENV) make $(MAKE_ARGS) clean -C cuda/oop-concord/ubench
+	# $(SETENV) make $(MAKE_ARGS) clean -C cuda/oop-concord/ubench
 	$(SETENV) make $(MAKE_ARGS) clean -C cuda/oop-concord/PR
 	$(SETENV) make $(MAKE_ARGS) clean -C cuda/oop-concord/PRV
 	$(SETENV) make $(MAKE_ARGS) clean -C cuda/oop-concord/BFS
@@ -418,7 +418,7 @@ clean_oop-bench:
 	$(SETENV) make $(MAKE_ARGS) clean -C cuda/oop-bench/ubench-coal
 
 clean_oop-ideal:
-	$(SETENV) make $(MAKE_ARGS) clean -C cuda/oop-ideal/ubench
+	# $(SETENV) make $(MAKE_ARGS) clean -C cuda/oop-ideal/ubench
 	$(SETENV) make $(MAKE_ARGS) clean -C cuda/oop-ideal/PR
 	$(SETENV) make $(MAKE_ARGS) clean -C cuda/oop-ideal/PRV
 	$(SETENV) make $(MAKE_ARGS) clean -C cuda/oop-ideal/BFS
@@ -427,8 +427,18 @@ clean_oop-ideal:
 	$(SETENV) make $(MAKE_ARGS) clean -C cuda/oop-ideal/CCV
 	$(SETENV) make $(MAKE_ARGS) clean noinline=$(noinline) -C cuda/oop-ideal/RAY
 
+clean_oop-tp:
+	# $(SETENV) make $(MAKE_ARGS) clean -C cuda/oop-tp/ubench
+	$(SETENV) make $(MAKE_ARGS) clean -C cuda/oop-tp/PR
+	$(SETENV) make $(MAKE_ARGS) clean -C cuda/oop-tp/PRV
+	$(SETENV) make $(MAKE_ARGS) clean -C cuda/oop-tp/BFS
+	$(SETENV) make $(MAKE_ARGS) clean -C cuda/oop-tp/BFSV
+	$(SETENV) make $(MAKE_ARGS) clean -C cuda/oop-tp/CC
+	$(SETENV) make $(MAKE_ARGS) clean -C cuda/oop-tp/CCV
+	$(SETENV) make $(MAKE_ARGS) clean noinline=$(noinline) -C cuda/oop-tp/RAY
+
 clean_oop-coal:
-	$(SETENV) make $(MAKE_ARGS) clean -C cuda/oop-coal/ubench
+	# $(SETENV) make $(MAKE_ARGS) clean -C cuda/oop-coal/ubench
 	$(SETENV) make $(MAKE_ARGS) clean -C cuda/oop-coal/PR
 	$(SETENV) make $(MAKE_ARGS) clean -C cuda/oop-coal/PRV
 	$(SETENV) make $(MAKE_ARGS) clean -C cuda/oop-coal/BFS
@@ -439,7 +449,7 @@ clean_oop-coal:
 
 clean_oop-mem:
 	mkdir -p $(BINDIR)/$(BINSUBDIR)/
-	$(SETENV) make $(MAKE_ARGS) clean -C cuda/oop-mem/ubench
+	# $(SETENV) make $(MAKE_ARGS) clean -C cuda/oop-mem/ubench
 	$(SETENV) make $(MAKE_ARGS) clean -C cuda/oop-mem/PR
 	$(SETENV) make $(MAKE_ARGS) clean -C cuda/oop-mem/PRV
 	$(SETENV) make $(MAKE_ARGS) clean -C cuda/oop-mem/BFS
@@ -449,7 +459,7 @@ clean_oop-mem:
 	$(SETENV) make $(MAKE_ARGS) clean noinline=$(noinline) -C cuda/oop-mem/RAY
 
 clean_oop:
-	$(SETENV) make $(MAKE_ARGS) clean -C cuda/oop/ubench
+	# $(SETENV) make $(MAKE_ARGS) clean -C cuda/oop/ubench
 	$(SETENV) make $(MAKE_ARGS) clean -C cuda/oop/PR
 	$(SETENV) make $(MAKE_ARGS) clean -C cuda/oop/PRV
 	$(SETENV) make $(MAKE_ARGS) clean -C cuda/oop/BFS

@@ -23,7 +23,7 @@ PTX_GEN =  ../../../../../util/ptx_transform_tp/
 OBJS = $(notdir $(CPPSRC:.cpp=.o))
 PTX_GEN =  ../../../../../util/ptx_transform_tp/
 all: $(OBJS)
-	nvcc  --keep  $(NVOPTS) $(OPTS) $(CUOPTS) $(CUSRC) *.o $(INC) -o $(EXECUTABLE) $(LIBS) 
+	nvcc  --verbose --keep  $(NVOPTS) $(OPTS) $(CUOPTS) $(CUSRC) *.o $(INC) -o $(EXECUTABLE) $(LIBS) 
 	$(PTX_GEN)/generator.py pagerank.ptx
 	cp pagerank.ptx_tp pagerank.ptx
 	sh dryrun.sh

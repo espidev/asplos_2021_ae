@@ -15,7 +15,7 @@ endif
 
 #Disable clean for now, It has a bug!
 # clean_dragon-naive clean_pannotia clean_proxy-apps
-clean: clean_rodinia_2.0-ft clean_dragon-cdp  clean_ispass-2009 clean_lonestargpu-2.0 clean_custom_apps clean_parboil clean_cutlass clean_rodinia-3.1 clean_heterosync
+clean: clean_rodinia_2.0-ft clean_dragon-cdp  clean_ispass-2009 clean_lonestargpu-2.0 clean_custom_apps clean_parboil clean_cutlass clean_rodinia-3.1 clean_heterosync clean_oop clean_dynasoar
 
 clean_data:
 	./clean_data.sh
@@ -324,6 +324,9 @@ heterosync:
 	$(SETENV) make $(MAKE_ARGS) CUDA_DIR=$(CUDA_INSTALL_PATH) -C cuda/heterosync/cuda/syncPrims/uvm/
 	mv cuda/heterosync/cuda/syncPrims/uvm/allSyncPrims-1kernel $(BINDIR)/$(BINSUBDIR)/
 
+
+oop_bench: dynasoar oop
+
 dynasoar:
 	mkdir -p $(BINDIR)/$(BINSUBDIR)/
 	$(SETENV) make $(MAKE_ARGS) -C cuda/dynasoar
@@ -403,6 +406,7 @@ oop-bench:
 
 clean_dynasoar:
 	$(SETENV) make $(MAKE_ARGS) -C cuda/dynasoar clean
+
 clean_oop-concord:
 	mkdir -p $(BINDIR)/$(BINSUBDIR)/
 	# $(SETENV) make $(MAKE_ARGS) clean -C cuda/oop-concord/ubench

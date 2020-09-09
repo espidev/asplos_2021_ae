@@ -17,7 +17,7 @@ import common
 import re
 import datetime
 
-# We will look for the benchmarks 
+# We will look for the benchmarks
 parser = OptionParser()
 parser.add_option("-B", "--benchmark_list", dest="benchmark_list",
                  help="a comma seperated list of benchmark suites to run. See apps/define-*.yml for " +\
@@ -59,7 +59,7 @@ logfile = day_string + "--" + time_string + ".csv"
 
 for bench in benchmarks:
     edir, ddir, exe, argslist = bench
-    specific_ddir = os.path.join(this_directory,ddir,exe)
+    specific_ddir = os.path.join(this_directory,ddir)
     for args in argslist:
         run_name = os.path.join( exe, common.get_argfoldername( args ) )
 
@@ -68,12 +68,12 @@ for bench in benchmarks:
             os.makedirs(this_run_dir)
 
         # link the data directory
-        benchmark_data_dir = os.path.join(specific_ddir, "data")
+        benchmark_data_dir = specific_ddir
         if os.path.isdir(benchmark_data_dir):
             if os.path.lexists(os.path.join(this_run_dir, "data")):
                 os.remove(os.path.join(this_run_dir, "data"))
             os.symlink(benchmark_data_dir, os.path.join(this_run_dir,"data"))
-        
+
         all_data_link = os.path.join(this_run_dir,"data_dirs")
         if os.path.lexists(all_data_link):
             os.remove(all_data_link)

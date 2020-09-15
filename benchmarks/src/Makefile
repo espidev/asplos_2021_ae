@@ -331,6 +331,11 @@ dynasoar:
 	mkdir -p $(BINDIR)/$(BINSUBDIR)/
 	$(SETENV) make $(MAKE_ARGS) -C cuda/dynasoar
 
+oo-char:
+	mkdir -p $(BINDIR)/$(BINSUBDIR)/
+	$(SETENV) make $(MAKE_ARGS) -C cuda/oo-char
+	$(SETENV) make $(MAKE_ARGS) -C cuda/dynasoar oo-char
+
 oop:
 	mkdir -p $(BINDIR)/$(BINSUBDIR)/
 	# $(SETENV) make $(MAKE_ARGS) -C cuda/oop/ubench
@@ -405,6 +410,10 @@ oop-bench:
 	$(SETENV) make $(MAKE_ARGS) -C cuda/oop-bench/ubench-coal
 
 clean_dynasoar:
+	$(SETENV) make $(MAKE_ARGS) -C cuda/dynasoar clean
+
+clean_oo-char:
+	$(SETENV) make $(MAKE_ARGS) -C cuda/oo-char clean
 	$(SETENV) make $(MAKE_ARGS) -C cuda/dynasoar clean
 
 clean_oop-concord:

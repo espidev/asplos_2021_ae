@@ -7,14 +7,65 @@
 #include "../configuration.h"
 //#include "util/util.h"
 #define ALL __noinline__ __device__
-class CarBase;
-class TrafficLightBase;
-class CellBase {
+class Car;
+class TrafficLight;
+//class CellBase {
+//  public:
+//    curandState_t random_state;
+//    CellBase *incoming[kMaxDegree];
+//    CellBase *outgoing[kMaxDegree];
+//    CarBase *car;
+//    int num_incoming;
+//    int num_outgoing;
+//    int max_velocity;
+//    int current_max_velocity;
+//    float x;
+//    float y;
+//    bool is_target;
+//    char type;
+//
+//    __noinline__ __device__ virtual float random_uni() = 0;
+//    ALL virtual int get_current_max_velocity() = 0;
+//
+//    ALL virtual int get_max_velocity() = 0;
+//
+//    ALL virtual void set_current_max_velocity(int v) = 0;
+//
+//    ALL virtual void remove_speed_limit() = 0;
+//    ALL virtual int get_num_incoming() = 0;
+//
+//    ALL virtual void set_num_incoming(int num) = 0;
+//    ALL virtual int get_num_outgoing() = 0;
+//    ALL virtual void set_num_outgoing(int num) = 0;
+//
+//    ALL virtual CellBase *get_incoming(int idx) = 0;
+//    ALL virtual void set_incoming(int idx, CellBase *cell) = 0;
+//
+//    ALL virtual CellBase *get_outgoing(int idx) = 0;
+//
+//    ALL virtual void set_outgoing(int idx, CellBase *cell) = 0;
+//
+//    ALL virtual float get_x() = 0;
+//
+//    ALL virtual float get_y() = 0;
+//
+//    ALL virtual bool is_free() = 0;
+//
+//    ALL virtual bool is_sink() = 0;
+//
+//    ALL virtual bool get_is_target() = 0;
+//    ALL virtual void set_target() = 0;
+//    ALL virtual void occupy(CarBase *car) = 0;
+//
+//    ALL virtual void release() = 0;
+//};
+
+class Cell {
   public:
     curandState_t random_state;
-    CellBase *incoming[kMaxDegree];
-    CellBase *outgoing[kMaxDegree];
-    CarBase *car;
+    Cell *incoming[kMaxDegree];
+    Cell *outgoing[kMaxDegree];
+    Car *car;
     int num_incoming;
     int num_outgoing;
     int max_velocity;
@@ -24,44 +75,6 @@ class CellBase {
     bool is_target;
     char type;
 
-    __noinline__ __device__ virtual float random_uni() = 0;
-    ALL virtual int get_current_max_velocity() = 0;
-
-    ALL virtual int get_max_velocity() = 0;
-
-    ALL virtual void set_current_max_velocity(int v) = 0;
-
-    ALL virtual void remove_speed_limit() = 0;
-    ALL virtual int get_num_incoming() = 0;
-
-    ALL virtual void set_num_incoming(int num) = 0;
-    ALL virtual int get_num_outgoing() = 0;
-    ALL virtual void set_num_outgoing(int num) = 0;
-
-    ALL virtual CellBase *get_incoming(int idx) = 0;
-    ALL virtual void set_incoming(int idx, CellBase *cell) = 0;
-
-    ALL virtual CellBase *get_outgoing(int idx) = 0;
-
-    ALL virtual void set_outgoing(int idx, CellBase *cell) = 0;
-
-    ALL virtual float get_x() = 0;
-
-    ALL virtual float get_y() = 0;
-
-    ALL virtual bool is_free() = 0;
-
-    ALL virtual bool is_sink() = 0;
-
-    ALL virtual bool get_is_target() = 0;
-    ALL virtual void set_target() = 0;
-    ALL virtual void occupy(CarBase *car) = 0;
-
-    ALL virtual void release() = 0;
-};
-
-class Cell : public CellBase {
-  public:
     __noinline__ __device__ float random_uni() {
         return curand_uniform(&this->random_state);
     }
@@ -84,16 +97,16 @@ class Cell : public CellBase {
 
     ALL void set_num_outgoing(int num) { this->num_outgoing = num; }
 
-    ALL CellBase *get_incoming(int idx) { return this->incoming[idx]; }
+    ALL Cell *get_incoming(int idx) { return this->incoming[idx]; }
 
-    ALL void set_incoming(int idx, CellBase *cell) {
+    ALL void set_incoming(int idx, Cell *cell) {
         assert(cell != nullptr);
         this->incoming[idx] = cell;
     }
 
-    ALL CellBase *get_outgoing(int idx) { return this->outgoing[idx]; }
+    ALL Cell *get_outgoing(int idx) { return this->outgoing[idx]; }
 
-    ALL void set_outgoing(int idx, CellBase *cell) {
+    ALL void set_outgoing(int idx, Cell *cell) {
         assert(cell != nullptr);
         this->outgoing[idx] = cell;
     }
@@ -109,7 +122,7 @@ class Cell : public CellBase {
     ALL bool get_is_target() { return this->is_target; }
 
     ALL void set_target() { this->is_target = true; }
-    ALL void occupy(CarBase *car) {
+    ALL void occupy(Car *car) {
         assert(this->is_free());
         this->car = car;
     }
@@ -120,37 +133,43 @@ class Cell : public CellBase {
     }
 };
 
-class CarBase {
+//class CarBase {
+//  public:
+//    CellBase *path[kMaxVelocity];
+//    CellBase *position;
+//    curandState_t random_state;
+//    int path_length;
+//    int velocity;
+//    int max_velocity;
+//    ALL virtual void set_path(CellBase *cell, int idx) = 0;
+//    ALL virtual CellBase *get_path(int idx) = 0;
+//
+//    ALL virtual void set_path_length(int len) = 0;
+//    ALL virtual int get_path_length() = 0;
+//    __noinline__ __device__ virtual int random_int(int a, int b) = 0;
+//    __noinline__ __device__ virtual float random_uni() = 0;
+//    ALL virtual void step_initialize_iteration() = 0;
+//    ALL virtual int get_velocity() = 0;
+//    ALL virtual void set_velocity(int v) = 0;
+//    ALL virtual void set_max_velocity(int v) = 0;
+//    ALL virtual int get_max_velocity() = 0;
+//    ALL virtual void set_position(CellBase *cell) = 0;
+//    ALL virtual CellBase *get_position() = 0;
+//    __noinline__ __device__ virtual void step_slow_down() = 0;
+//    __noinline__ __device__ virtual CellBase *next_step(CellBase *position) = 0;
+//    __noinline__ __device__ virtual void step_accelerate() = 0;
+//};
+
+class Car{
   public:
-    CellBase *path[kMaxVelocity];
-    CellBase *position;
+    Cell *path[kMaxVelocity];
+    Cell *position;
     curandState_t random_state;
     int path_length;
     int velocity;
     int max_velocity;
-    ALL virtual void set_path(CellBase *cell, int idx) = 0;
-    ALL virtual CellBase *get_path(int idx) = 0;
-
-    ALL virtual void set_path_length(int len) = 0;
-    ALL virtual int get_path_length() = 0;
-    ALL virtual int random_int(int a, int b) = 0;
-    ALL virtual float random_uni() = 0;
-    ALL virtual void step_initialize_iteration() = 0;
-    ALL virtual int get_velocity() = 0;
-    ALL virtual void set_velocity(int v) = 0;
-    ALL virtual void set_max_velocity(int v) = 0;
-    ALL virtual int get_max_velocity() = 0;
-    ALL virtual void set_position(CellBase *cell) = 0;
-    ALL virtual CellBase *get_position() = 0;
-    ALL virtual void step_slow_down() = 0;
-    ALL virtual CellBase *next_step(CellBase *position) = 0;
-    ALL virtual void step_accelerate() = 0;
-};
-
-class Car : public CarBase {
-  public:
-    ALL void set_path(CellBase *cell, int idx) { this->path[idx] = cell; }
-    ALL CellBase *get_path(int idx) { return this->path[idx]; }
+    ALL void set_path(Cell *cell, int idx) { this->path[idx] = cell; }
+    ALL Cell *get_path(int idx) { return this->path[idx]; }
 
     ALL void set_path_length(int len) { this->path_length = len; }
     ALL int get_path_length() { return this->path_length; }
@@ -172,16 +191,16 @@ class Car : public CarBase {
     ALL void set_max_velocity(int v) { this->max_velocity = v; }
 
     ALL int get_max_velocity() { return this->max_velocity; }
-    ALL void set_position(CellBase *cell) { this->position = cell; }
+    ALL void set_position(Cell *cell) { this->position = cell; }
 
-    ALL CellBase *get_position() { return this->position; }
+    ALL Cell *get_position() { return this->position; }
     ALL void step_slow_down() {
         // 20% change of slowdown.
         if (curand_uniform(&this->random_state) < 0.2 && this->velocity > 0) {
             this->velocity = this->velocity - 1;
         }
     }
-    ALL CellBase *next_step(CellBase *position) {
+    ALL Cell *next_step(Cell *position) {
         // Almost random walk.
         const uint32_t num_outgoing = position->num_outgoing;
         assert(num_outgoing > 0);
@@ -199,31 +218,37 @@ class Car : public CarBase {
     }
 };
 
-class TrafficLightBase {
+//class TrafficLightBase {
+//  protected:
+//    CellBase *cells_[kMaxDegree];
+//    int num_cells;
+//    int timer;
+//    int phase_time;
+//    int phase;
+//
+//  public:
+//    ALL TrafficLightBase() {}
+//    ALL TrafficLightBase(int num_cells_, int phase_time_)
+//        : num_cells(num_cells_), timer(0), phase_time(phase_time_), phase(0) {}
+//
+//    ALL virtual void set_cell(int idx, CellBase *cell) = 0;
+//    ALL virtual CellBase *get_cell(int idx) = 0;
+//    ALL virtual int get_num_cells() = 0;
+//    ALL virtual int get_timer() = 0;
+//    ALL virtual int set_timer(int time) = 0;
+//    ALL virtual int get_phase_time() = 0;
+//    ALL virtual void set_phase(int ph) = 0;
+//    ALL virtual int get_phase() = 0;
+//};
+
+class TrafficLight {
   protected:
-    CellBase *cells_[kMaxDegree];
+    Cell *cells_[kMaxDegree];
     int num_cells;
     int timer;
     int phase_time;
     int phase;
 
-  public:
-    ALL TrafficLightBase() {}
-    ALL TrafficLightBase(int num_cells_, int phase_time_)
-        : num_cells(num_cells_), timer(0), phase_time(phase_time_), phase(0) {}
-
-    ALL virtual void set_cell(int idx, CellBase *cell) = 0;
-    ALL virtual CellBase *get_cell(int idx) = 0;
-    ALL virtual int get_num_cells() = 0;
-    ALL virtual int get_timer() = 0;
-    ALL virtual int set_timer(int time) = 0;
-    ALL virtual int get_phase_time() = 0;
-    ALL virtual void set_phase(int ph) = 0;
-    ALL virtual int get_phase() = 0;
-};
-
-class TrafficLight : public TrafficLightBase {
-  private:
   public:
     ALL TrafficLight() {}
     ALL TrafficLight(int num_cells_, int phase_time_) {
@@ -233,11 +258,11 @@ class TrafficLight : public TrafficLightBase {
         phase = (0);
     }
 
-    ALL void set_cell(int idx, CellBase *cell) {
+    ALL void set_cell(int idx, Cell *cell) {
         assert(cell != nullptr);
         cells_[idx] = cell;
     }
-    ALL CellBase *get_cell(int idx) { return cells_[idx]; }
+    ALL Cell *get_cell(int idx) { return cells_[idx]; }
     ALL int get_num_cells() { return num_cells; }
     ALL int get_timer() { return timer; }
     ALL int set_timer(int time) { return this->timer = time; }

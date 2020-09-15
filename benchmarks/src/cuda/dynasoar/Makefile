@@ -5,6 +5,13 @@ all:
 	(cd nbodyV; make )
 	(cd structureV; make )
 	(cd trafficV; make )
+
+oo-char:
+	(cd game-of-lifeV; make oo-char)
+	(cd generationV; make oo-char)
+	(cd structureV; make oo-char)
+	(cd trafficV; make oo-char)
+
 clean:
 	(cd collisionV; make clean)
 	(cd game-of-lifeV; make clean)

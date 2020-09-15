@@ -9,13 +9,13 @@ using IndexT = int;
 using CellPointerT = IndexT;
 #include "../dataset.h"
 
-__managed__ CellBase **dev_cells;
+__managed__ Cell **dev_cells;
 
 // Need 2 arrays of both, so we can swap.
 __device__ int *d_Car_active;
 __device__ int *d_Car_active_2;
-__managed__ CarBase **dev_cars;
-__managed__ CarBase **dev_cars_2;
+__managed__ Car **dev_cars;
+__managed__ Car **dev_cars_2;
 
 // For prefix sum array compaction.
 __device__ int *d_prefix_sum_temp;
@@ -33,7 +33,7 @@ int host_num_cars;
 
 // TODO: Consider migrating to SoaAlloc.
 TrafficLight *h_traffic_lights;
-__managed__ TrafficLightBase **d_traffic_lights;
+__managed__ TrafficLight **d_traffic_lights;
 
 // Only for rendering.
 __device__ int dev_num_cells;
@@ -48,8 +48,8 @@ float *host_data_Cell_pos_y;
 bool *host_data_Cell_occupied;
 
 __device__ void Car_step_extend_path(IndexT self) {
-  CellBase *cell = dev_cars[self]->get_position();
-  CellBase *next_cell;
+  Cell *cell = dev_cars[self]->get_position();
+  Cell *next_cell;
 
   for (int i = 0; i < dev_cars[self]->get_velocity(); ++i) {
     bool cond = cell->get_is_target();
@@ -76,7 +76,7 @@ __device__ void Car_step_constraint_velocity(IndexT self) {
   // This is actually only needed for the very first iteration, because a car
   // may be positioned on a traffic light cell.
   int vel = dev_cars[self]->get_velocity();
-  CellBase *cell = dev_cars[self]->get_position();
+  Cell *cell = dev_cars[self]->get_position();
   if (vel > cell->get_current_max_velocity()) {
     int max_velocity = cell->get_current_max_velocity();
     dev_cars[self]->set_velocity(max_velocity);
@@ -89,7 +89,7 @@ __device__ void Car_step_constraint_velocity(IndexT self) {
     // Invariant: Movement of up to `distance - 1` many cells at `velocity_`
     //            is allowed.
     // Now check if next cell can be entered.
-    CellBase *next_cell = dev_cars[self]->get_path(path_index);
+    Cell *next_cell = dev_cars[self]->get_path(path_index);
 
     // Avoid collision.
     if (!next_cell->is_free()) {
@@ -135,19 +135,19 @@ __device__ void Car_step_constraint_velocity(IndexT self) {
 }
 
 __device__ void Car_step_move(IndexT self) {
-  CellBase *cell = dev_cars[self]->get_position();
+  Cell *cell = dev_cars[self]->get_position();
   for (int i = 0; i < dev_cars[self]->get_velocity(); ++i) {
     assert(dev_cars[self]->get_path(i) != cell);
 
     cell = dev_cars[self]->get_path(i);
     assert(cell->is_free());
-    CellBase *ptr = dev_cars[self]->get_position();
+    Cell *ptr = dev_cars[self]->get_position();
     ptr->release();
     cell->occupy(dev_cars[self]);
     dev_cars[self]->set_position(cell);
   }
 
-  CellBase *ptr = dev_cars[self]->get_position();
+  Cell *ptr = dev_cars[self]->get_position();
   bool cond = ptr->is_sink();
   if (cond || ptr->get_is_target()) {
     // Remove car from the simulation. Will be added again in the next
@@ -238,7 +238,7 @@ __global__ void kernel_traffic_light_step() {
         int phase = d_traffic_lights[i]->get_phase();
         assert(d_traffic_lights[i]->get_cell(phase) != nullptr);
         phase = d_traffic_lights[i]->get_phase();
-        CellBase *ptr = d_traffic_lights[i]->get_cell(phase);
+        Cell *ptr = d_traffic_lights[i]->get_cell(phase);
 
         ptr->set_current_max_velocity(0);
         int phase_2 = d_traffic_lights[i]->get_phase();
@@ -378,7 +378,7 @@ void create_street_network() {
                      cudaMemcpyHostToDevice);
   cudaMalloc(&d_traffic_lights, sizeof(TrafficLight *) * kNumIntersections);
 
-  device_alloc<TrafficLight, TrafficLightBase>
+  device_alloc<TrafficLight, TrafficLight>
       <<<(kNumIntersections + kNumBlockSize - 1) / kNumBlockSize,
          kNumBlockSize>>>(d_traffic_lights, kNumIntersections);
 
@@ -547,13 +547,13 @@ void step() {
 void allocate_memory() {
 
   cudaMalloc(&dev_cells, sizeof(Cell *) * kMaxNumCells);
-  device_alloc<Cell, CellBase>
+  device_alloc<Cell, Cell>
       <<<(kMaxNumCells + kNumBlockSize - 1) / kNumBlockSize, kNumBlockSize>>>(
           dev_cells, kMaxNumCells);
   gpuErrchk(cudaDeviceSynchronize());
   cudaMalloc(&dev_cars, sizeof(Car *) * kMaxNumCars);
   cudaMalloc(&dev_cars_2, sizeof(Car *) * kMaxNumCars);
-  device_alloc<Car, CarBase>
+  device_alloc<Car, Car>
       <<<(kMaxNumCars + kNumBlockSize - 1) / kNumBlockSize, kNumBlockSize>>>(
           dev_cars, kMaxNumCars);
   gpuErrchk(cudaDeviceSynchronize());
@@ -565,6 +565,7 @@ void allocate_memory() {
   cudaMemcpyToSymbol(d_Car_active, &h_Car_active, sizeof(int *), 0,
                      cudaMemcpyHostToDevice);
 
+  // No place to use these
   // Car *h_cars_2;
   // cudaMalloc(&h_cars_2, sizeof(Car) * kMaxNumCars);
   // cudaMemcpyToSymbol(dev_cars_2, &h_cars_2, sizeof(Car *), 0,

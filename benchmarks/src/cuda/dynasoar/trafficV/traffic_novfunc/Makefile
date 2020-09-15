@@ -10,7 +10,7 @@ GENCODE_SM70 ?= -gencode=arch=compute_70,code=\"sm_70,compute_70\"
 
 CPPSRC = 
 CUSRC =
-BASEEXE = trafficV_nofunc
+BASEEXE = trafficV_novfunc
 VARIANT ?= DEFAULT
 # CUDA source files (compiled with cudacc)
 EXECUTABLE = $(BINDIR)/$(BINSUBDIR)/$(BASEEXE)

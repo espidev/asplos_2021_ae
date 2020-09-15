@@ -62,8 +62,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/time.h>
-#include "../graph_parser/parse.h"
-#include "../graph_parser/util.h"
+#include "../../graph_parser/parse.h"
+#include "../../graph_parser/util.h"
 #include "kernel.cu"
 
 // Iteration count
@@ -98,7 +98,7 @@ int main(int argc, char **argv) {
         csr = parseMetis(tmpchar, &num_nodes, &num_edges, directed);
     } else if (file_format == 0) {
         // Dimacs9
-        csr = parseCOO(tmpchar, &num_nodes, &num_edges, directed);
+        csr = parseCOO(tmpchar, &num_nodes, &num_edges, 1);
     } else if (file_format == 2) {
         // Matrix market
         csr = parseMM(tmpchar, &num_nodes, &num_edges, directed, 0);
@@ -118,7 +118,7 @@ int main(int argc, char **argv) {
     int *col_d;
     int *inrow_d;
     int *incol_d;
-    int *cc_d;
+    int *index_d;
 
     // Create device-side buffers for the graph
     err = cudaMalloc(&row_d, num_nodes * sizeof(int));
@@ -146,11 +146,11 @@ int main(int argc, char **argv) {
         return -1;
     }
 
-    // Create buffers for cc
-    err = cudaMalloc(&cc_d, num_nodes * sizeof(int));
+    // Create buffers for index
+    err = cudaMalloc(&index_d, num_nodes * sizeof(int));
     if (err != cudaSuccess) {
-        fprintf(stderr, "ERROR: cudaMalloc cc_d (size:%d) => %s\n", num_nodes,
-                cudaGetErrorString(err));
+        fprintf(stderr, "ERROR: cudaMalloc index_d (size:%d) => %s\n",
+                num_nodes, cudaGetErrorString(err));
         return -1;
     }
 
@@ -243,11 +243,11 @@ int main(int argc, char **argv) {
         return -1;
     }
 
-    // Run CC for some iter. TO: convergence determination
+    // Run BFS for some iter. TO: convergence determination
     for (int i = 0; i < ITER; i++) {
-        printf("Start ConnectedComponent\n");
-        ConnectedComponent<<<grid, threads>>>(vertex, context, i);
-        printf("Finish ConnectedComponent\n");
+        printf("Start BFS\n");
+        BFS<<<grid, threads>>>(vertex, context, i);
+        printf("Finish BFS\n");
         cudaDeviceSynchronize();
         err = cudaGetLastError();
         if (err != cudaSuccess) {
@@ -261,7 +261,7 @@ int main(int argc, char **argv) {
     double timer4 = gettime();
 
     printf("Start Copyback\n");
-    copyBack<<<grid, threads>>>(vertex, context, cc_d);
+    copyBack<<<grid, threads>>>(vertex, context, index_d);
     printf("End Copyback\n");
     cudaDeviceSynchronize();
     err = cudaGetLastError();
@@ -271,7 +271,7 @@ int main(int argc, char **argv) {
         return -1;
     }
     // Copy the rank buffer back
-    err = cudaMemcpy(rank_array, cc_d, num_nodes * sizeof(int),
+    err = cudaMemcpy(rank_array, index_d, num_nodes * sizeof(int),
                      cudaMemcpyDeviceToHost);
 
     if (err != cudaSuccess) {
@@ -302,7 +302,7 @@ int main(int argc, char **argv) {
     cudaFree(inrow_d);
     cudaFree(incol_d);
 
-    cudaFree(cc_d);
+    cudaFree(index_d);
 
     return 0;
 }

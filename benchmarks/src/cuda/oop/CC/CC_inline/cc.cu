@@ -62,14 +62,14 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/time.h>
-#include "../graph_parser/parse.h"
-#include "../graph_parser/util.h"
+#include "../../graph_parser/parse.h"
+#include "../../graph_parser/util.h"
 #include "kernel.cu"
 
 // Iteration count
 #define ITER 20
 
-void print_vectorf(float *vector, int num);
+void print_vectorf(int *vector, int num);
 
 int main(int argc, char **argv) {
     char *tmpchar;
@@ -98,7 +98,7 @@ int main(int argc, char **argv) {
         csr = parseMetis(tmpchar, &num_nodes, &num_edges, directed);
     } else if (file_format == 0) {
         // Dimacs9
-        csr = parseCOO(tmpchar, &num_nodes, &num_edges, 1);
+        csr = parseCOO(tmpchar, &num_nodes, &num_edges, directed);
     } else if (file_format == 2) {
         // Matrix market
         csr = parseMM(tmpchar, &num_nodes, &num_edges, directed, 0);
@@ -108,7 +108,7 @@ int main(int argc, char **argv) {
     }
 
     // Allocate rank_array
-    float *rank_array = (float *)malloc(num_nodes * sizeof(float));
+    int *rank_array = (int *)malloc(num_nodes * sizeof(int));
     if (!rank_array) {
         fprintf(stderr, "rank array not allocated successfully\n");
         return -1;
@@ -118,7 +118,7 @@ int main(int argc, char **argv) {
     int *col_d;
     int *inrow_d;
     int *incol_d;
-    float *pagerank_d;
+    int *cc_d;
 
     // Create device-side buffers for the graph
     err = cudaMalloc(&row_d, num_nodes * sizeof(int));
@@ -146,11 +146,11 @@ int main(int argc, char **argv) {
         return -1;
     }
 
-    // Create buffers for pagerank
-    err = cudaMalloc(&pagerank_d, num_nodes * sizeof(float));
+    // Create buffers for cc
+    err = cudaMalloc(&cc_d, num_nodes * sizeof(int));
     if (err != cudaSuccess) {
-        fprintf(stderr, "ERROR: cudaMalloc pagerank_d (size:%d) => %s\n",
-                num_nodes, cudaGetErrorString(err));
+        fprintf(stderr, "ERROR: cudaMalloc cc_d (size:%d) => %s\n", num_nodes,
+                cudaGetErrorString(err));
         return -1;
     }
 
@@ -198,9 +198,9 @@ int main(int argc, char **argv) {
     cudaDeviceSetLimit(cudaLimitMallocHeapSize, 4ULL * 1024 * 1024 * 1024);
     double timer3 = gettime();
 
-    ChiVertex<float, float> **vertex;
+    ChiVertex<int, int> **vertex;
     GraphChiContext *context;
-    err = cudaMalloc(&vertex, num_nodes * sizeof(ChiVertex<float, float> *));
+    err = cudaMalloc(&vertex, num_nodes * sizeof(ChiVertex<int, int> *));
     if (err != cudaSuccess) {
         fprintf(stderr, "ERROR: cudaMalloc vertex (size:%d) => %s\n", num_edges,
                 cudaGetErrorString(err));
@@ -243,11 +243,11 @@ int main(int argc, char **argv) {
         return -1;
     }
 
-    // Run PageRank for some iter. TO: convergence determination
+    // Run CC for some iter. TO: convergence determination
     for (int i = 0; i < ITER; i++) {
-        printf("Start PageRank\n");
-        PageRank<<<grid, threads>>>(vertex, context, i);
-        printf("Finish PageRank\n");
+        printf("Start ConnectedComponent\n");
+        ConnectedComponent<<<grid, threads>>>(vertex, context, i);
+        printf("Finish ConnectedComponent\n");
         cudaDeviceSynchronize();
         err = cudaGetLastError();
         if (err != cudaSuccess) {
@@ -261,7 +261,7 @@ int main(int argc, char **argv) {
     double timer4 = gettime();
 
     printf("Start Copyback\n");
-    copyBack<<<grid, threads>>>(vertex, context, pagerank_d);
+    copyBack<<<grid, threads>>>(vertex, context, cc_d);
     printf("End Copyback\n");
     cudaDeviceSynchronize();
     err = cudaGetLastError();
@@ -271,7 +271,7 @@ int main(int argc, char **argv) {
         return -1;
     }
     // Copy the rank buffer back
-    err = cudaMemcpy(rank_array, pagerank_d, num_nodes * sizeof(float),
+    err = cudaMemcpy(rank_array, cc_d, num_nodes * sizeof(int),
                      cudaMemcpyDeviceToHost);
 
     if (err != cudaSuccess) {
@@ -302,19 +302,19 @@ int main(int argc, char **argv) {
     cudaFree(inrow_d);
     cudaFree(incol_d);
 
-    cudaFree(pagerank_d);
+    cudaFree(cc_d);
 
     return 0;
 }
 
-void print_vectorf(float *vector, int num) {
+void print_vectorf(int *vector, int num) {
     FILE *fp = fopen("result.out", "w");
     if (!fp) {
         printf("ERROR: unable to open result.txt\n");
     }
 
     for (int i = 0; i < num; i++) {
-        fprintf(fp, "%f\n", vector[i]);
+        fprintf(fp, "%d\n", vector[i]);
     }
 
     fclose(fp);

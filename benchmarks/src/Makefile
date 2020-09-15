@@ -333,19 +333,12 @@ dynasoar:
 
 oo-char:
 	mkdir -p $(BINDIR)/$(BINSUBDIR)/
-	$(SETENV) make $(MAKE_ARGS) -C cuda/oo-char
+	$(SETENV) make $(MAKE_ARGS) -C cuda/oop
 	$(SETENV) make $(MAKE_ARGS) -C cuda/dynasoar oo-char
 
 oop:
 	mkdir -p $(BINDIR)/$(BINSUBDIR)/
-	# $(SETENV) make $(MAKE_ARGS) -C cuda/oop/ubench
-	$(SETENV) make $(MAKE_ARGS) -C cuda/oop/PR
-	$(SETENV) make $(MAKE_ARGS) -C cuda/oop/PRV
-	$(SETENV) make $(MAKE_ARGS) -C cuda/oop/BFS
-	$(SETENV) make $(MAKE_ARGS) -C cuda/oop/BFSV
-	$(SETENV) make $(MAKE_ARGS) -C cuda/oop/CC
-	$(SETENV) make $(MAKE_ARGS) -C cuda/oop/CCV
-	$(SETENV) make $(MAKE_ARGS) noinline=$(noinline) -C cuda/oop/RAY
+	$(SETENV) make $(MAKE_ARGS) -C cuda/oop
 
 oop-concord:
 	mkdir -p $(BINDIR)/$(BINSUBDIR)/
@@ -413,7 +406,7 @@ clean_dynasoar:
 	$(SETENV) make $(MAKE_ARGS) -C cuda/dynasoar clean
 
 clean_oo-char:
-	$(SETENV) make $(MAKE_ARGS) -C cuda/oo-char clean
+	$(SETENV) make $(MAKE_ARGS) -C cuda/oop clean
 	$(SETENV) make $(MAKE_ARGS) -C cuda/dynasoar clean
 
 clean_oop-concord:
@@ -475,14 +468,7 @@ clean_oop-mem:
 	$(SETENV) make $(MAKE_ARGS) clean noinline=$(noinline) -C cuda/oop-mem/RAY
 
 clean_oop:
-	# $(SETENV) make $(MAKE_ARGS) clean -C cuda/oop/ubench
-	$(SETENV) make $(MAKE_ARGS) clean -C cuda/oop/PR
-	$(SETENV) make $(MAKE_ARGS) clean -C cuda/oop/PRV
-	$(SETENV) make $(MAKE_ARGS) clean -C cuda/oop/BFS
-	$(SETENV) make $(MAKE_ARGS) clean -C cuda/oop/BFSV
-	$(SETENV) make $(MAKE_ARGS) clean -C cuda/oop/CC
-	$(SETENV) make $(MAKE_ARGS) clean -C cuda/oop/CCV
-	$(SETENV) make $(MAKE_ARGS) clean noinline=$(noinline) -C cuda/oop/RAY
+	$(SETENV) make $(MAKE_ARGS) -C cuda/oop clean
 
 clean_heterosync:
 	rm -rf cuda/heterosync

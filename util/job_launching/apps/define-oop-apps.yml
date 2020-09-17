@@ -444,3 +444,74 @@ oo-silicon:
         - RAY:
             - 512 512 100
 
+oo-char:
+    exec_dir: "../../benchmarks/bin/$CUDA_VERSION/release/"
+    data_dirs: "../../benchmarks/data_dirs/"
+    execs:
+        - trafficV:
+            -
+        - game-of-life:
+            - ./data/tm.pgm
+        - structureV:
+            -
+        - generationV:
+            -
+        - BFS:
+            - ./data/pannotia/pagerank/data/coAuthorsDBLP.graph 1
+        - CC:
+            - ./data/pannotia/pagerank/data/coAuthorsDBLP.graph 1
+        - PR:
+            - ./data/pannotia/pagerank/data/coAuthorsDBLP.graph 1
+        - BFSV:
+            - ./data/pannotia/pagerank/data/coAuthorsDBLP.graph 1
+        - CCV:
+            - ./data/pannotia/pagerank/data/coAuthorsDBLP.graph 1
+        - PRV:
+            - ./data/pannotia/pagerank/data/coAuthorsDBLP.graph 1
+        - RAY:
+            - 512 512 100
+        - trafficV_novfunc:
+            -
+        - game-of-life_novfunc:
+            - ./data/tm.pgm
+        - structureV_novfunc:
+            -
+        - generationV_novfunc:
+            -
+        - BFS_novfunc:
+            - ./data/pannotia/pagerank/data/coAuthorsDBLP.graph 1
+        - CC_novfunc:
+            - ./data/pannotia/pagerank/data/coAuthorsDBLP.graph 1
+        - PR_novfunc:
+            - ./data/pannotia/pagerank/data/coAuthorsDBLP.graph 1
+        - BFSV_novfunc:
+            - ./data/pannotia/pagerank/data/coAuthorsDBLP.graph 1
+        - CCV_novfunc:
+            - ./data/pannotia/pagerank/data/coAuthorsDBLP.graph 1
+        - PRV_novfunc:
+            - ./data/pannotia/pagerank/data/coAuthorsDBLP.graph 1
+        - RAY_novfunc:
+            - 512 512 100
+        - trafficV_inline:
+            -
+        - game-of-life_inline:
+            - ./data/tm.pgm
+        - structureV_inline:
+            -
+        - generationV_inline:
+            -
+        - BFS_inline:
+            - ./data/pannotia/pagerank/data/coAuthorsDBLP.graph 1
+        - CC_inline:
+            - ./data/pannotia/pagerank/data/coAuthorsDBLP.graph 1
+        - PR_inline:
+            - ./data/pannotia/pagerank/data/coAuthorsDBLP.graph 1
+        - BFSV_inline:
+            - ./data/pannotia/pagerank/data/coAuthorsDBLP.graph 1
+        - CCV_inline:
+            - ./data/pannotia/pagerank/data/coAuthorsDBLP.graph 1
+        - PRV_inline:
+            - ./data/pannotia/pagerank/data/coAuthorsDBLP.graph 1
+        - RAY_inline:
+            - 512 512 100
+

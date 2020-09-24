@@ -286,16 +286,22 @@ int main(int /*argc*/, char ** /*argv*/) {
   for (int i = 0; i < kIterations; ++i) {
     printf("%i\n", i);
     parallel_do<&Body_compute_force><<<kBlocks, kThreads>>>();
+    gpuErrchk(cudaDeviceSynchronize());
 
     parallel_do<&Body_update><<<kBlocks, kThreads>>>();
- 
+    gpuErrchk(cudaDeviceSynchronize());
+
     parallel_do<&Body_initialize_merge><<<kBlocks, kThreads>>>();
+    gpuErrchk(cudaDeviceSynchronize());
 
     parallel_do<&Body_prepare_merge><<<kBlocks, kThreads>>>();
+    gpuErrchk(cudaDeviceSynchronize());
 
     parallel_do<&Body_update_merge><<<kBlocks, kThreads>>>();
- 
+    gpuErrchk(cudaDeviceSynchronize());
+
     parallel_do<&Body_delete_merged><<<kBlocks, kThreads>>>();
+    gpuErrchk(cudaDeviceSynchronize());
 
   }
 

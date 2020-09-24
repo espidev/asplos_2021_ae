@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <chrono>
 
-#include "../../../mem_alloc/mem_alloc.h"
+#include "../../../mem_alloc/mem_alloc_tp.h"
 #define ALL __noinline__ __host__ __device__
 #include "coal.h"
 #include "../configuration.h"
@@ -69,13 +69,13 @@ class Body : public BodyType {
         float dx;
         float dy;
         float dist;
-        dx = this->pos_x - other->pos_x;
-        dy = this->pos_y - other->pos_y;
+        dx = this->pos_x - CLEANPTR(other,BodyType *)->pos_x;
+        dy = this->pos_y - CLEANPTR(other,BodyType *)->pos_y;
         dist = sqrt(dx * dx + dy * dy);
         return dist;
     }
     ALL float computeForce(BodyType *other, float dist) {
-        float F = kGravityConstant * this->mass * other->mass /
+        float F = kGravityConstant * this->mass * CLEANPTR(other,BodyType *)->mass /
                   (dist * dist + kDampeningFactor);
         return F;
     }
@@ -91,8 +91,8 @@ class Body : public BodyType {
         float dx;
         float dy;
         float dist;
-        dx = -1 * (this->pos_x - other->pos_x);
-        dy = -1 * (this->pos_y - other->pos_y);
+        dx = -1 * (this->pos_x - CLEANPTR(other,BodyType *)->pos_x);
+        dy = -1 * (this->pos_y - CLEANPTR(other,BodyType *)->pos_y);
         dist = sqrt(dx * dx + dy * dy);
         this->force_x += F * dx / dist;
     }
@@ -100,8 +100,8 @@ class Body : public BodyType {
         float dx;
         float dy;
         float dist;
-        dx = -1 * (this->pos_x - other->pos_x);
-        dy = -1 * (this->pos_y - other->pos_y);
+        dx = -1 * (this->pos_x - CLEANPTR(other,BodyType *)->pos_x);
+        dy = -1 * (this->pos_y - CLEANPTR(other,BodyType *)->pos_y);
         dist = sqrt(dx * dx + dy * dy);
         this->force_y += F * dy / dist;
     }
@@ -116,9 +116,12 @@ class Body : public BodyType {
 
 __device__ float device_checksum;
 
-__managed__ range_tree_node *range_tree;
-__managed__ unsigned tree_size;
-__managed__ void *temp_coal;
+__managed__ obj_info_tuble *vfun_table;
+__managed__ unsigned tree_size_g;
+__managed__ void *temp_copyBack;
+__managed__ void *temp_TP;
+
+
 __global__ void Body_compute_force(BodyType **dev_bodies) {
     int id = threadIdx.x + blockDim.x * blockIdx.x;
     float dist;
@@ -128,22 +131,22 @@ __global__ void Body_compute_force(BodyType **dev_bodies) {
     if (id < kNumBodies) {
         BodyType *ptr = dev_bodies[id];
         COAL_BodyType_initForce(ptr);
-        ptr->initForce();
+        CLEANPTR(ptr,BodyType *)->initForce();
         // printf("%d ddd\n", id);
         for (int i = 0; i < kNumBodies; ++i) {
             // Do not compute force with the body itself.
             if (id != i) {
                 COAL_BodyType_computeDistance(ptr);
-                dist = ptr->computeDistance(dev_bodies[i]);
+                dist = CLEANPTR(ptr,BodyType *)->computeDistance(dev_bodies[i]);
 
                 COAL_BodyType_computeForce(ptr);
-                F = ptr->computeForce(dev_bodies[i], dist);
+                F = CLEANPTR(ptr,BodyType *)->computeForce(dev_bodies[i], dist);
 
                 COAL_BodyType_updateForceX(ptr);
-                ptr->updateForceX(dev_bodies[i], F);
+                CLEANPTR(ptr,BodyType *)->updateForceX(dev_bodies[i], F);
 
                 COAL_BodyType_updateForceY(ptr);
-                ptr->updateForceY(dev_bodies[i], F);
+                CLEANPTR(ptr,BodyType *)->updateForceY(dev_bodies[i], F);
             }
         }
     }
@@ -155,20 +158,20 @@ __global__ void Body_update(BodyType **dev_bodies) {
     if (id < kNumBodies) {
         BodyType *ptr = dev_bodies[id];
        COAL_BodyType_updateVelX(ptr);
-        ptr->updateVelX();
+       CLEANPTR(ptr,BodyType *)->updateVelX();
         COAL_BodyType_updateVelY(ptr);
-        ptr->updateVelY();
+        CLEANPTR(ptr,BodyType *)->updateVelY();
         COAL_BodyType_updatePosX(ptr);
-        ptr->updatePosX();
+        CLEANPTR(ptr,BodyType *)->updatePosX();
         COAL_BodyType_updatePosY(ptr);
-        ptr->updatePosY();
+        CLEANPTR(ptr,BodyType *)->updatePosY();
 
-        if (ptr->pos_x < -1 || ptr->pos_x > 1) {
-            ptr->vel_x = -ptr->vel_x;
+        if (CLEANPTR(ptr,BodyType *)->pos_x < -1 || CLEANPTR(ptr,BodyType *)->pos_x > 1) {
+            CLEANPTR(ptr,BodyType *)->vel_x = -CLEANPTR(ptr,BodyType *)->vel_x;
         }
 
-        if (ptr->pos_y < -1 || ptr->pos_y > 1) {
-            ptr->vel_y = -ptr->vel_y;
+        if (CLEANPTR(ptr,BodyType *)->pos_y < -1 || CLEANPTR(ptr,BodyType *)->pos_y > 1) {
+            CLEANPTR(ptr,BodyType *)->vel_y = -CLEANPTR(ptr,BodyType *)->vel_y;
         }
     }
 
@@ -176,8 +179,8 @@ __global__ void Body_update(BodyType **dev_bodies) {
 
 __device__ void Body_add_checksum(BodyType **dev_bodies, int id) {
     atomicAdd(&device_checksum,
-              dev_bodies[id]->pos_x + dev_bodies[id]->pos_y * 2 +
-                  dev_bodies[id]->vel_x * 3 + dev_bodies[id]->vel_y * 4);
+        CLEANPTR(dev_bodies[id],BodyType *)->pos_x + CLEANPTR(dev_bodies[id],BodyType *)->pos_y * 2 +
+        CLEANPTR(dev_bodies[id],BodyType *)->vel_x * 3 + CLEANPTR(dev_bodies[id],BodyType *)->vel_y * 4);
 }
 
 void instantiate_bodies(BodyType **bodies, obj_alloc *alloc) {
@@ -187,7 +190,7 @@ void instantiate_bodies(BodyType **bodies, obj_alloc *alloc) {
 __global__ void kernel_initialize_bodies(BodyType **bodies) {
     for (int i = threadIdx.x + blockDim.x * blockIdx.x; i < kNumBodies;
          i += blockDim.x * gridDim.x) {
-        bodies[i]->initBody(i);
+            CLEANPTR(bodies[i],BodyType *)->initBody(i);
     }
 }
 
@@ -223,9 +226,8 @@ int main(int /*argc*/, char ** /*argv*/) {
     my_obj_alloc.toDevice();
     kernel_initialize_bodies<<<128, 128>>>(dev_bodies);
     gpuErrchk(cudaDeviceSynchronize());
-    my_obj_alloc.create_tree();
-    range_tree = my_obj_alloc.get_range_tree();
-    tree_size = my_obj_alloc.get_tree_size();
+    my_obj_alloc.create_table();
+    vfun_table = my_obj_alloc.get_vfun_table();
     printf("init done...\n");
     auto time_start = std::chrono::system_clock::now();
     printf("Kernel exec...\n");

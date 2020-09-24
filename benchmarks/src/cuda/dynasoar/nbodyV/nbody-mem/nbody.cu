@@ -223,7 +223,7 @@ __global__ void kernel_compute_checksum(BodyType **bodies) {
 //   }
 // }
 
-int main(int /*argc*/, char ** /*argv*/) {
+int main(int argc, char ** argv) {
   BodyType **dev_bodies;
   mem_alloc shared_mem(4ULL * 1024 * 1024 * 1024);
   obj_alloc my_obj_alloc(&shared_mem, atoll(argv[1]));

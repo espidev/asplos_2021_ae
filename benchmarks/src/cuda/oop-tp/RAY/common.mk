@@ -432,6 +432,16 @@ $(OBJDIR)/%.cpp.o : $(SRCDIR)%.cpp $(C_DEPS) makedirectories
 
 # Default arch includes gencode for sm_10, sm_20, sm_30, and other archs from GENCODE_ARCH declared in the makefile
 $(OBJDIR)/%.cu.o : $(SRCDIR)%.cu $(CU_DEPS) makedirectories
+  # Generate dryrun file
+	$(VERBOSE)$(NVCC) --keep --dryrun $(GENCODE_SM10) $(GENCODE_SM13) $(GENCODE_ARCH) $(GENCODE_SM20) $(GENCODE_SM30) $(GENCODE_SM35) $(GENCODE_SM50) $(GENCODE_SM60) $(GENCODE_SM62) $(GENCODE_SM70) $(NVCCFLAGS) $(SMVERSIONFLAGS) -o $@ -c $< 2> dryrun.sh
+	# Remove all lines before/including cicc
+	sed -i '1,/cicc/d' dryrun.sh
+	sed -i '/cicc/d' dryrun.sh
+	# Remove rm line
+	sed -i '/rm/d' dryrun.sh
+	# Remove leading comment
+	cut -c 3- dryrun.sh > dryrun1.sh
+	mv dryrun1.sh dryrun.sh
 	$(VERBOSE)$(NVCC) --keep $(GENCODE_SM10) $(GENCODE_SM13) $(GENCODE_ARCH) $(GENCODE_SM20) $(GENCODE_SM30) $(GENCODE_SM35) $(GENCODE_SM50) $(GENCODE_SM60) $(GENCODE_SM62) $(GENCODE_SM70) $(NVCCFLAGS) $(SMVERSIONFLAGS) -o $@ -c $< 
 	$(PTX_GEN)/generator.py rayTracing.ptx
 	cp rayTracing.ptx_tp rayTracing.ptx

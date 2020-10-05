@@ -23,6 +23,16 @@ PTX_GEN =  ../../../../../util/ptx_transform_tp/
 OBJS = $(notdir $(CPPSRC:.cpp=.o))
 
 all: $(OBJS)
+	# Generate dryrun file
+	nvcc --keep --dryrun $(NVOPTS) $(OPTS) $(CUOPTS) $(CUSRC) *.o $(INC) -o $(EXECUTABLE) $(LIBS) 2> dryrun.sh
+	# Remove all lines before/including cicc
+	sed -i '1,/cicc/d' dryrun.sh
+	sed -i '/cicc/d' dryrun.sh
+	# Remove rm line
+	sed -i '/rm/d' dryrun.sh
+	# Remove leading comment
+	cut -c 3- dryrun.sh > dryrun1.sh
+	mv dryrun1.sh dryrun.sh
 	nvcc --keep   $(NVOPTS) $(OPTS) $(CUOPTS) $(CUSRC) *.o $(INC) -o $(EXECUTABLE) $(LIBS)
 	$(PTX_GEN)/generator.py pagerank.ptx
 	cp pagerank.ptx_tp pagerank.ptx

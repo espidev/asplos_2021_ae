@@ -4,11 +4,10 @@
 static const int kSeed = 42;
 static const float kMaxMass = 1000.0f;
 
-#define PARAM_NUM_ITER 1
 #ifdef PARAM_NUM_ITER
 static const int kNumIterations = PARAM_NUM_ITER;
 #else
-static const int kNumIterations = 1;
+static const int kNumIterations = 3000;
 #endif  // PARAM_NUM_ITER
 
 #ifdef PARAM_SIZE

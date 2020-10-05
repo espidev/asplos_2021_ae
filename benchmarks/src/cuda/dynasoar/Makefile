@@ -7,8 +7,10 @@ all:
 	(cd trafficV; make )
 
 oo-char:
+	(cd collisionV; make oo-char)
 	(cd game-of-lifeV; make oo-char)
 	(cd generationV; make oo-char)
+	(cd nbodyV; make oo-char)
 	(cd structureV; make oo-char)
 	(cd trafficV; make oo-char)
 

@@ -7,7 +7,7 @@ static const float kMergeThreshold = 0.005;
 #ifdef PARAM_SIZE
 static const int kNumBodies = PARAM_SIZE;
 #else
-static const int kNumBodies = 10000;
+static const int kNumBodies = 40000;
 #endif  // PARAM_SIZE
 
 static const float kMaxMass = 75;
@@ -20,11 +20,10 @@ static const float kTimeInterval = 0.05f;
 static const float kDt = 0.05f;
 #endif  // PARAM_DELTA_T
 
-#define PARAM_NUM_ITER 1
 #ifdef PARAM_NUM_ITER
 static const int kIterations = PARAM_NUM_ITER;
 #else
-static const int kIterations = 2;
+static const int kIterations = 2000;
 #endif  // PARAM_NUM_ITER
 
 static const float kDampeningFactor = 0.05f;

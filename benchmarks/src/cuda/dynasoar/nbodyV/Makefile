@@ -3,6 +3,12 @@ all:
 	(cd nbody-mem; make)
 	(cd nbody-coal; make)
 	(cd nbody-concord; make)
+
+oo-char:
+	(cd nbody; make)
+	(cd nbody_novfunc; make)
+	(cd nbody_inline; make)
+
 clean:
 	(cd nbody; make clean)
 	(cd nbody-mem; make clean)

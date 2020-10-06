@@ -3,6 +3,7 @@
 *.ptx
 *.ptx_coal
 *.ptx_tp
+dryrun.sh
 cuda/rodinia/1.0-ft/LKYT/meschach_lib/libmeschach.a
 cuda/proxy-apps-doe/cns/cns_all
 cuda/sdk/4.2/matrixMulDrv/data/matrixMul_kernel.ptx

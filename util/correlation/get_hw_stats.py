@@ -26,7 +26,7 @@ parser.add_option("-D", "--device_num", dest="device_num",
                  default="0")
 parser.add_option("-m", "--metrics", dest="metrics",
                  help="nsight metrics to find",
-                 default="Kernel Name,l1tex__t_sector_hit_rate.pct,l1tex__t_sectors_pipe_lsu_mem_global_op_ld.sum,l1tex__t_sectors_pipe_lsu_mem_local_op_ld.sum")
+                 default="Kernel Name,l1tex__t_sectors_pipe_lsu_mem_global_op_ld.sum,l1tex__t_sectors_pipe_lsu_mem_local_op_ld.sum,l1tex__t_sectors_pipe_lsu_mem_global_op_st.sum,l1tex__t_sectors_pipe_lsu_mem_local_op_st.sum,l1tex__t_sectors_pipe_lsu_mem_global_op_ld_lookup_hit.sum,l1tex__t_sectors_pipe_lsu_mem_local_op_ld_lookup_hit.sum,l1tex__t_sectors_pipe_lsu_mem_global_op_st_lookup_hit.sum,l1tex__t_sectors_pipe_lsu_mem_local_op_st_lookup_hit.sum")
 parser.add_option("-k", "--kernels", dest="kernels",
                  help="kernels to compute",
                  default="kernel_ProducerCell_create_car,kernel_traffic_light_step,kernel_Car_step_prepare_path,kernel_Car_step_move,DeviceScanInitKernel,DeviceScanKernel,kernel_compact_initialize,kernel_compact_cars,kernel_compact_swap_pointers,candidate_prepare,alive_prepare,candidate_update,alive_update,kernel_AnchorPullNode_pull,kernel_Spring_compute_force,kernel_Node_move,kernel_NodeBase_initialize_bfs,kernel_NodeBase_bfs_visit,kernel_NodeBase_bfs_set_delete_flags,kernel_Spring_bfs_delete,alive_update,prepare,update,ConnectedComponent,BFS,PageRank,render")
@@ -104,4 +104,3 @@ for bench in benchmarks:
             flist.close()
 foutput.close()
 fsum.close()
-

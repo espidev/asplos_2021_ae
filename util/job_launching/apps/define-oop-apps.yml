@@ -444,6 +444,130 @@ oo-silicon:
         - RAY:
             - 512 512 100
 
+oo-all-part1:
+    exec_dir: "../../benchmarks/bin/$CUDA_VERSION/release/"
+    data_dirs: "../../benchmarks/data_dirs/"
+    execs:
+        - trafficV:
+            -
+        - game-of-life:
+            - ./data/tm.pgm
+        - structureV:
+            -
+        - generationV:
+            -
+        - collision:
+           -
+        - nbodyV:
+           -
+        - BFS:
+            - ./data/pannotia/pagerank/data/coAuthorsDBLP.graph 1
+        - CC:
+            - ./data/pannotia/pagerank/data/coAuthorsDBLP.graph 1
+        - PR:
+            - ./data/pannotia/pagerank/data/coAuthorsDBLP.graph 1
+        - BFSV:
+            - ./data/pannotia/pagerank/data/coAuthorsDBLP.graph 1
+        - CCV:
+            - ./data/pannotia/pagerank/data/coAuthorsDBLP.graph 1
+        - PRV:
+            - ./data/pannotia/pagerank/data/coAuthorsDBLP.graph 1
+        - RAY:
+            - 512 512 100
+
+oo-all-part2:
+    exec_dir: "../../benchmarks/bin/$CUDA_VERSION/release/"
+    data_dirs: "../../benchmarks/data_dirs/"
+    execs:
+        - trafficV_CONCORD:
+            -
+        - game-of-life_CONCORD:
+            - ./data/tm.pgm
+        - structureV_CONCORD:
+            -
+        - generationV_CONCORD:
+            -
+        - collision_CONCORD:
+           -
+        - nbodyV_CONCORD:
+           -
+        - BFS_CONCORD:
+            - ./data/pannotia/pagerank/data/coAuthorsDBLP.graph 1
+        - CC_CONCORD:
+            - ./data/pannotia/pagerank/data/coAuthorsDBLP.graph 1
+        - PR_CONCORD:
+            - ./data/pannotia/pagerank/data/coAuthorsDBLP.graph 1
+        - BFSV_CONCORD:
+            - ./data/pannotia/pagerank/data/coAuthorsDBLP.graph 1
+        - CCV_CONCORD:
+            - ./data/pannotia/pagerank/data/coAuthorsDBLP.graph 1
+        - PRV_CONCORD:
+            - ./data/pannotia/pagerank/data/coAuthorsDBLP.graph 1
+        - RAY_CONCORD:
+            - 512 512 100
+
+oo-all-part3:
+    exec_dir: "../../benchmarks/bin/$CUDA_VERSION/release/"
+    data_dirs: "../../benchmarks/data_dirs/"
+    execs:
+        - trafficV_COAL:
+             - 2397152
+        - game-of-life_COAL:
+            - ./data/tm.pgm 2397152
+        - structureV_COAL:
+            - 2397152
+        - generationV_COAL:
+            - 2397152
+        - collision_COAL:
+           - 2397152
+        - nbodyV_COAL:
+           - 2397152
+        - BFS_COAL:
+            - ./data/pannotia/pagerank/data/coAuthorsDBLP.graph 1 2397152
+        - CC_COAL:
+            - ./data/pannotia/pagerank/data/coAuthorsDBLP.graph 1 2397152
+        - PR_COAL:
+            - ./data/pannotia/pagerank/data/coAuthorsDBLP.graph 1 2397152
+        - BFSV_COAL:
+            - ./data/pannotia/pagerank/data/coAuthorsDBLP.graph 1 2397152
+        - CCV_COAL:
+            - ./data/pannotia/pagerank/data/coAuthorsDBLP.graph 1 2397152
+        - PRV_COAL:
+            - ./data/pannotia/pagerank/data/coAuthorsDBLP.graph 1 2397152
+        - RAY_COAL:
+            - 512 512 100 2397152
+
+oo-all-part4:
+    exec_dir: "../../benchmarks/bin/$CUDA_VERSION/release/"
+    data_dirs: "../../benchmarks/data_dirs/"
+    execs:
+        - trafficV_TP:
+            - 2397152
+        - game-of-life_TP:
+           - ./data/tm.pgm 2397152
+        - structureV_TP:
+            - 2397152
+        - generationV_TP:
+            - 2397152
+        - collision_TP:
+           - 2397152
+        - nbodyV_TP:
+           - 2397152
+        - BFS_TP:
+            - ./data/pannotia/pagerank/data/coAuthorsDBLP.graph 1 2397152
+        - CC_TP:
+            - ./data/pannotia/pagerank/data/coAuthorsDBLP.graph 1 2397152
+        - PR_TP:
+            - ./data/pannotia/pagerank/data/coAuthorsDBLP.graph 1 2397152
+        - BFSV_TP:
+            - ./data/pannotia/pagerank/data/coAuthorsDBLP.graph 1 2397152
+        - CCV_TP:
+            - ./data/pannotia/pagerank/data/coAuthorsDBLP.graph 1 2397152
+        - PRV_TP:
+            - ./data/pannotia/pagerank/data/coAuthorsDBLP.graph 1 2397152
+        - RAY_TP:
+            - 512 512 100 2397152
+
 oo-char:
     exec_dir: "../../benchmarks/bin/$CUDA_VERSION/release/"
     data_dirs: "../../benchmarks/data_dirs/"
@@ -456,6 +580,10 @@ oo-char:
             -
         - generationV:
             -
+        - collision:
+           -
+        - nbodyV:
+           -
         - BFS:
             - ./data/pannotia/pagerank/data/coAuthorsDBLP.graph 1
         - CC:
@@ -478,6 +606,10 @@ oo-char:
             -
         - generationV_novfunc:
             -
+        - collision_novfunc:
+           -
+        - nbodyV_novfunc:
+           -
         - BFS_novfunc:
             - ./data/pannotia/pagerank/data/coAuthorsDBLP.graph 1
         - CC_novfunc:
@@ -500,6 +632,10 @@ oo-char:
             -
         - generationV_inline:
             -
+        - collision_inline:
+           -
+        - nbodyV_inline:
+           -
         - BFS_inline:
             - ./data/pannotia/pagerank/data/coAuthorsDBLP.graph 1
         - CC_inline:

@@ -32,12 +32,16 @@ parser.add_option("-k", "--kernels", dest="kernels",
                  default="kernel_ProducerCell_create_car,kernel_traffic_light_step,kernel_Car_step_prepare_path,kernel_Car_step_move,DeviceScanInitKernel,DeviceScanKernel,kernel_compact_initialize,kernel_compact_cars,kernel_compact_swap_pointers,candidate_prepare,alive_prepare,candidate_update,alive_update,kernel_AnchorPullNode_pull,kernel_Spring_compute_force,kernel_Node_move,kernel_NodeBase_initialize_bfs,kernel_NodeBase_bfs_visit,kernel_NodeBase_bfs_set_delete_flags,kernel_Spring_bfs_delete,alive_update,prepare,update,ConnectedComponent,BFS,PageRank,render,Body_compute_force,Body_update,Body_initialize_merge,Body_prepare_merge,Body_update_merge,Body_delete_merged,parallel_do")
 parser.add_option("-c", "--cycle", dest="cycle", action="store_true",
                  help="Just get kernel duration stats")
+parser.add_option("-C", "--cache", dest="cache", action="store_true",
+                 help="Get comprehensive cache hit rate")
 
 (options, args) = parser.parse_args()
 common.load_defined_yamls()
 
 metrics_set = set(options.metrics.split(","))
 kernel_set = set(options.kernels.split(","))
+nominator_set = set("l1tex__t_sectors_pipe_lsu_mem_global_op_ld_lookup_hit.sum,l1tex__t_sectors_pipe_lsu_mem_local_op_ld_lookup_hit.sum,l1tex__t_sectors_pipe_lsu_mem_global_op_st_lookup_hit.sum,l1tex__t_sectors_pipe_lsu_mem_local_op_st_lookup_hit.sum".split(","))
+denominator_set = set("l1tex__t_sectors_pipe_lsu_mem_global_op_ld.sum,l1tex__t_sectors_pipe_lsu_mem_local_op_ld.sum,l1tex__t_sectors_pipe_lsu_mem_global_op_st.sum,l1tex__t_sectors_pipe_lsu_mem_local_op_st.sum".split(","))
 
 benchmarks = []
 benchmarks = common.gen_apps_from_suite_list(options.benchmark_list.split(","))
@@ -119,6 +123,8 @@ for bench in benchmarks:
                 metrics_dict = dict()
                 metric_line = []
                 metrics_idx = []
+                nominator = 0.0
+                denominator = 0.0
                 for line in lines:
                     csv_line = line.split("\"")
                     if start == 1 and csv_line[0] == "": # unit line
@@ -147,6 +153,11 @@ for bench in benchmarks:
 
                             if idx in metrics_dict.keys():
                                 metrics_dict[idx] += int(csv_line[idx].replace(",", ""))
+                            if options.cache:
+                                if metric_line[idx] in denominator_set:
+                                    denominator += int(csv_line[idx].replace(",", ""))
+                                elif metric_line[idx] in nominator_set:
+                                    nominator += int(csv_line[idx].replace(",", ""))
                             #print(csv_line[idx])
                             foutput.write("\"")
                             foutput.write(csv_line[idx])
@@ -156,6 +167,8 @@ for bench in benchmarks:
                 for idx,values in metrics_dict.items():
                     fsum.writelines('\"{}\",\"{}\"\n'.format(metric_line[idx],values))
                     print('\"{}\",\"{}\"'.format(metric_line[idx],values))
+                if options.cache:
+                    fsum.writelines('\"{}\",\"{:.2f}%\"\n'.format("L1_hit_rate",(nominator/denominator * 100)))
                 flist.close()
 foutput.close()
 fsum.close()

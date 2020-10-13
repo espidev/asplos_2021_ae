@@ -214,11 +214,21 @@ __global__ void parallel_do() {
     }
 }
 
+template <void (*func)(IndexT)>
+__global__ void parallel_init() {
+    int tid = threadIdx.x + blockDim.x * blockIdx.x;
+    for (int id = tid; id < kNumBodies; id += blockDim.x * gridDim.x) {
+        if (d_bodies[id]->active()) {
+            func(id);
+        }
+    }
+}
+
 void transfer_data() {
     // Extract data from SoaAlloc data structure.
     kernel_reset_draw_counters<<<1, 1>>>();
     gpuErrchk(cudaDeviceSynchronize());
-    parallel_do<&Body_add_to_draw_array><<<kBlocks, kThreads>>>();
+    parallel_init<&Body_add_to_draw_array><<<kBlocks, kThreads>>>();
     gpuErrchk(cudaDeviceSynchronize());
 
     // Copy data to host.

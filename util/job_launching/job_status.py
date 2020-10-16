@@ -50,6 +50,58 @@ def get_squeue_status( jobId ):
                    "mem_used" : "UNKNOWN" }
     trace_out_filename = os.path.join(this_directory, "trace_out-{0}.txt".format(os.getpid()))
     trace_out_file = open(trace_out_filename, 'w+')
+    if subprocess.call(["qstat" ,"-f", jobId],
+        stdout=trace_out_file, stderr=trace_out_file) < 0:
+        exit("Error Launching Tracejob Job")
+    else:
+        # Parse the torque output for just the numeric ID
+        trace_out_file.seek(0)
+        trace_out = re.sub( "\n", " ", trace_out_file.read().strip() )
+        state_match = re.search( "job_state\s=\s([^\s]*)", trace_out )
+        if state_match != None:
+            if (state_match.group(1) == 'R' or state_match.group(1) == 'E'):
+                job_status[ "state" ] = "RUNNING"
+            elif state_match.group(1) == 'C':
+                job_status[ "state" ] = "COMPLETE_NO_OTHER_INFO"
+            host_match = re.search( "exec_host\s=\s([^\s]*)", trace_out )
+            if host_match != None:
+                job_status[ "exec_host" ] = host_match.group(1)
+            mem_used = re.search("resources_used.mem\s=\s([^\s]*)kb", trace_out)
+            if mem_used != None:
+                job_status[ "mem_used" ] = float(mem_used.group(1))*1024
+            time_match = re.search( "resources_used.walltime\s=\s([^\s]*)", trace_out )
+            if time_match != None:
+                job_status[ "running_time" ] = time_match.group(1)
+        trace_out_file.close()
+        os.remove(trace_out_filename)
+    return job_status
+
+def get_slurm_memsize( state, jobId ):
+    if state == "RUNNING":
+        sstat_out_filename = os.path.join(this_directory, "sstat_out-{0}.txt".format(os.getpid()))
+        sstat_out_file = open(sstat_out_filename, 'w+')
+        if subprocess.call(["sstat" ,"--format", "MaxVMSize", "-j", jobId],
+            stdout=sstat_out_file, stderr=sstat_out_file) < 0:
+                exit("Error Launching Tracejob Job")
+        else:
+            sstat_out_file.seek(0)
+            sstat_out = sstat_out_file.readlines()
+            if len(sstat_out) > 2:
+                sstat_out = sstat_out[2].strip()
+        sstat_out_file.close()
+        os.remove(sstat_out_filename)
+        return sstat_out
+    else:
+        return "UNKOWN"
+
+# uses squeue to determine job status
+def get_squeue_status( jobId ):
+    job_status = { "state" : "UNKOWN",
+                   "exec_host" : "UNKNOWN",
+                   "running_time": "UNKNOWN",
+                   "mem_used" : "UNKNOWN" }
+    trace_out_filename = os.path.join(this_directory, "trace_out-{0}.txt".format(os.getpid()))
+    trace_out_file = open(trace_out_filename, 'w+')
     if subprocess.call(["squeue" ,"-o", "%t,%N,%M", "-j", jobId],
         stdout=trace_out_file, stderr=trace_out_file) < 0:
         exit("Error Launching Tracejob Job")
@@ -65,6 +117,12 @@ def get_squeue_status( jobId ):
                     job_status[ "state" ] = "RUNNING"
                 elif state_match.group(1) == 'CD':
                     job_status[ "state" ] = "COMPLETE_NO_OTHER_INFO"
+                elif state_match.group(1) == 'PD':
+                    job_status[ "state" ] = "WAITING_TO_RUN"
+                else:
+                    job_status[ "state" ] = state_match.group(1)
+
+                job_status[ "mem_used" ] = get_slurm_memsize( job_status[ "state" ], jobId )
                 job_status[ "exec_host" ] = state_match.group(2)
                 job_status[ "running_time" ] = state_match.group(3)
         trace_out_file.close()
@@ -72,6 +130,8 @@ def get_squeue_status( jobId ):
     return job_status
 
 def isNumber( s ):
+    if s[-1] == "K" or s[-1] == "M" or s[-1] == "G" or s[-1] == "T":
+        s = s[:-1]
     try:
         int (s)
         return True
@@ -84,6 +144,12 @@ def isNumber( s ):
 
 millnames = ['',' K',' M',' B',' T']
 def millify(n):
+    count = 0
+    for name in millnames:
+        if n[-1].strip() == name.strip():
+            n = float(n[:-1]) * 10**(3*count)
+            break
+        count += 1
     n = float(n)
     if math.isnan(n):
         return "NaN"
@@ -252,13 +318,16 @@ for logfile in parsed_logfiles:
                 and not os.path.isfile( outfile ):
                 files_to_check = []
                 status_string = job_status[ "state" ]
-            else:
+            elif ( os.path.isfile( outfile ) and job_status[ "state" ] == "UNKOWN" ):
                 files_to_check = [ outfile, errfile ]
                 status_string = "COMPLETE_NO_OTHER_INFO"
+            else:
+                files_to_check = []
+                status_string = "NOT_RUNNING_NO_OUTPUT"
 
             exec_node = job_status[ "exec_host" ]
             try:
-                mem_used = millify(float(job_status[ "mem_used" ])*1024)
+                mem_used = millify(job_status[ "mem_used" ])
             except:
                 mem_used = "UNKNOWN"
             running_time = job_status[ "running_time" ]
@@ -302,7 +371,9 @@ for logfile in parsed_logfiles:
 
             if len( status_found ) > 0:
                 status_string = ", ".join( status_found )
-            elif os.path.exists( errfile ) and os.stat( errfile ).st_size > 0:
+            elif ( job_status["state"] == "UNKOWN" or job_status["state"] == "COMPLETE_NO_OTHER_INFO" )\
+                        and os.path.exists( errfile ) \
+                        and os.stat( errfile ).st_size > 0:
                 status_string = "COMPLETE_ERR_FILE_HAS_CONTENTS"
 
             gpgpu_git_commit = re.sub(r".*-commit-([^_]{7})[^_]+_(.*)\.so", r"\1-\2", jobname)

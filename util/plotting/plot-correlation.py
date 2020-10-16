@@ -84,7 +84,7 @@ def getAppData(kernels, x, y, xaxis_title, correlmap):
             num_less_than_one_percent += 1
         if err < 10.0:
             num_less_than_ten_percent += 1
-    
+
 
     total_err = total_err / len(newx)
     if tot_x > 0:
@@ -169,7 +169,7 @@ def make_submission_quality_image(image_type, traces, hw_cfg):
             trace.marker.symbol = marker_sym[count %len(markers)]
         trace.mode = "markers"
         trace.error_x.color = trace.marker.color
-        
+
         # Set the alpha on the error bars to be 30%
         trace.error_x.color =  re.sub(r"(,.*,.*),.*\)",r"\1,0.3)", trace.error_x.color)
         kernel_annotations.append(make_anno1(anno,22,0,1.115 - count * 0.05))
@@ -377,8 +377,8 @@ def make_anno1(text, fontsize, x, y):
         text=text,   # annotation text
         xref='paper',  # use paper coordinates
         yref='paper',  #   for both x and y coords
-        x=x,           # x and y position 
-        y=y,           #   in norm. coord. 
+        x=x,           # x and y position
+        y=y,           #   in norm. coord.
 #        font=Font(size=fontsize,color='Black'),  # text font size
         showarrow=False,       # no arrow (default is True)
         bgcolor='#F5F3F2',     # light grey background color
@@ -467,8 +467,11 @@ def get_sim_csv_data(filepath, logger):
                     all_kerns[cfg] = copy.deepcopy(all_kern_cfg)
                 for x in row[1:]:
                     try:
+                        if x == "NA":
+                            x = 0
                         appargs,kname,num = klist[count]
                         all_kerns[cfg][appargs][num][current_stat] = float(x)
+
                     except ValueError:
                         all_kerns[cfg][appargs][num][current_stat] = None
                         stats_missing.add((appargs, num, current_stat))
@@ -535,6 +538,7 @@ def parse_hw_csv(csv_file, hw_data, appargs, kdata, logger):
         state = "start"
         header = []
         kcount = 0
+        skipcount = 0
         for row in reader:
             # Begin by searching for the text line that indicates the beginning of the profile dump
             if state == "start" and len(row) > 0:
@@ -577,13 +581,28 @@ def parse_hw_csv(csv_file, hw_data, appargs, kdata, logger):
                 if row[cfg_col] == "":
                     continue
 
+                if options.filter_kernels != None:
+                    kFilter = re.compile(options.filter_kernels)
+                    output = kFilter.search("".join(row))
+                    if output == None:
+                        logger.log("Filter \"{0}\" did not match - skipping {1}"
+                              .format(options.filter_kernels, "".join(row)))
+                        continue
+
+                if options.keep_kernel_list != None:
+                   keep_list = options.keep_kernel_list.split(",")
+                   if str(skipcount) not in keep_list:
+                       logger.log("Skipping skipcount={0} - kcount={1}, whose name is {2}"
+                                .format(skipcount, kcount, "".join(row)))
+                       skipcount += 1
+                       continue
                 # Set the Device
                 if cfg != "" and cfg != row[cfg_col]:
                     print "data for more than one device in {0}..{1}:{2}"\
                         .format(csv_file,cfg,elem)
                     exit()
-
                 cfg = row[cfg_col]
+
                 count = 0
                 if len(kdata) <= kcount:
                     kdata.append({})
@@ -591,14 +610,13 @@ def parse_hw_csv(csv_file, hw_data, appargs, kdata, logger):
                     if header[count] not in kdata[kcount]:
                         kdata[kcount][header[count]] = []
                     try:
-                        value = float(elem.replace(",",""))
-                        kdata[kcount][header[count]].append(value)
+                        kdata[kcount][header[count]].append(float(elem))
                     except ValueError:
-                        if "n/a" != elem:
-                            kdata[kcount][header[count]].append(elem)
+                        kdata[kcount][header[count]].append(elem)
                     count += 1
-#                logger.log("Kernel Launch {0}: HW Kernel found".format(kcount))
+                #logger.log("Kernel Launch {0}: HW Kernel {1} found".format(kcount,kdata[kcount]["Name"]))
                 kcount += 1
+                skipcount += 1
                 continue
         logger.log("Kernels found: {0}".format(kcount))
     if cfg != "" and cfg != None:
@@ -614,7 +632,7 @@ def summarize_hw_data(hw_data, logger):
         print("HW Summary for {0} [Contains {1} Apps]:"
             .format(device,len(appargslist)))
     print("----------------------------------------------------------------\n\n")
-    
+
     # Print HW data summary
     for device,appargslist in hw_data.iteritems():
         logger.logchan("-----------------------------------------------------------------","hwsummary")
@@ -623,12 +641,12 @@ def summarize_hw_data(hw_data, logger):
         for appargs,kdata in appargslist.iteritems():
             logger.logchan("\t{0}:".format(appargs), "hwsummary")
             logger.logchan("\t\tContatins {0} kernels:".format(len(kdata)), "hwsummary")
-    
+
             if "Name" in kdata[0]:
                 logger.logchan("\t\t\tSample Kernel 0 [{0}]:".format(kdata[0]["Name"][0][0:64]), "hwsummary")
             elif "Kernel Name" in kdata[0]:
                 logger.logchan("\t\t\tSample Kernel 0 [{0}]:".format(kdata[0]["Kernel Name"][0][0:64]), "hwsummary")
-    
+
             sample_stats = [
                 "Duration",
                 "gpc__cycles_elapsed.avg",
@@ -702,9 +720,17 @@ parser.add_option("-L", "--legend", dest="legend", default=float(1.2),
 parser.add_option("-p", "--plotname", dest="plotname", default="",
                   help="string put in the middle of the output files. If nothing is provided, then" +\
                        "a concatination of all the configs in the graph are used.")
+parser.add_option("-f", "--filter_kernels", dest="filter_kernels", default=None,
+                    help="A regex string that will filter the HW kernel names to correlate. " +\
+                          "This is especially useful when you skip some kernels in simulation.")
+parser.add_option("-D", "--devicename", dest="devicename", default="",
+                  help="Used right now to provide a device name for turing")
 parser.add_option("-C", "--logchannel", dest="logchannel", default="",
                   help="Turn on minimal logging. Right now \"hwsummary\" supported.")
-
+parser.add_option("-k", "--keep_kernel_list", dest="keep_kernel_list", default=None,
+                    help="This is a list of post-filtered kernels to keep from the HW parsing."
+                         " For example, if you want to keep the second the fourth kernel named \"foo\"" +\
+                         " pass -f \"foo\" -k 1,3")
 
 (options, args) = parser.parse_args()
 common.load_defined_yamls()
@@ -843,7 +869,7 @@ for cfg,sim_for_cfg in sim_data.iteritems():
                            count += 1
                            hw_array = hw_array[:-1]
                            continue
- 
+
                         if correl.hw_error != None:
                             maxe,mine = eval(correl.hw_error)
                             hw_error.append(maxe)

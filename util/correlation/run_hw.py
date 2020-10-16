@@ -17,7 +17,7 @@ import common
 import re
 import datetime
 
-# We will look for the benchmarks 
+# We will look for the benchmarks
 parser = OptionParser()
 parser.add_option("-B", "--benchmark_list", dest="benchmark_list",
                  help="a comma seperated list of benchmark suites to run. See apps/define-*.yml for " +\
@@ -34,8 +34,20 @@ parser.add_option("-R", "--repeat_cycle", dest="repeat_cycle", default=1,
                  help="When running the cycle tests, do them this many times (good when DVFS is enabled)")
 parser.add_option("-N", "--nsight_profiler", dest="nsight_profiler", action="store_true",
                  help="use the new nsight cli profiler")
+parser.add_option("-m", "--nsight_metric", dest="nsight_metric",
+                 help="nsight profiler metrics",
+                 default="gpc__cycles_elapsed.avg,sm__cycles_elapsed.sum,smsp__inst_executed.sum,sm__warps_active.avg.pct_of_peak_sustained_active,l1tex__t_sectors_pipe_lsu_mem_global_op_ld_lookup_hit.sum,l1tex__t_sectors_pipe_lsu_mem_global_op_ld.sum," +\
+                    "l1tex__t_sectors_pipe_lsu_mem_global_op_st_lookup_hit.sum,l1tex__t_sectors_pipe_lsu_mem_global_op_st.sum,lts__t_sectors_srcunit_tex_op_read.sum,"+\
+                    "lts__t_sectors_srcunit_tex_op_write.sum,lts__t_sectors_srcunit_tex_op_read_lookup_hit.sum,lts__t_sectors_srcunit_tex_op_write_lookup_hit.sum," +\
+                    "lts__t_sector_op_write_hit_rate.pct,lts__t_sectors_srcunit_tex_op_read.sum.per_second,dram__sectors_read.sum,dram__sectors_write.sum,dram__bytes_read.sum ")
 parser.add_option("-d", "--disable_nvprof", dest="disable_nvprof", action="store_true",
                  help="do not use nvprof (decrecated in Turing+)")
+parser.add_option("-s", "--summary_options", dest="summary_options",
+                 help="summary options for nsight",
+                 default="none")
+parser.add_option("-k", "--kernel_regex", dest="kernel_regex",
+                 help="kernel name regular expression",
+                 default="\".*\"")
 (options, args) = parser.parse_args()
 
 if not options.disable_nvprof:
@@ -59,7 +71,7 @@ logfile = day_string + "--" + time_string + ".csv"
 
 for bench in benchmarks:
     edir, ddir, exe, argslist = bench
-    specific_ddir = os.path.join(this_directory,ddir,exe)
+    specific_ddir = os.path.join(this_directory,ddir)
     for args in argslist:
         run_name = os.path.join( exe, common.get_argfoldername( args ) )
 
@@ -68,12 +80,12 @@ for bench in benchmarks:
             os.makedirs(this_run_dir)
 
         # link the data directory
-        benchmark_data_dir = os.path.join(specific_ddir, "data")
+        benchmark_data_dir = specific_ddir
         if os.path.isdir(benchmark_data_dir):
             if os.path.lexists(os.path.join(this_run_dir, "data")):
                 os.remove(os.path.join(this_run_dir, "data"))
             os.symlink(benchmark_data_dir, os.path.join(this_run_dir,"data"))
-        
+
         all_data_link = os.path.join(this_run_dir,"data_dirs")
         if os.path.lexists(all_data_link):
             os.remove(all_data_link)
@@ -91,11 +103,7 @@ for bench in benchmarks:
                     os.path.join(this_run_dir,logfile) + " " + os.path.join(this_directory, edir,exe) + " " + str(args) + " "
             if options.nsight_profiler:
                 sh_contents += "\nexport CUDA_VERSION=\"" + cuda_version + "\"; export CUDA_VISIBLE_DEVICES=\"" + options.device_num +\
-                    "\" ; timeout 30m nv-nsight-cu-cli --metrics gpc__cycles_elapsed.avg,sm__cycles_elapsed.sum,smsp__inst_executed.sum," +\
-                    "sm__warps_active.avg.pct_of_peak_sustained_active,l1tex__t_sectors_pipe_lsu_mem_global_op_ld_lookup_hit.sum,l1tex__t_sectors_pipe_lsu_mem_global_op_ld.sum," +\
-                    "l1tex__t_sectors_pipe_lsu_mem_global_op_st_lookup_hit.sum,l1tex__t_sectors_pipe_lsu_mem_global_op_st.sum,lts__t_sectors_srcunit_tex_op_read.sum,"+\
-                    "lts__t_sectors_srcunit_tex_op_write.sum,lts__t_sectors_srcunit_tex_op_read_lookup_hit.sum,lts__t_sectors_srcunit_tex_op_write_lookup_hit.sum," +\
-                    "lts__t_sector_op_write_hit_rate.pct,lts__t_sectors_srcunit_tex_op_read.sum.per_second,dram__sectors_read.sum,dram__sectors_write.sum,dram__bytes_read.sum " +\
+                    "\" ; nv-nsight-cu-cli -k " + options.kernel_regex + " --metrics " + options.nsight_metric +\
                     " --csv --page raw " +\
                     " " + os.path.join(this_directory, edir,exe) + " " + str(args) +\
                     " | tee " + os.path.join(this_run_dir,logfile + ".nsight")
@@ -110,7 +118,7 @@ for bench in benchmarks:
                     os.path.join(this_run_dir,logfile + ".elapsed_cycles_sm.{0}".format(i)) + " " + os.path.join(this_directory, edir,exe) + " " + str(args) + " "
             if options.nsight_profiler:
                 sh_contents += "\nexport CUDA_VERSION=\"" + cuda_version + "\"; export CUDA_VISIBLE_DEVICES=\"" + options.device_num +\
-                    "\" ; timeout 5m nv-nsight-cu-cli --metrics gpc__cycles_elapsed.avg --csv " +\
+                    "\" ; nv-nsight-cu-cli --summary " + options.summary_options + " --metrics gpc__cycles_elapsed.avg --csv " +\
                         os.path.join(this_directory, edir,exe) + " " + str(args) + " | tee " +\
                         os.path.join(this_run_dir,logfile + ".gpc__cycles_elapsed.{0}".format(i))
 

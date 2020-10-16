@@ -651,3 +651,33 @@ oo-char:
         - RAY_inline:
             - 512 512 100
 
+oo-mem:
+    exec_dir: "../../benchmarks/bin/$CUDA_VERSION/release/"
+    data_dirs: "../../benchmarks/data_dirs/"
+    execs:
+        - trafficV_MEM:
+            - 2397152
+        - game-of-life_MEM:
+           - ./data/tm.pgm 2397152
+        - structureV_MEM:
+            - 2397152
+        - generationV_MEM:
+            - 2397152
+        - collision_MEM:
+           - 2397152
+        - nbodyV_MEM:
+           - 2397152
+        - BFS_MEM:
+            - ./data/pannotia/pagerank/data/coAuthorsDBLP.graph 1 2397152
+        - CC_MEM:
+            - ./data/pannotia/pagerank/data/coAuthorsDBLP.graph 1 2397152
+        - PR_MEM:
+            - ./data/pannotia/pagerank/data/coAuthorsDBLP.graph 1 2397152
+        - BFSV_MEM:
+            - ./data/pannotia/pagerank/data/coAuthorsDBLP.graph 1 2397152
+        - CCV_MEM:
+            - ./data/pannotia/pagerank/data/coAuthorsDBLP.graph 1 2397152
+        - PRV_MEM:
+            - ./data/pannotia/pagerank/data/coAuthorsDBLP.graph 1 2397152
+        - RAY_MEM:
+            - 512 512 100 2397152

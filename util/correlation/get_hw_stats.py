@@ -152,7 +152,7 @@ for bench in benchmarks:
                                     continue
 
                             if idx in metrics_dict.keys():
-                                metrics_dict[idx] += int(csv_line[idx].replace(",", ""))
+                                metrics_dict[idx] += float(csv_line[idx].replace(",", ""))
                             if options.cache:
                                 if metric_line[idx] in denominator_set:
                                     denominator += int(csv_line[idx].replace(",", ""))

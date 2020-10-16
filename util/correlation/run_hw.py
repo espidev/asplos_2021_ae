@@ -42,6 +42,9 @@ parser.add_option("-m", "--nsight_metric", dest="nsight_metric",
                     "lts__t_sector_op_write_hit_rate.pct,lts__t_sectors_srcunit_tex_op_read.sum.per_second,dram__sectors_read.sum,dram__sectors_write.sum,dram__bytes_read.sum ")
 parser.add_option("-d", "--disable_nvprof", dest="disable_nvprof", action="store_true",
                  help="do not use nvprof (decrecated in Turing+)")
+parser.add_option("-s", "--summary_options", dest="summary_options",
+                 help="summary options for nsight",
+                 default="none")
 parser.add_option("-k", "--kernel_regex", dest="kernel_regex",
                  help="kernel name regular expression",
                  default="\".*\"")
@@ -100,7 +103,7 @@ for bench in benchmarks:
                     os.path.join(this_run_dir,logfile) + " " + os.path.join(this_directory, edir,exe) + " " + str(args) + " "
             if options.nsight_profiler:
                 sh_contents += "\nexport CUDA_VERSION=\"" + cuda_version + "\"; export CUDA_VISIBLE_DEVICES=\"" + options.device_num +\
-                    "\" ; timeout 30m nv-nsight-cu-cli -k " + options.kernel_regex + " --metrics " + options.nsight_metric +\
+                    "\" ; nv-nsight-cu-cli -k " + options.kernel_regex + " --metrics " + options.nsight_metric +\
                     " --csv --page raw " +\
                     " " + os.path.join(this_directory, edir,exe) + " " + str(args) +\
                     " | tee " + os.path.join(this_run_dir,logfile + ".nsight")
@@ -115,7 +118,7 @@ for bench in benchmarks:
                     os.path.join(this_run_dir,logfile + ".elapsed_cycles_sm.{0}".format(i)) + " " + os.path.join(this_directory, edir,exe) + " " + str(args) + " "
             if options.nsight_profiler:
                 sh_contents += "\nexport CUDA_VERSION=\"" + cuda_version + "\"; export CUDA_VISIBLE_DEVICES=\"" + options.device_num +\
-                    "\" ; timeout 5m nv-nsight-cu-cli --metrics gpc__cycles_elapsed.avg --csv " +\
+                    "\" ; nv-nsight-cu-cli --summary " + options.summary_options + " --metrics gpc__cycles_elapsed.avg --csv " +\
                         os.path.join(this_directory, edir,exe) + " " + str(args) + " | tee " +\
                         os.path.join(this_run_dir,logfile + ".gpc__cycles_elapsed.{0}".format(i))
 

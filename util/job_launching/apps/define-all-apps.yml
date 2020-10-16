@@ -16,7 +16,7 @@ rodinia_2.0-ft:
         - backprop-rodinia-2.0-ft:
             - 4096 ./data/result-4096.txt
         - bfs-rodinia-2.0-ft:
-            - ./data/graph4096.txt ./data/graph4096-result.txt
+            - ./data/bfs-rodinia-2.0-ft/data/graph4096.txt ./data/bfs-rodinia-2.0-ft/data/graph4096-result.txt
         - hotspot-rodinia-2.0-ft:
             - 30 6 40 ./data/result_30_6_40.txt
         - heartwall-rodinia-2.0-ft:
@@ -617,24 +617,6 @@ oop_concord:
         - RAY_CONCORD:
             - 512 512 100
 
-oop_mem:
-    exec_dir: "../../benchmarks/bin/$CUDA_VERSION/release/"
-    data_dirs: "../../benchmarks/data_dirs/"
-    execs:
-        - PR_MEM:
-            - ./data/pannotia/pagerank/data/coAuthorsDBLP.graph 1 2397152
-        - PRV_MEM:
-            - ./data/pannotia/pagerank/data/coAuthorsDBLP.graph 1 2397152
-        - CC_MEM:
-            - ./data/pannotia/pagerank/data/coAuthorsDBLP.graph 1 2397152
-        - CCV_MEM:
-            - ./data/pannotia/pagerank/data/coAuthorsDBLP.graph 1 2397152
-        - BFS_MEM:
-            - ./data/pannotia/pagerank/data/coAuthorsDBLP.graph 1 2397152
-        - BFSV_MEM:
-            - ./data/pannotia/pagerank/data/coAuthorsDBLP.graph 1 2397152
-        - RAY_MEM:
-            - 512 512 100 2397152
 oop_tp:
     exec_dir: "../../benchmarks/bin/$CUDA_VERSION/release/"
     data_dirs: "../../benchmarks/data_dirs/"

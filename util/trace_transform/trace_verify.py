@@ -23,6 +23,12 @@ parser.add_option("-D", "--device_num", dest="device_num",
 parser.add_option("-f", "--filter_kernels", dest="filter_kernels", default="",
                   help="A regex string that will filter the kernel names to correlate. " +\
                   "This is especially useful when you skip some kernels in simulation.")
+parser.add_option("-T", "--tracedir", dest="tracedir",
+                 help="Trace file dir if given",
+                 default="")
+parser.add_option("-N", "--number", dest="number", type=int,
+                 help="Specific kernel number to match",
+                 default=0)
 (options, args) = parser.parse_args()
 
 common.load_defined_yamls()
@@ -44,8 +50,11 @@ for bench in benchmarks:
 
         trace_run_dir = os.path.join(this_directory, "..", "..", "run_hw", "traces", "device-" + options.device_num, cuda_version, run_name, "traces")
         if not os.path.exists(trace_run_dir):
-            print (trace_run_dir, "not exists")
-            exit()
+            if options.tracedir:
+                trace_run_dir = options.tracedir
+            else:
+                print (trace_run_dir, "not exists")
+                exit()
         listname = os.path.join(trace_run_dir, "kernelslist.g")
 
         flist = open(listname, "r")
@@ -56,7 +65,7 @@ for bench in benchmarks:
             if re.search(pattern, trace_file):
                 sf = serial_file.serial_file(trace_run_dir + '/' + trace_file[:-1], "r")
                 line = sf.readline()
-                print line[:-1].split(' ')
+                print(line[:-1].split(' '))
                 if not re.search(options.filter_kernels, line[:-1].split(' ')[3]):
                     print(line[:-1].split(' ')[3])
                     continue
@@ -96,10 +105,14 @@ for bench in benchmarks:
 
         warp_inst_diff = []
         if len(warp_inst) != len(hw_warp_inst):
-            exit("ERROR - Hardware kernels are not equal to trace kernels!")
+            if len(hw_warp_inst) >= options.number:
+                back_warp_inst = [hw_warp_inst[options.number]]
+                hw_warp_inst = back_warp_inst
+            else:
+                exit("ERROR - Hardware kernels are not equal to trace kernels!")
         for i in range(len(warp_inst)):
             warp_inst_diff.append((warp_inst[i] - hw_warp_inst[i]) / hw_warp_inst[i])
-        print [format(i, ".2%") for i in warp_inst_diff]
+        [print(format(i, ".2%")) for i in warp_inst_diff]
         for v in warp_inst_diff:
             outfile.write("%s " % i)
         outfile.write("\n")

@@ -36,6 +36,8 @@ parser.add_option("-R", "--risc", dest="risc", action="store_true",
         help="Add typepointer with risc instruction only", default=False)
 parser.add_option("-k", "--kernel", dest="kernel",
         help="kernel regex", default="kernel_ProducerCell_create_car|kernel_traffic_light_step|kernel_Car_step_prepare_path|kernel_Car_step_move|DeviceScanInitKernel|DeviceScanKernel|kernel_compact_initialize|kernel_compact_cars|kernel_compact_swap_pointers|candidate_prepare|alive_prepare|candidate_update|alive_update|kernel_AnchorPullNode_pull|kernel_Spring_compute_force|kernel_Node_move|kernel_NodeBase_initialize_bfs|kernel_NodeBase_bfs_visit|kernel_NodeBase_bfs_set_delete_flags|kernel_Spring_bfs_delete|alive_update|prepare|update|ConnectedComponent|BFS|PageRank|render|Body_compute_force|Body_update|Body_initialize_merge|Body_prepare_merge|Body_update_merge|Body_delete_merged|parallel_do")
+parser.add_option("-V", "--vfc", dest="vfc", action="store_true",
+        help="Calculate vfc BTW", default=False)
 (options, args) = parser.parse_args()
 
 common.load_defined_yamls()
@@ -184,8 +186,7 @@ inst_type = {
                     "RTT" : 2,
                     "WARPSYNC" : 2,
                     "YIELD" : 2,
-                    "BAR" : 2,
-                    "COAL" : 2
+                    "BAR" : 2
                     }
 
 if "nvbit_inst" in cfgs:
@@ -205,7 +206,8 @@ if "nvbit_inst" in cfgs:
                 isMatchedKernel = False
                 kernelName = None
                 totalInst = 0
-                res = {0: 0, 1: 0, 2: 0}
+                vfc = 0
+                res = {0: 0, 1: 0, 2: 0, 3: 0}
                 for line in lines:
                     token = line[:-1].split(' ')
                     if len(token) > 9 and token[0] == "kernel":
@@ -224,15 +226,20 @@ if "nvbit_inst" in cfgs:
                         #res = {0: 0, 1: 0, 2: 0}
                     elif len(token) > 4 and token[3] == "=":
                         #print(token[2], token[4])
-                        if token[2].split('.')[0] in inst_type:
+                        if options.vfc and token[2] == "VFC":
+                            if isMatchedKernel:
+                                vfc += int(token[4])
+                        elif token[2].split('.')[0] in inst_type:
                             if isMatchedKernel:
                                 res[inst_type[token[2].split('.')[0]]] += int(token[4])
                         else:
                             print(token[2].split('.')[0], "not listed")
                             exit()
                 if totalInst != res[0] + res[1] + res[2]:
-                    print("Data wrong")
+                    print('Data Wrong {},{},{},{}'.format(totalInst,res[0],res[1],res[2]))
                 print('{},{},{},{}'.format(exe,res[0],res[1],res[2]))
+                if options.vfc:
+                    print('{},{},{}'.format(vfc,totalInst,vfc*1000.0/totalInst))
                 instfile.close()
                 
             

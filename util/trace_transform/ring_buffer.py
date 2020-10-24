@@ -16,5 +16,5 @@ class ring_buffer:
             if pattern.match(self.buf[index]):
                 return (self.head + self.size - index - 1) % self.size
             index = (index + self.size - 1) % self.size
-        print "Cannot find pattern in the buffer"
+        print("Cannot find pattern in the buffer")
         return -1

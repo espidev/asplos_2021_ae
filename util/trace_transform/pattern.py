@@ -23,7 +23,7 @@ class pattern:
         if self.match_op(line):
             return trace[self.oprand_pos]
         else:
-            print "Fail to retrieve oprand ", line
+            print("Fail to retrieve oprand ", line)
             return -1
 
     def retrieve_address(self, line):
@@ -35,7 +35,7 @@ class pattern:
             if trace[12] == '0':
                 return trace[13:end]
         else:
-            print "Fail to retrieve oprand ", line
+            print("Fail to retrieve oprand ", line)
             return []
 
     def retrieve_offset(self, line):
@@ -43,5 +43,5 @@ class pattern:
         if self.match_op(line):
             return trace[-2]
         else:
-            print "Fail to retrieve offset ", line
+            print("Fail to retrieve offset ", line)
             return -1

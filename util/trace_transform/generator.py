@@ -14,6 +14,7 @@ import dump
 import eliminate
 import replace
 import uinst
+import glob
 
 # define parameters
 parser = OptionParser()
@@ -33,6 +34,8 @@ parser.add_option("-L", "--load", dest="load", action="store_true",
         help="Add load before special instruction", default=False)
 parser.add_option("-R", "--risc", dest="risc", action="store_true",
         help="Add typepointer with risc instruction only", default=False)
+parser.add_option("-k", "--kernel", dest="kernel",
+        help="kernel regex", default="kernel_ProducerCell_create_car|kernel_traffic_light_step|kernel_Car_step_prepare_path|kernel_Car_step_move|DeviceScanInitKernel|DeviceScanKernel|kernel_compact_initialize|kernel_compact_cars|kernel_compact_swap_pointers|candidate_prepare|alive_prepare|candidate_update|alive_update|kernel_AnchorPullNode_pull|kernel_Spring_compute_force|kernel_Node_move|kernel_NodeBase_initialize_bfs|kernel_NodeBase_bfs_visit|kernel_NodeBase_bfs_set_delete_flags|kernel_Spring_bfs_delete|alive_update|prepare|update|ConnectedComponent|BFS|PageRank|render|Body_compute_force|Body_update|Body_initialize_merge|Body_prepare_merge|Body_update_merge|Body_delete_merged|parallel_do")
 (options, args) = parser.parse_args()
 
 common.load_defined_yamls()
@@ -40,67 +43,9 @@ common.load_defined_yamls()
 benchmarks = []
 benchmarks = common.gen_apps_from_suite_list(options.benchmark_list.split(","))
 
-for bench in benchmarks:
-    edir, ddir, exe, argslist = bench
-    for args in argslist:
-        run_dir = os.path.join( options.trace_dir, exe, common.get_argfoldername( args ), "traces")
-        if not os.path.exists(run_dir):
-            print (run_dir, "not exists")
-            exit()
-        cfgs = set(options.config.split(","))
-        listname=os.path.join(run_dir, "kernelslist.g")
+cfgs = set(options.config.split(","))
 
-        flist = open(listname, "r")
-        lines = flist.readlines()
-        vfunc_inst_lists = []
-
-        if "search" in cfgs:
-            pattern = '^kernel*'
-            for line in lines:
-                if re.search(pattern, line):
-                    traces = search.search(run_dir, line[:-1])
-                    vfunc_inst_lists.append([line[:-1], traces])
-                    print line[:-1]
-
-        if "search_call" in cfgs:
-            pattern = '^kernel*'
-            for line in lines:
-                if re.search(pattern, line):
-                    traces = search.search_call(run_dir, line[:-1])
-                    vfunc_inst_lists.append([line[:-1], traces])
-                    print line[:-1]
-
-        if "dump" in cfgs:
-            filename = "dump.log"
-            dump.dump(run_dir, vfunc_inst_lists, filename)
-
-        if "eliminate" in cfgs:
-            output_dir = os.path.join(options.output, exe, common.get_argfoldername(args), "traces")
-            if not os.path.exists(output_dir):
-                os.makedirs(output_dir)
-            print output_dir
-            eliminate.eliminate(run_dir, vfunc_inst_lists, output_dir)
-
-        if "replace" in cfgs:
-            output_dir = os.path.join(options.output, exe, common.get_argfoldername(args), "traces")
-            if not os.path.exists(output_dir):
-                os.makedirs(output_dir)
-            print output_dir
-            replace.replace(run_dir, vfunc_inst_lists, output_dir, options)
-
-        if "uinst" in cfgs:
-            # count instructions
-            inst_dict_lists = []
-            inst_dict = dict()
-            pattern = '^kernel*'
-            for line in lines:
-                if re.search(pattern, line):
-                    inst_dict = uinst.uinst(run_dir, line[:-1])
-                    inst_dict_lists.append([line[:-1], inst_dict])
-                    #print line[:-1]
-
-            #analyze
-            inst_type = {
+inst_type = {
                     #Load/Store Instructions
                     "LD" : 0,
                     #For now, we ignore constant loads, consider it as ALU_OP, TO DO
@@ -242,6 +187,116 @@ for bench in benchmarks:
                     "BAR" : 2,
                     "COAL" : 2
                     }
+
+if "nvbit_inst" in cfgs:
+    for bench in benchmarks:
+        edir, ddir, exe, argslist = bench
+        for args in argslist:
+            run_dir = os.path.join( options.trace_dir, exe, common.get_argfoldername( args ))
+            if not os.path.exists(run_dir):
+                print(run_dir, "not exists")
+                continue
+                #exit()
+            this_pattern = run_dir + '/*.csv'
+            for fname in glob.glob(this_pattern):
+                #print(fname)
+                instfile = open(fname, "r")
+                lines = instfile.readlines()
+                isMatchedKernel = False
+                kernelName = None
+                totalInst = 0
+                res = {0: 0, 1: 0, 2: 0}
+                for line in lines:
+                    token = line[:-1].split(' ')
+                    if len(token) > 9 and token[0] == "kernel":
+                        # Find kernels
+                        if token[3] == "void":
+                            kernelName = token[4].split('(')[0].split('<')[0].rsplit(':')[-1]
+                        else:
+                            kernelName = token[3].split('(')[0].split('<')[0].rsplit(':')[-1]
+                        if re.match(options.kernel, kernelName):
+                            isMatchedKernel = True
+                        else:
+                            isMatchedKernel = False
+                        # Add total inst
+                        if isMatchedKernel:
+                            totalInst += int(token[-4][:-1])
+                        #res = {0: 0, 1: 0, 2: 0}
+                    elif len(token) > 4 and token[3] == "=":
+                        #print(token[2], token[4])
+                        if token[2].split('.')[0] in inst_type:
+                            if isMatchedKernel:
+                                res[inst_type[token[2].split('.')[0]]] += int(token[4])
+                        else:
+                            print(token[2].split('.')[0], "not listed")
+                            exit()
+                if totalInst != res[0] + res[1] + res[2]:
+                    print("Data wrong")
+                print('{},{},{},{}'.format(exe,res[0],res[1],res[2]))
+                instfile.close()
+                
+            
+    exit()
+
+for bench in benchmarks:
+    edir, ddir, exe, argslist = bench
+    for args in argslist:
+        run_dir = os.path.join( options.trace_dir, exe, common.get_argfoldername( args ), "traces")
+        if not os.path.exists(run_dir):
+            print (run_dir, "not exists")
+            exit()
+        listname=os.path.join(run_dir, "kernelslist.g")
+
+        flist = open(listname, "r")
+        lines = flist.readlines()
+        vfunc_inst_lists = []
+
+        if "search" in cfgs:
+            pattern = '^kernel*'
+            for line in lines:
+                if re.search(pattern, line):
+                    traces = search.search(run_dir, line[:-1])
+                    vfunc_inst_lists.append([line[:-1], traces])
+                    print(line[:-1])
+
+        if "search_call" in cfgs:
+            pattern = '^kernel*'
+            for line in lines:
+                if re.search(pattern, line):
+                    traces = search.search_call(run_dir, line[:-1])
+                    vfunc_inst_lists.append([line[:-1], traces])
+                    print(line[:-1])
+
+        if "dump" in cfgs:
+            filename = "dump.log"
+            dump.dump(run_dir, vfunc_inst_lists, filename)
+
+        if "eliminate" in cfgs:
+            output_dir = os.path.join(options.output, exe, common.get_argfoldername(args), "traces")
+            if not os.path.exists(output_dir):
+                os.makedirs(output_dir)
+            print(output_dir)
+            eliminate.eliminate(run_dir, vfunc_inst_lists, output_dir)
+
+        if "replace" in cfgs:
+            output_dir = os.path.join(options.output, exe, common.get_argfoldername(args), "traces")
+            if not os.path.exists(output_dir):
+                os.makedirs(output_dir)
+            print(output_dir)
+            replace.replace(run_dir, vfunc_inst_lists, output_dir, options)
+
+        if "uinst" in cfgs:
+            # count instructions
+            inst_dict_lists = []
+            inst_dict = dict()
+            pattern = '^kernel*'
+            for line in lines:
+                if re.search(pattern, line):
+                    inst_dict = uinst.uinst(run_dir, line[:-1])
+                    inst_dict_lists.append([line[:-1], inst_dict])
+                    #print line[:-1]
+
+            #analyze
             res = {
                     0: 0,
                     1: 0,
@@ -252,7 +307,7 @@ for bench in benchmarks:
                     if key in inst_type:
                         res[inst_type[key]] += inst_dict[key]
                     else:
-                        print key, "not listed"
+                        print(key, "not listed")
                         exit()
             print ('{},{},{},{}'.format(exe,res[0],res[1],res[2]))
 

@@ -7,7 +7,7 @@ from serial_file import serial_file
 from ring_buffer import ring_buffer
 
 def search(path, fname):
-    print path, fname
+    print(path, fname)
     # create pattern
     ptrns = []
     ptrn = pattern(8, "CALL.REL.NOINC", 7, "R[0-9]*")
@@ -22,7 +22,7 @@ def search(path, fname):
     buf = ring_buffer(100)
     #search
     res = traces()
-    f = open(path + '/' + fname, "r")
+    #f = open(path + '/' + fname, "r")
     sf = serial_file(path + '/' + fname, "r")
     line = sf.readline()
     while line:
@@ -46,7 +46,7 @@ def search(path, fname):
                 res.tail().insts -= len(inst)
 
             else:
-                print "Cannot find pattern in buf at line", sf.get_linenum()
+                print("Cannot find pattern in buf at line", sf.get_linenum())
                 exit()
         line = sf.readline()
 
@@ -54,7 +54,7 @@ def search(path, fname):
     return res
 
 def search_call(path, fname):
-    print path, fname
+    print(path, fname)
     # create pattern
     ptrns = []
     ptrn = pattern(8, "CALL.REL.NOINC", 7, "R[0-9]*")
@@ -65,7 +65,7 @@ def search_call(path, fname):
     buf = ring_buffer(100)
     #search
     res = traces()
-    f = open(path + '/' + fname, "r")
+    #f = open(path + '/' + fname, "r")
     sf = serial_file(path + '/' + fname, "r")
     line = sf.readline()
     while line:
@@ -81,7 +81,7 @@ def search_call(path, fname):
                 res.tail().func_list.append(inst)
                 res.tail().insts -= len(inst)
             else:
-                print "Warning: Cannot find pattern LOP.LUT in buf at line", sf.get_linenum()
+                print("Warning: Cannot find pattern LOP.LUT in buf at line", sf.get_linenum())
         line = sf.readline()
 
     sf.close()

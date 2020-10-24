@@ -17,7 +17,7 @@ class traces:
         if len(self.trace_list):
             return self.trace_list[-1]
         else:
-            print "No tail in traces"
+            print("No tail in traces")
             exit()
 
     def reset_iterator(self):
@@ -32,7 +32,7 @@ class traces:
             self.line_idx = -1
             return self.trace_list[self.trace_idx].insts
         else:
-            print "No next trace in traces"
+            print("No next trace in traces")
             exit()
 
     def get_vfc_number(self):
@@ -55,7 +55,7 @@ class traces:
                 self.func_idx += 1
                 self.line_idx = 0
             else:
-                print "next() does not exist"
+                print("next() does not exist")
                 exit()
 
     def get_next(self):
@@ -65,7 +65,7 @@ class traces:
             if self.func_idx + 1 < len(self.trace_list[self.trace_idx].func_list):
                 return self.trace_list[self.trace_idx].func_list[self.func_idx + 1][0]
             else:
-                print "get_next() does not exist"
+                print("get_next() does not exist")
 
     def compare_trace(self, num):
         if self.has_next():

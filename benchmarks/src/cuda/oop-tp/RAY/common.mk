@@ -445,7 +445,7 @@ $(OBJDIR)/%.cu.o : $(SRCDIR)%.cu $(CU_DEPS) makedirectories
 	$(VERBOSE)$(NVCC) --keep $(GENCODE_SM10) $(GENCODE_SM13) $(GENCODE_ARCH) $(GENCODE_SM20) $(GENCODE_SM30) $(GENCODE_SM35) $(GENCODE_SM50) $(GENCODE_SM60) $(GENCODE_SM62) $(GENCODE_SM70) $(NVCCFLAGS) $(SMVERSIONFLAGS) -o $@ -c $< 
 	$(PTX_GEN)/generator.py rayTracing.ptx
 	cp rayTracing.ptx_tp rayTracing.ptx
-	sh dryrun_10_1.sh
+	sh dryrun.sh
 	rm -f  *fatbin* *cudafe*  *cubin* *.o *.module_id *dlink*
 
 # Default arch includes gencode for sm_10, sm_20, sm_30, and other archs from GENCODE_ARCH declared in the makefile

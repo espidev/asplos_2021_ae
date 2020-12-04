@@ -313,7 +313,7 @@ heterosync:
 	mv cuda/heterosync/cuda/syncPrims/uvm/allSyncPrims-1kernel $(BINDIR)/$(BINSUBDIR)/
 
 
-oop_bench: dynasoar oop
+oop_bench: dynasoar oop oop-concord oop-mem oop-coal oop-tp
 
 dynasoar:
 	mkdir -p $(BINDIR)/$(BINSUBDIR)/

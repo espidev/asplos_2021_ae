@@ -111,10 +111,10 @@ for bench in benchmarks:
         for i in range(int(options.repeat_cycle)):
             if not options.disable_nvprof:
                 sh_contents += "\nexport CUDA_VERSION=\"" + cuda_version + "\"; export CUDA_VISIBLE_DEVICES=\"" + options.device_num +\
-                    "\" ; timeout 5m nvprof --unified-memory-profiling off --concurrent-kernels off --print-gpu-trace -u us --demangling off --csv --log-file " +\
+                    "\" ; nvprof --unified-memory-profiling off --concurrent-kernels off --print-gpu-trace -u us --demangling off --csv --log-file " +\
                     os.path.join(this_run_dir,logfile + ".cycle.{0}".format(i)) + " " + os.path.join(this_directory, edir,exe) + " " + str(args)
                 sh_contents += "\nexport CUDA_VERSION=\"" + cuda_version + "\"; export CUDA_VISIBLE_DEVICES=\"" + options.device_num +\
-                    "\" ; timeout 5m nvprof --concurrent-kernels off --print-gpu-trace --events elapsed_cycles_sm --demangling off --csv --log-file " +\
+                    "\" ; nvprof --concurrent-kernels off --print-gpu-trace --events elapsed_cycles_sm --demangling off --csv --log-file " +\
                     os.path.join(this_run_dir,logfile + ".elapsed_cycles_sm.{0}".format(i)) + " " + os.path.join(this_directory, edir,exe) + " " + str(args) + " "
             if options.nsight_profiler:
                 sh_contents += "\nexport CUDA_VERSION=\"" + cuda_version + "\"; export CUDA_VISIBLE_DEVICES=\"" + options.device_num +\

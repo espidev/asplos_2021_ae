@@ -12,10 +12,10 @@ oo-cuda:
     exec_dir: "../../benchmarks/bin/$CUDA_VERSION/release/"
     data_dirs: "../../benchmarks/data_dirs/"
     execs:
-        - trafficV:
-            -
         - game-of-life:
             - ./data/tm.pgm
+        - trafficV:
+            -
         - structureV:
             -
         - generationV:

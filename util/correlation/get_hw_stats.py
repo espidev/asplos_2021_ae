@@ -52,6 +52,8 @@ foutput_name = "hw_stats.csv"
 fsum_name = "hw_summary.csv"
 foutput = open(foutput_name, "w")
 fsum = open(fsum_name, "w")
+base = 0
+base_cycle = 0
 
 for bench in benchmarks:
     edir, ddir, exe, argslist = bench
@@ -63,7 +65,6 @@ for bench in benchmarks:
             #nvprof get stats
             this_pattern = this_run_dir + '/*.csv.elapsed_cycles_sm.0'
             for fname in glob.glob(this_pattern):
-                print(exe)
                 start = 0
                 kernel_name_idx = 0
                 exe_cycles = 0
@@ -72,17 +73,20 @@ for bench in benchmarks:
                 # kernel name needs wildcard match
                 kernel_pattern = options.kernels.replace(",","|")
                 for line in lines:
-                    csv_line = line.split("\"")
-                    if start == 0 and len(csv_line) > 5 and csv_line[1] == "Device":
+                    csv_line = line.split(',')
+                    if start == 0 and len(csv_line) > 5 and csv_line[0].replace("\"", "") == "Device":
                         start = 1
                         for idx,element in enumerate(csv_line):
-                            if element == "Kernel":
+                            if element.replace("\"", "") == "Kernel":
                                 kernel_name_idx = idx
                     elif start == 1:
                         if re.search(kernel_pattern, csv_line[kernel_name_idx]):
                             exe_cycles += float(csv_line[-1].replace(",", ""))
-                print(exe, exe_cycles)
-            
+                            #print(csv_line[kernel_name_idx],csv_line[-1])
+                if base == 0:
+                    base_cycle = exe_cycles
+                base = (base + 1) % 5
+                print('{} {}'.format(exe, base_cycle/exe_cycles))
         else:
             # nsight get stats
             if options.cycle:

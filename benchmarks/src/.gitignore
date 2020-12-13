@@ -1,8 +1,5 @@
 *.o
 *.ii
-*.ptx
-*.ptx_coal
-*.ptx_tp
 dryrun.sh
 cuda/rodinia/1.0-ft/LKYT/meschach_lib/libmeschach.a
 cuda/proxy-apps-doe/cns/cns_all
@@ -81,3 +78,5 @@ cuda/rodinia/3.1/cuda/leukocyte/meschach_lib/conftest.c
 cuda/rodinia/3.1/cuda/leukocyte/meschach_lib/macheps
 cuda/rodinia/3.1/cuda/leukocyte/meschach_lib/maxint
 cuda/rodinia/3.1/cuda/leukocyte/meschach_lib/meschach.a
+cuda/dynasoar/trafficV/traffic-coal/*.ptx
+cuda/dynasoar/trafficV/traffic-tp/*.ptx

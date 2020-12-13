@@ -78,5 +78,11 @@ cuda/rodinia/3.1/cuda/leukocyte/meschach_lib/conftest.c
 cuda/rodinia/3.1/cuda/leukocyte/meschach_lib/macheps
 cuda/rodinia/3.1/cuda/leukocyte/meschach_lib/maxint
 cuda/rodinia/3.1/cuda/leukocyte/meschach_lib/meschach.a
-cuda/dynasoar/trafficV/traffic-coal/*.ptx
-cuda/dynasoar/trafficV/traffic-tp/*.ptx
+cuda/dynasoar/trafficV/traffic-coal/*.ptx*
+cuda/dynasoar/trafficV/traffic-tp/*.ptx*
+cuda/dynasoar/game-of-lifeV/game-of-life-coal/*.ptx*
+cuda/dynasoar/game-of-lifeV/game-of-life-tp/*.ptx*
+cuda/dynasoar/structureV/structure-coal/*.ptx*
+cuda/dynasoar/structureV/structure-tp/*.ptx*
+cuda/dynasoar/generationV/generation-coal/*.ptx*
+cuda/dynasoar/generationV/generation-tp/*.ptx*

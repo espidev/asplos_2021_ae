@@ -86,3 +86,17 @@ cuda/dynasoar/structureV/structure-coal/*.ptx*
 cuda/dynasoar/structureV/structure-tp/*.ptx*
 cuda/dynasoar/generationV/generation-coal/*.ptx*
 cuda/dynasoar/generationV/generation-tp/*.ptx*
+cuda/oop-coal/BFS/*ptx*
+cuda/oop-coal/CC/*ptx*
+cuda/oop-coal/PR/*ptx*
+cuda/oop-coal/BFSV/*ptx*
+cuda/oop-coal/CCV/*ptx*
+cuda/oop-coal/PRV/*ptx*
+cuda/oop-coal/RAY/*ptx*
+cuda/oop-tp/BFS/*ptx*
+cuda/oop-tp/CC/*ptx*
+cuda/oop-tp/PR/*ptx*
+cuda/oop-tp/BFSV/*ptx*
+cuda/oop-tp/CCV/*ptx*
+cuda/oop-tp/PRV/*ptx*
+cuda/oop-tp/RAY/*ptx*

@@ -86,7 +86,10 @@ for bench in benchmarks:
                 if base == 0:
                     base_cycle = exe_cycles
                 base = (base + 1) % 5
-                print('{},{}'.format(exe, base_cycle/exe_cycles))
+                if exe_cycles == 0:
+                    print('{} retrieves zero cycles, could you send to me this file: \'{}\'?'.format(exe, fname))
+                else:
+                    print('{},{}'.format(exe, base_cycle/exe_cycles))
         else:
             # nsight get stats
             if options.cycle:

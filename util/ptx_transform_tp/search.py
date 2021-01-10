@@ -50,11 +50,11 @@ def search(fname):
                 temp = sf.readline()
                 buf.append(temp)
                 spl = clean_line(temp)
-                if spl[0] == 'st.global.u64' and spl[1] == '[temp_TP],':
+                if len(spl) >= 2 and spl[0] == 'st.global.u64' and spl[1] == '[temp_TP],':
                     ##error
                     f.write('%s' % line)
                     break
-                if  spl[0] == 'call':
+                elif len(spl) >= 2 and (spl[0] == 'call' or spl[0] == 'call.uni'):
                     temp = sf.readline()
                     to_replace=temp.replace(',','')
                     buf.append(dest_reg.replace(';',','))

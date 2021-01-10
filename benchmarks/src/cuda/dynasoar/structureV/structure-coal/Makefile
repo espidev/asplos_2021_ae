@@ -26,8 +26,8 @@ all: $(OBJS)
 	# Generate dryrun file
 	nvcc --keep --dryrun  $(NVOPTS) $(OPTS) $(CUOPTS) $(CUSRC) *.o $(INC) -o $(EXECUTABLE) $(LIBS) 2> dryrun.sh
 	# Remove all lines before/including cicc
-	sed -i '1,/cicc/d' dryrun.sh
-	sed -i '/cicc/d' dryrun.sh
+	sed -i '1,/cicc /d' dryrun.sh
+	sed -i '/cicc /d' dryrun.sh
 	# Remove rm line
 	sed -i '/rm/d' dryrun.sh
 	# Remove leading comment

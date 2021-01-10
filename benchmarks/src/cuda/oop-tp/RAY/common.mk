@@ -435,8 +435,8 @@ $(OBJDIR)/%.cu.o : $(SRCDIR)%.cu $(CU_DEPS) makedirectories
   # Generate dryrun file
 	$(VERBOSE)$(NVCC) --keep --dryrun $(GENCODE_SM10) $(GENCODE_SM13) $(GENCODE_ARCH) $(GENCODE_SM20) $(GENCODE_SM30) $(GENCODE_SM35) $(GENCODE_SM50) $(GENCODE_SM60) $(GENCODE_SM62) $(GENCODE_SM70) $(NVCCFLAGS) $(SMVERSIONFLAGS) -o $@ -c $< 2> dryrun.sh
 	# Remove all lines before/including cicc
-	sed -i '1,/cicc/d' dryrun.sh
-	sed -i '/cicc/d' dryrun.sh
+	sed -i '1,/cicc /d' dryrun.sh
+	sed -i '/cicc /d' dryrun.sh
 	# Remove rm line
 	sed -i '/rm/d' dryrun.sh
 	# Remove leading comment

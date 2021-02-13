@@ -54,6 +54,10 @@ foutput = open(foutput_name, "w")
 fsum = open(fsum_name, "w")
 base = 0
 base_cycle = 0
+num_tech = 5
+cycles = dict()
+for i in range(num_tech):
+    cycles[i] = [["", 0.0]]
 
 for bench in benchmarks:
     edir, ddir, exe, argslist = bench
@@ -82,14 +86,16 @@ for bench in benchmarks:
                     elif start == 1:
                         if re.search(kernel_pattern, csv_line[kernel_name_idx]):
                             exe_cycles += float(csv_line[-1].replace(",", ""))
-                            #print(csv_line[kernel_name_idx],csv_line[-1])
-                if base == 0:
-                    base_cycle = exe_cycles
-                base = (base + 1) % 5
                 if exe_cycles == 0:
                     print('{} retrieves zero cycles, could you send to me this file: \'{}\'?'.format(exe, fname))
                 else:
-                    print('{},{}'.format(exe, base_cycle/exe_cycles))
+                    cycles[base] = [exe, exe_cycles]
+                base = (base + 1) % num_tech
+                if base == 3:
+                    base_cycle = exe_cycles
+                if base == 0:
+                    for i in range(num_tech):
+                        print('{} {}'.format(cycles[i][0], base_cycle/cycles[i][1]))
         else:
             # nsight get stats
             if options.cycle:

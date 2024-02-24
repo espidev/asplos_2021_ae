@@ -122,6 +122,9 @@ for bench in benchmarks:
                         os.path.join(this_directory, edir,exe) + " " + str(args) + " | tee " +\
                         os.path.join(this_run_dir,logfile + ".gpc__cycles_elapsed.{0}".format(i))
 
+        print(sh_contents)
+
+        # creates script to run
         open(os.path.join(this_run_dir,"run.sh"), "w").write(sh_contents)
         if subprocess.call(['chmod', 'u+x', os.path.join(this_run_dir,"run.sh")]) != 0:
             exit("Error chmod runfile")

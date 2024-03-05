@@ -1,3 +1,9 @@
+##### Notes:
+
+- benchmarks/src/cuda/mem_alloc - sharedoa implementation
+- util/correlation/ptx_transform_coal - transform
+  - referenced from the Makefile for the tests and run on compiled ptx files
+
 # A simulation repository that compliments gpgpu-sim.
 
 ## Dependencies

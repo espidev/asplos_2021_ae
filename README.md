@@ -4,6 +4,94 @@
 - util/correlation/ptx_transform_coal - transform
   - referenced from the Makefile for the tests and run on compiled ptx files
 
+##### Replicated results:
+
+```
+oo-mem: # SharedOA
+---
+trafficV_MEM 0.95111054694
+trafficV_MEM 0.939164878346
+game-of-life_MEM 2.27308794503
+game-of-life_MEM 0.989057110857
+structureV_MEM 5.46435561047
+structureV_MEM 5.34090461294
+generationV_MEM 1.0
+generationV_MEM 1.04825452445
+BFS_MEM 0.903224180569
+BFS_MEM 1.0
+CC_MEM 0.920769764582
+CC_MEM 0.920036551008
+PR_MEM 1.36923776798
+PR_MEM 0.800048106744
+BFSV_MEM 1.50828824917
+BFSV_MEM 1.49173288163
+CCV_MEM 1.0
+CCV_MEM 0.99642412522
+PRV_MEM 1.00257136128
+PRV_MEM 1.0
+
+oo-tp: # TypePointer
+---
+
+
+oo-coal: # COAL (+ Shared OA)
+---
+trafficV_COAL 1.0
+game-of-life_COAL 0.884021490346
+structureV_COAL 2.5612721337
+generationV_COAL 0.836127929176
+BFS_COAL 0.991258090626
+CC_COAL 1.0
+PR_COAL 0.933539625958
+BFSV_COAL 3.57199050542
+CCV_COAL 1.01594653461
+PRV_COAL 1.11367038676
+
+
+oo-cuda: # CUDA
+---
+trafficV_TP 1.05230838224
+game-of-life_TP 1.0
+structureV_TP 2.76354775517
+generationV_TP 0.0227005812757
+BFS_TP 1.08547430938
+CC_TP 1.10057489704
+PR_TP 1.0
+BFSV_TP 4.37211339586
+CCV_TP 0.820414793045
+PRV_TP 1.2937287977
+
+oo-mem-2: # it's gonna be amazing
+---
+TODO
+
+---
+```
+
+#### Creating benchmarks:
+
+- Create a new folder in the benchmarks/src/cuda folder
+- Copy/create some benchmarks into that folder
+- Change each benchmark's Makefile to ensure the BASEEXE is different
+- Edit src/cuda/Makefile to add the instructions to build your new folder
+- Edit util/job_launching/apps/all-apps.list to add the app
+- Edit util/job_launching/apps/define-oop-apps.yml to add the app (be sure to add it in the oo-get-stat section as well!)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ---
 
 Below is the README from asplos21_ae_script

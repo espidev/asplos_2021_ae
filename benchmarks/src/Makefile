@@ -313,7 +313,7 @@ heterosync:
 	mv cuda/heterosync/cuda/syncPrims/uvm/allSyncPrims-1kernel $(BINDIR)/$(BINSUBDIR)/
 
 
-oop_bench: dynasoar oop oop-concord oop-mem oop-coal oop-tp
+oop_bench: dynasoar oop oop-concord oop-mem oop-coal oop-tp oop-mem-2
 
 dynasoar:
 	mkdir -p $(BINDIR)/$(BINSUBDIR)/
@@ -349,6 +349,17 @@ oop-mem:
 	$(SETENV) make $(MAKE_ARGS) -C cuda/oop-mem/CC
 	$(SETENV) make $(MAKE_ARGS) -C cuda/oop-mem/CCV
 	$(SETENV) make $(MAKE_ARGS) noinline=$(noinline) -C cuda/oop-mem/RAY
+
+oop-mem-2:
+	mkdir -p $(BINDIR)/$(BINSUBDIR)/
+	# $(SETENV) make $(MAKE_ARGS) -C cuda/oop-mem-2.0/ubench
+	$(SETENV) make $(MAKE_ARGS) -C cuda/oop-mem-2.0/PR
+	$(SETENV) make $(MAKE_ARGS) -C cuda/oop-mem-2.0/PRV
+	$(SETENV) make $(MAKE_ARGS) -C cuda/oop-mem-2.0/BFS
+	$(SETENV) make $(MAKE_ARGS) -C cuda/oop-mem-2.0/BFSV
+	$(SETENV) make $(MAKE_ARGS) -C cuda/oop-mem-2.0/CC
+	$(SETENV) make $(MAKE_ARGS) -C cuda/oop-mem-2.0/CCV
+	$(SETENV) make $(MAKE_ARGS) noinline=$(noinline) -C cuda/oop-mem-2.0/RAY
 
 oop-coal:
 	mkdir -p $(BINDIR)/$(BINSUBDIR)/
@@ -454,6 +465,17 @@ clean_oop-mem:
 	$(SETENV) make $(MAKE_ARGS) clean -C cuda/oop-mem/CC
 	$(SETENV) make $(MAKE_ARGS) clean -C cuda/oop-mem/CCV
 	$(SETENV) make $(MAKE_ARGS) clean noinline=$(noinline) -C cuda/oop-mem/RAY
+
+clean_oop-mem-2:
+	mkdir -p $(BINDIR)/$(BINSUBDIR)/
+	# $(SETENV) make $(MAKE_ARGS) clean -C cuda/oop-mem-2.0/ubench
+	$(SETENV) make $(MAKE_ARGS) clean -C cuda/oop-mem-2.0/PR
+	$(SETENV) make $(MAKE_ARGS) clean -C cuda/oop-mem-2.0/PRV
+	$(SETENV) make $(MAKE_ARGS) clean -C cuda/oop-mem-2.0/BFS
+	$(SETENV) make $(MAKE_ARGS) clean -C cuda/oop-mem-2.0/BFSV
+	$(SETENV) make $(MAKE_ARGS) clean -C cuda/oop-mem-2.0/CC
+	$(SETENV) make $(MAKE_ARGS) clean -C cuda/oop-mem-2.0/CCV
+	$(SETENV) make $(MAKE_ARGS) clean noinline=$(noinline) -C cuda/oop-mem-2.0/RAY
 
 clean_oop:
 	$(SETENV) make $(MAKE_ARGS) -C cuda/oop clean

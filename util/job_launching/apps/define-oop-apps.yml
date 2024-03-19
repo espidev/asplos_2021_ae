@@ -89,6 +89,34 @@ oo-mem:
         - RAY_MEM:
             - 64 64 1000 2397152
 
+oo-mem-2:
+    exec_dir: "../../benchmarks/bin/$CUDA_VERSION/release/"
+    data_dirs: "../../benchmarks/data_dirs/"
+    execs:
+        # We don't have these implemented yet...
+        # - trafficV_MEM_2:
+        #     - 2397152
+        # - game-of-life_MEM_2:
+        #    - ./data/tm.pgm 2397152
+        # - structureV_MEM_2:
+        #     - 2397152
+        # - generationV_MEM_2:
+        #     - 2397152
+        - BFS_MEM_2:
+            - ./data/pannotia/pagerank/data/coAuthorsDBLP.graph 1 2397152
+        - CC_MEM_2:
+            - ./data/pannotia/pagerank/data/coAuthorsDBLP.graph 1 2397152
+        - PR_MEM_2:
+            - ./data/pannotia/pagerank/data/coAuthorsDBLP.graph 1 2397152
+        - BFSV_MEM_2:
+            - ./data/pannotia/pagerank/data/coAuthorsDBLP.graph 1 2397152
+        - CCV_MEM_2:
+            - ./data/pannotia/pagerank/data/coAuthorsDBLP.graph 1 2397152
+        - PRV_MEM_2:
+            - ./data/pannotia/pagerank/data/coAuthorsDBLP.graph 1 2397152
+        - RAY_MEM_2:
+            - 64 64 1000 2397152
+
 oo-coal:
     exec_dir: "../../benchmarks/bin/$CUDA_VERSION/release/"
     data_dirs: "../../benchmarks/data_dirs/"
@@ -256,6 +284,19 @@ oo-get-stat:
         - RAY_COAL:
             - 64 64 1000 2397152
         - RAY_TP:
+            - 64 64 1000 2397152
+        # our custom ones
+        - CC_MEM_2:
+            - ./data/pannotia/pagerank/data/coAuthorsDBLP.graph 1 2397152
+        - PR_MEM_2:
+            - ./data/pannotia/pagerank/data/coAuthorsDBLP.graph 1 2397152
+        - BFSV_MEM_2:
+            - ./data/pannotia/pagerank/data/coAuthorsDBLP.graph 1 2397152
+        - CCV_MEM_2:
+            - ./data/pannotia/pagerank/data/coAuthorsDBLP.graph 1 2397152
+        - PRV_MEM_2:
+            - ./data/pannotia/pagerank/data/coAuthorsDBLP.graph 1 2397152
+        - RAY_MEM_2:
             - 64 64 1000 2397152
 
 oo-tp-hw:

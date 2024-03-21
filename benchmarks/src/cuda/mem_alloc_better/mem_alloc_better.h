@@ -30,6 +30,8 @@ union header {
 };
 typedef union header header_t;
 class obj_alloc;
+
+// Allocates a contiguous set of memory for the segment tree
 class mem_alloc {
     unsigned long long total_size;
     header_t *head;
@@ -172,7 +174,11 @@ class range_bucket {
         printf("total_count %d , total %d , type_size %d \n", total_count,
                _total, type_size);
     }
+    // get next spot in range bucket that can place an object
     void *get_next_mem(unsigned num_of_obj = 1) {
+
+        // TODO: IMPLEMENT HERE -> insert into our map the pointer
+
         void *ptr = (void *)((char *)mem_ptr + type_size * count);
         count += num_of_obj;
         if (DEBUG) printf("count:%u\n", count);
@@ -183,31 +189,32 @@ class range_bucket {
     void *get_range_end() {
         return (void *)((char *)mem_ptr + type_size * total_count);
     }
-    bool is_contiguous_chunk(void *new_mem_ptr) {
-        printf(
-            "extend old_mem : %p , new_mem : %p, diff: %p , total_size : "
-            "%x "
-            "total_size_withH : %x expect : %p diff %p \n",
-            mem_ptr, new_mem_ptr, (char *)new_mem_ptr - (char *)mem_ptr,
-            type_size * (total_count),
-            type_size * (total_count) + sizeof(header_t),
-            (char *)mem_ptr + type_size * (total_count) + sizeof(header_t),
-            (char *)new_mem_ptr - (char *)(mem_ptr + type_size * (total_count) +
-                                           sizeof(header_t)));
-        if (((char *)new_mem_ptr -
-             (char *)(mem_ptr + type_size * (total_count) + sizeof(header_t))) %
-                sizeof(header_t) ==
-            0)
-            return true;
+    // TODO: I don't think these are used
+    // bool is_contiguous_chunk(void *new_mem_ptr) {
+    //     printf(
+    //         "extend old_mem : %p , new_mem : %p, diff: %p , total_size : "
+    //         "%x "
+    //         "total_size_withH : %x expect : %p diff %p \n",
+    //         mem_ptr, new_mem_ptr, (char *)new_mem_ptr - (char *)mem_ptr,
+    //         type_size * (total_count),
+    //         type_size * (total_count) + sizeof(header_t),
+    //         (char *)mem_ptr + type_size * (total_count) + sizeof(header_t),
+    //         (char *)new_mem_ptr - (char *)(mem_ptr + type_size * (total_count) +
+    //                                        sizeof(header_t)));
+    //     if (((char *)new_mem_ptr -
+    //          (char *)(mem_ptr + type_size * (total_count) + sizeof(header_t))) %
+    //             sizeof(header_t) ==
+    //         0)
+    //         return true;
 
-        return false;
-    }
-    bool extend_mem_chunk(void *new_mem_ptr, unsigned new_total) {
-        if (!is_contiguous_chunk(new_mem_ptr)) return false;
-        total_count += new_total;
-        printf("FUCKK\n");
-        return true;
-    }
+    //     return false;
+    // }
+    // bool extend_mem_chunk(void *new_mem_ptr, unsigned new_total) {
+    //     if (!is_contiguous_chunk(new_mem_ptr)) return false;
+    //     total_count += new_total;
+    //     printf("FUCKK\n");
+    //     return true;
+    // }
     bool is_full() {
         if (DEBUG)
             printf("count:%u %u %d \n", count, total_count,
@@ -219,6 +226,7 @@ class range_bucket {
     }
 };
 
+// TODO: what is the actual length of a function?
 #define FUNC_LEN 30
 class obj_info_tuble {
   public:
@@ -246,6 +254,8 @@ __global__ void dump_vtable(void **vtable, void **gpu_ptr) {
         // printf("kernal i :%d %p----------------\n", i, mVtable[0][0][i]);
     }
 }
+
+// Wrap a type when stored in the segment tree
 unsigned long INIT_CHUNK_SIZE = 512 * 1024;
 class TypeContainer {
   public:
@@ -430,6 +440,7 @@ class obj_alloc {
 
         return hash;
     }
+    // function called to allocate space, or use calloc!
     template <class myType>
     void *my_new() {
         uint32_t hash = hash_str_uint32(typeid(myType).name());
@@ -509,8 +520,6 @@ class obj_alloc {
 
     void create_tree(int level, unsigned start, unsigned end) {
         if (level == -1) return;
-
-        // printf("startt %d end %d level %d %\n", start, end, level);
         for (int i = start; i < end; i++) {
             if (this->range_tree[2 * i + 2].range_end)
                 this->range_tree[i].set_range(
@@ -520,9 +529,6 @@ class obj_alloc {
                 this->range_tree[i].set_range(
                     this->range_tree[2 * i + 1].range_start,
                     this->range_tree[2 * i + 1].range_end);
-            //   this->range_tree[unsigned((i - 1) / 2)].set_range(
-            //       this->range_tree[i].range_start,
-            //       this->range_tree[i].range_end);
         }
         create_tree(level - 1, (1 << (level - 1)) - 1, start);
     }
@@ -539,42 +545,14 @@ class obj_alloc {
             printf("tree %d number or ranges %d   alloc_size %d\n", tree_size,
                    num_of_ranges, tree_alloc_size);
         create_table();
-        // for (int i = 0; i < this->num_of_ranges; i++) {
-        //     for (int k = 0; k < 10; k++)
-        //         printf("1- %d: %p %p   \n", i, this->table[i].range_start,
-        //                this->table[i].func[k]);
-        // }
         sort_table();
-        // for (int i = 0; i < this->num_of_ranges; i++) {
-        //     for (int k = 0; k < 10; k++)
-        //         printf("2- %d: %p %p   \n", i, this->table[i].range_start,
-        //                this->table[i].func[k]);
-        // }
         range_tree[tree_size - 1].size = power2 - 1;
         range_tree[tree_size - 1].size2 = power2 + num_of_ranges - 1;
         int j = 0;
-        // for (int i = 0; i < this->num_of_ranges; i++) {
-        //     for (int k = 0; k < 4; k++)
-        //         printf("b3- %d: %p %p   \n", i, this->table[i].range_start,
-        //                this->table[i].func[k]);
-        // }
         for (int i = power2 - 1; i < power2 + num_of_ranges - 1; j++, i++) {
-            // printf("%d\n", i);
-            // for (int i = 0; i < this->num_of_ranges; i++) {
-            //     for (int k = 0; k < 4; k++)
-            //         printf("b3- %d: %p %p   \n", i,
-            //         this->table[i].range_start,
-            //                this->table[i].func[k]);
-            // }
             range_tree[i].set_range(this->table[j].range_start,
                                     this->table[j].range_end);
             range_tree[i].tuble = &(this->table[j]);
-            // for (int i = 0; i < this->num_of_ranges; i++) {
-            //     for (int k = 0; k < 4; k++)
-            //         printf("a3- %d: %p %p   \n", i,
-            //         this->table[i].range_start,
-            //                this->table[i].func[k]);
-            // }
         }
 
         int mm = power2 + num_of_ranges - 2;
@@ -588,51 +566,33 @@ class obj_alloc {
             range_tree[i].mid = 0;
             range_tree[i].tuble = (0);
         }
-        // for (int i = 0; i < this->num_of_ranges; i++) {
-        //     for (int k = 0; k < 10; k++) {
-        //         printf("33%d: %p %p   \n", i, this->table[i].range_start,
-        //                this->table[i].func[k]);
-        //     }
-        // }
         j = 0;
-        // for (int i = power2 - 1; i < power2 + num_of_ranges - 1; j++, i++) {
-        //     printf("%d\n", i);
-
-        //     printf("%p ---------eqwewq-\n", range_tree[i].tuble->func[0]);
-        // }
         create_tree(level - 1, (1 << (level - 1)) - 1,
                     (1 << (level - 1)) - 1 + (1 << (level - 1)));
         if (1)
             for (int i = 0; i < tree_size; i++) {
                 printf("%d: %p %p %p  \n", i, this->range_tree[i].range_start,
                        this->range_tree[i].range_end, this->range_tree[i].mid);
-                // obj_info_tuble *tuble = this->range_tree[i].tuble;
-                // void **vtable;
-                // if (0) {
-                //   vtable = &this->range_tree[i].tuble->func[0];
-                //   for (int ii = 0; ii < FUNC_LEN; ii++) {
-                //     printf("vtbale[%d]:%p\n", ii, vtable[ii]);
-                //   }
-                // }
             }
     }
-    __host__ __device__ void **get_vfunc(void *obj) {
-        unsigned ptr = 0;
-        unsigned next_ptr = 0;
-        while (true) {
-            if (obj > range_tree[ptr].mid)
-                next_ptr = 2 * ptr + 1;
+    // i don't think this is used anywhere
+    // __host__ __device__ void **get_vfunc(void *obj) {
+    //     unsigned ptr = 0;
+    //     unsigned next_ptr = 0;
+    //     while (true) {
+    //         if (obj > range_tree[ptr].mid)
+    //             next_ptr = 2 * ptr + 1;
 
-            else
-                next_ptr = 2 * ptr + 2;
+    //         else
+    //             next_ptr = 2 * ptr + 2;
 
-            if (next_ptr >= tree_size) return &(range_tree[ptr].tuble->func[0]);
-            if (DEBUG)
-                printf("mid %p %d %d tree : %d \n", range_tree[ptr].mid, ptr,
-                       next_ptr, tree_size);
-            ptr = next_ptr;
-        }
-    }
+    //         if (next_ptr >= tree_size) return &(range_tree[ptr].tuble->func[0]);
+    //         if (DEBUG)
+    //             printf("mid %p %d %d tree : %d \n", range_tree[ptr].mid, ptr,
+    //                    next_ptr, tree_size);
+    //         ptr = next_ptr;
+    //     }
+    // }
 
     void type_vptr_patch(list<range_bucket *> *list_ptr, void *vptr) {
         list<range_bucket *>::iterator iter;
@@ -673,36 +633,39 @@ __host__ __device__ bool inRange(void *obj, range_tree_node *range_tree,
     return false;
 }
 
-__host__ __device__ void **get_vfunc_tree(void *obj,
-                                          range_tree_node *range_tree,
-                                          unsigned tree_size) {
-    unsigned ptr = 0;
-    unsigned next_ptr = 0;
-    while (true) {
-        // printf("looking %p ----- %d %d\n", obj, ptr , next_ptr);
-        if (obj < range_tree[ptr].mid)
-            next_ptr = 2 * ptr + 1;
+// i don't think this is necessary
+// __host__ __device__ void **get_vfunc_tree(void *obj,
+//                                           range_tree_node *range_tree,
+//                                           unsigned tree_size) {
+//     unsigned ptr = 0;
+//     unsigned next_ptr = 0;
+//     while (true) {
+//         // printf("looking %p ----- %d %d\n", obj, ptr , next_ptr);
+//         if (obj < range_tree[ptr].mid)
+//             next_ptr = 2 * ptr + 1;
 
-        else
-            next_ptr = 2 * ptr + 2;
+//         else
+//             next_ptr = 2 * ptr + 2;
 
-        if (next_ptr >= tree_size) {
-            // printf("Found %p ----- %d %d\n", obj, ptr, next_ptr);
-            return &(range_tree[ptr].tuble->func[0]);
-        }
-        if (range_tree[next_ptr].mid == 0) next_ptr = 2 * ptr + 1;
-        if (DEBUG)
-            printf("mid %p %d %d tree : %d \n", range_tree[ptr].mid, ptr,
-                   next_ptr, tree_size);
-        ptr = next_ptr;
-    }
-}
+//         if (next_ptr >= tree_size) {
+//             // printf("Found %p ----- %d %d\n", obj, ptr, next_ptr);
+//             return &(range_tree[ptr].tuble->func[0]);
+//         }
+//         if (range_tree[next_ptr].mid == 0) next_ptr = 2 * ptr + 1;
+//         if (DEBUG)
+//             printf("mid %p %d %d tree : %d \n", range_tree[ptr].mid, ptr,
+//                    next_ptr, tree_size);
+//         ptr = next_ptr;
+//     }
+// }
 
+// TODO: unused, is from original sharedoa implementation
 __host__ __device__ void **get_vfunc_tree_2(void *obj,
                                             range_tree_node *range_tree,
                                             unsigned tree_size) {
     unsigned ptr = 0;
     unsigned next_ptr = 0;
+    // binary search for the correct range
     while (true) {
         // printf("looking %p ----- %d %d\n", obj, ptr , next_ptr);
         next_ptr = 2 * ptr + 1;
@@ -719,6 +682,7 @@ __host__ __device__ void **get_vfunc_tree_2(void *obj,
     }
 }
 
+// TODO: unused, not sure what it's for, just loop through i guess?
 __device__ void **get_vfunc_itr(void *obj, range_tree_node *range_tree,
                                 unsigned tree_size) {
     int idx = range_tree[tree_size - 1].size;
@@ -740,8 +704,19 @@ __device__ void **get_vfunc_itr(void *obj, range_tree_node *range_tree,
     assert(false);
     return NULL;
 }
+
+// TODO: our implementation!
+// -> try to just use a hashmap from pointer -> allocated parts in the tree
+__device__ void **get_vfunc_map(void *obj, range_tree_node *range_tree, unsigned tree_size){
+
+
+    return NULL;
+}
+
+// TODO: our new implementation changes this
 __device__ void **get_vfunc(void *obj, range_tree_node *range_tree,
                             unsigned tree_size) {
-    return get_vfunc_tree_2(obj, range_tree, tree_size);
-    return get_vfunc_itr(obj, range_tree, tree_size);
+    // return get_vfunc_tree_2(obj, range_tree, tree_size);
+    // return get_vfunc_itr(obj, range_tree, tree_size);
+    return get_vfunc_map(obj, range_tree, tree_size);
 }

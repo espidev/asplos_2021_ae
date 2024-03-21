@@ -1,8 +1,13 @@
 ##### Notes:
 
 - benchmarks/src/cuda/mem_alloc - sharedoa implementation
-- util/correlation/ptx_transform_coal - transform
+  - obj_alloc contains the main range tree
+  - each of the benchmarks manually initialize this data structure
+- util/ptx_transform_coal - transform
   - referenced from the Makefile for the tests and run on compiled ptx files
+- util/coal_header_gen - actually does the insertion of sharedoa into vfunc calls
+  - inserts vtable = get_vfunc(ptr, range_tree, tree_size)
+  - note: range_tree and tree_size are defined in all of the benchmarks
 
 ##### Replicated results:
 

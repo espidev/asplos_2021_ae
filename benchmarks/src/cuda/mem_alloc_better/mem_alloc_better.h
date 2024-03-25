@@ -503,24 +503,45 @@ class obj_alloc {
         }
         return i;
     }
+
+    void sort_table() {
+        int min;
+        int size = this->num_of_ranges;
+        obj_info_tuble temp;
+        for (int i = 0; i < size; i++) {
+            min = i;
+
+            for (int j = i + 1; j < size; j++) {
+                if (table[min].range_start > table[j].range_start) {
+                    min = j;
+                }
+            }
+
+            memcpy(&temp, &table[i], sizeof(obj_info_tuble));
+            memcpy(&table[i], &table[min], sizeof(obj_info_tuble));
+            memcpy(&table[min], &temp, sizeof(obj_info_tuble));
+        }
+    }
+
     void create_table() {
         // not really a table, just basically an array of all the types
         this->table =
             (obj_info_tuble *)mem->calloc<obj_info_tuble>(num_of_ranges);
         create_table(this->table);
 
+        // TODO: do we need sorting? maybe implement binary search
+        sort_table();
+
         // wrap the function table with a size
-        vfunc_table_obj = new vfunc_table();
+        vfunc_table_obj = (vfunc_table *) mem->calloc<vfunc_table>(1);
         vfunc_table_obj->table = this->table;
         vfunc_table_obj->size = this->num_of_ranges;
-
-        // TODO: do we need sorting? maybe implement binary search
-        // sort_table();
 
         for (int i = 0; i < this->num_of_ranges; i++) {
             printf("%d: %p %p   \n", i, this->table[i].range_start,
                    this->table[i].func[0]);
         }
+        printf("vfunc table size: %d \n", vfunc_table_obj->size);
         printf("#############\n");
     }
 
@@ -550,24 +571,6 @@ class obj_alloc {
     //     printf("#############\n");
     // }
 
-    // void sort_table() {
-    //     int min;
-    //     int size = this->num_of_ranges;
-    //     obj_info_tuble temp;
-    //     for (int i = 0; i < size; i++) {
-    //         min = i;
-
-    //         for (int j = i + 1; j < size; j++) {
-    //             if (table[min].range_start > table[j].range_start) {
-    //                 min = j;
-    //             }
-    //         }
-
-    //         memcpy(&temp, &table[i], sizeof(obj_info_tuble));
-    //         memcpy(&table[i], &table[min], sizeof(obj_info_tuble));
-    //         memcpy(&table[min], &temp, sizeof(obj_info_tuble));
-    //     }
-    // }
 
     // TODO: removed old tree implementation
     // void create_tree(int level, unsigned start, unsigned end) {
@@ -758,20 +761,19 @@ class obj_alloc {
 //     return NULL;
 // }
 
-__device__ void **get_vfunc_type(void *obj, vfunc_table *vfunc_table_obj) {
+__host__ __device__ void **get_vfunc_type(void *obj, vfunc_table *vfunc_table_obj) {
     // unsigned long type;
 
     // type = GETTYPE(obj);
     // return &(vfun_table[type].func[0]);
 
     // just loop over all the types
-    // HACK: we assume that we will find the object...
 
-    // printf("THIS IS A TEST2 <<<<<<<<<<<<<<<<<<<<<<<<<<<<<< \n");
+    // printf("THIS IS A TEST2 %d \n", vfunc_table_obj->size);
 
     for (int i = 0; i < vfunc_table_obj->size; i++) { // TODO
-        obj_info_tuble &element = vfunc_table_obj->table[i];
         // printf("URP\n");
+        obj_info_tuble &element = vfunc_table_obj->table[i];
         // printf("%p: [%p - %p] ?\n", obj, element.range_start, element.range_end);
         if (obj >= element.range_start && obj <= element.range_end) {
             // printf("FOUND\n");
@@ -781,6 +783,10 @@ __device__ void **get_vfunc_type(void *obj, vfunc_table *vfunc_table_obj) {
 
     printf("OOPS\n");
     return NULL;
+}
+
+__device__ void **get_vfunc_table(void *obj, vfunc_table *vfunc_table_obj) {
+    return get_vfunc_type(obj, vfunc_table_obj);
 }
 
 // // TODO: our implementation!

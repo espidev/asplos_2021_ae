@@ -270,7 +270,7 @@ int main(int argc, char **argv) {
     printf("init time = %lf ms\n", (timer5 - timer3) * 1000);
     printf("Fixing pointers \n");
 
-    my_obj_alloc.create_table();
+    // my_obj_alloc.create_table();
     vfun_table = my_obj_alloc.get_vfun_table();
 
     // Run BFS for some iter. TO: convergence determination

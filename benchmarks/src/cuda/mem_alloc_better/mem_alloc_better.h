@@ -771,7 +771,7 @@ __host__ __device__ void **get_vfunc_type(void *obj, vfunc_table *vfunc_table_ob
 
     // printf("THIS IS A TEST2 %d \n", vfunc_table_obj->size);
 
-    for (int i = 0; i < vfunc_table_obj->size; i++) { // TODO
+    for (int i = 0; i < vfunc_table_obj->size; i++) {
         // printf("URP\n");
         obj_info_tuble &element = vfunc_table_obj->table[i];
         // printf("%p: [%p - %p] ?\n", obj, element.range_start, element.range_end);
@@ -786,6 +786,10 @@ __host__ __device__ void **get_vfunc_type(void *obj, vfunc_table *vfunc_table_ob
 }
 
 __device__ void **get_vfunc_table(void *obj, vfunc_table *vfunc_table_obj) {
+    return get_vfunc_type(obj, vfunc_table_obj);
+}
+
+__device__ void **get_vfunc(void *obj, vfunc_table *vfunc_table_obj) {
     return get_vfunc_type(obj, vfunc_table_obj);
 }
 

@@ -32,8 +32,8 @@ oo-cuda:
             - ./data/pannotia/pagerank/data/coAuthorsDBLP.graph 1
         - PRV:
             - ./data/pannotia/pagerank/data/coAuthorsDBLP.graph 1
-        - RAY:
-            - 64 64 1000
+        # - RAY:
+        #     - 64 64 1000
 
 oo-concord:
     exec_dir: "../../benchmarks/bin/$CUDA_VERSION/release/"
@@ -59,8 +59,8 @@ oo-concord:
             - ./data/pannotia/pagerank/data/coAuthorsDBLP.graph 1
         - PRV_CONCORD:
             - ./data/pannotia/pagerank/data/coAuthorsDBLP.graph 1
-        - RAY_CONCORD:
-            - 64 64 1000
+        # - RAY_CONCORD:
+        #     - 64 64 1000
 
 oo-mem:
     exec_dir: "../../benchmarks/bin/$CUDA_VERSION/release/"
@@ -86,8 +86,8 @@ oo-mem:
             - ./data/pannotia/pagerank/data/coAuthorsDBLP.graph 1 2397152
         - PRV_MEM:
             - ./data/pannotia/pagerank/data/coAuthorsDBLP.graph 1 2397152
-        - RAY_MEM:
-            - 64 64 1000 2397152
+        # - RAY_MEM:
+        #     - 64 64 1000 2397152
 
 oo-mem-2:
     exec_dir: "../../benchmarks/bin/$CUDA_VERSION/release/"
@@ -114,8 +114,8 @@ oo-mem-2:
             - ./data/pannotia/pagerank/data/coAuthorsDBLP.graph 1 2397152
         - PRV_MEM_2:
             - ./data/pannotia/pagerank/data/coAuthorsDBLP.graph 1 2397152
-        - RAY_MEM_2:
-            - 64 64 1000 2397152
+        # - RAY_MEM_2:
+        #     - 64 64 1000 2397152
 
 oo-coal:
     exec_dir: "../../benchmarks/bin/$CUDA_VERSION/release/"
@@ -141,8 +141,8 @@ oo-coal:
             - ./data/pannotia/pagerank/data/coAuthorsDBLP.graph 1 2397152
         - PRV_COAL:
             - ./data/pannotia/pagerank/data/coAuthorsDBLP.graph 1 2397152
-        - RAY_COAL:
-            - 64 64 1000 2397152
+        # - RAY_COAL:
+        #     - 64 64 1000 2397152
 
 oo-tp:
     exec_dir: "../../benchmarks/bin/$CUDA_VERSION/release/"
@@ -168,8 +168,8 @@ oo-tp:
             - ./data/pannotia/pagerank/data/coAuthorsDBLP.graph 1 2397152
         - PRV_TP:
             - ./data/pannotia/pagerank/data/coAuthorsDBLP.graph 1 2397152
-        - RAY_TP:
-            - 64 64 1000 2397152
+        # - RAY_TP:
+        #     - 64 64 1000 2397152
 
 oo-get-stat:
     exec_dir: "../../benchmarks/bin/$CUDA_VERSION/release/"
@@ -275,16 +275,16 @@ oo-get-stat:
             - ./data/pannotia/pagerank/data/coAuthorsDBLP.graph 1 2397152
         - PRV_TP:
             - ./data/pannotia/pagerank/data/coAuthorsDBLP.graph 1 2397152
-        - RAY:
-            - 64 64 1000
-        - RAY_CONCORD:
-            - 64 64 1000
-        - RAY_MEM:
-            - 64 64 1000 2397152
-        - RAY_COAL:
-            - 64 64 1000 2397152
-        - RAY_TP:
-            - 64 64 1000 2397152
+        # - RAY:
+        #     - 64 64 1000
+        # - RAY_CONCORD:
+        #     - 64 64 1000
+        # - RAY_MEM:
+        #     - 64 64 1000 2397152
+        # - RAY_COAL:
+        #     - 64 64 1000 2397152
+        # - RAY_TP:
+        #     - 64 64 1000 2397152
         # our custom ones
         - CC_MEM_2:
             - ./data/pannotia/pagerank/data/coAuthorsDBLP.graph 1 2397152

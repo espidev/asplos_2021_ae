@@ -337,7 +337,7 @@ oop-concord:
 	$(SETENV) make $(MAKE_ARGS) -C cuda/oop-concord/BFSV
 	$(SETENV) make $(MAKE_ARGS) -C cuda/oop-concord/CC
 	$(SETENV) make $(MAKE_ARGS) -C cuda/oop-concord/CCV
-	$(SETENV) make $(MAKE_ARGS) noinline=$(noinline) -C cuda/oop-concord/RAY
+	# $(SETENV) make $(MAKE_ARGS) noinline=$(noinline) -C cuda/oop-concord/RAY
 
 oop-mem:
 	mkdir -p $(BINDIR)/$(BINSUBDIR)/
@@ -348,7 +348,7 @@ oop-mem:
 	$(SETENV) make $(MAKE_ARGS) -C cuda/oop-mem/BFSV
 	$(SETENV) make $(MAKE_ARGS) -C cuda/oop-mem/CC
 	$(SETENV) make $(MAKE_ARGS) -C cuda/oop-mem/CCV
-	$(SETENV) make $(MAKE_ARGS) noinline=$(noinline) -C cuda/oop-mem/RAY
+	# $(SETENV) make $(MAKE_ARGS) noinline=$(noinline) -C cuda/oop-mem/RAY
 
 oop-mem-2:
 	mkdir -p $(BINDIR)/$(BINSUBDIR)/
@@ -359,7 +359,7 @@ oop-mem-2:
 	$(SETENV) make $(MAKE_ARGS) -C cuda/oop-mem-2.0/BFSV
 	$(SETENV) make $(MAKE_ARGS) -C cuda/oop-mem-2.0/CC
 	$(SETENV) make $(MAKE_ARGS) -C cuda/oop-mem-2.0/CCV
-	$(SETENV) make $(MAKE_ARGS) noinline=$(noinline) -C cuda/oop-mem-2.0/RAY
+	# $(SETENV) make $(MAKE_ARGS) noinline=$(noinline) -C cuda/oop-mem-2.0/RAY
 
 oop-coal:
 	mkdir -p $(BINDIR)/$(BINSUBDIR)/
@@ -370,7 +370,7 @@ oop-coal:
 	$(SETENV) make $(MAKE_ARGS) -C cuda/oop-coal/BFSV
 	$(SETENV) make $(MAKE_ARGS) -C cuda/oop-coal/CC
 	$(SETENV) make $(MAKE_ARGS) -C cuda/oop-coal/CCV
-	$(SETENV) make $(MAKE_ARGS) noinline=$(noinline) -C cuda/oop-coal/RAY
+	# $(SETENV) make $(MAKE_ARGS) noinline=$(noinline) -C cuda/oop-coal/RAY
 
 oop-tp:
 	mkdir -p $(BINDIR)/$(BINSUBDIR)/
@@ -381,7 +381,7 @@ oop-tp:
 	$(SETENV) make $(MAKE_ARGS) -C cuda/oop-tp/BFSV
 	$(SETENV) make $(MAKE_ARGS) -C cuda/oop-tp/CC
 	$(SETENV) make $(MAKE_ARGS) -C cuda/oop-tp/CCV
-	$(SETENV) make $(MAKE_ARGS) noinline=$(noinline) -C cuda/oop-tp/RAY
+	# $(SETENV) make $(MAKE_ARGS) noinline=$(noinline) -C cuda/oop-tp/RAY
 
 oop-ideal:
 	mkdir -p $(BINDIR)/$(BINSUBDIR)/
@@ -392,7 +392,7 @@ oop-ideal:
 	$(SETENV) make $(MAKE_ARGS) -C cuda/oop-ideal/BFSV
 	$(SETENV) make $(MAKE_ARGS) -C cuda/oop-ideal/CC
 	$(SETENV) make $(MAKE_ARGS) -C cuda/oop-ideal/CCV
-	$(SETENV) make $(MAKE_ARGS) noinline=$(noinline) -C cuda/oop-ideal/RAY
+	# $(SETENV) make $(MAKE_ARGS) noinline=$(noinline) -C cuda/oop-ideal/RAY
 
 oop-bench:
 	mkdir -p $(BINDIR)/$(BINSUBDIR)/

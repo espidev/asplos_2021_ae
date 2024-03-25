@@ -275,8 +275,8 @@ int main(int argc, char **argv) {
     // my_obj_alloc.create_tree();
     // range_tree = my_obj_alloc.get_range_tree();
     // tree_size_g = my_obj_alloc.get_tree_size();
-    vfun_table = my_obj_alloc.get_vfun_table();
     my_obj_alloc.create_table();
+    vfun_table = my_obj_alloc.get_vfun_table();
 
     // vptrPatch<GraphChiContext><<<1, 1>>>(context,1);
     // cudaDeviceSynchronize();

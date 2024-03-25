@@ -283,8 +283,8 @@ int main(int argc, char **argv) {
     // my_obj_alloc.create_tree();
     // range_tree = my_obj_alloc.get_range_tree();
     // tree_size_g = my_obj_alloc.get_tree_size();
-    vfun_table = my_obj_alloc.get_vfun_table();
     my_obj_alloc.create_table();
+    vfun_table = my_obj_alloc.get_vfun_table();
 
     // Run PageRank for some iter. TO: convergence determination
     double timer6 = gettime();

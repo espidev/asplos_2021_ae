@@ -280,9 +280,11 @@ int main(int argc, char **argv) {
     double timer5 = gettime();
     printf("init time = %lf ms\n", (timer5 - timer3) * 1000);
 
-    my_obj_alloc.create_tree();
-    range_tree = my_obj_alloc.get_range_tree();
-    tree_size_g = my_obj_alloc.get_tree_size();
+    // my_obj_alloc.create_tree();
+    // range_tree = my_obj_alloc.get_range_tree();
+    // tree_size_g = my_obj_alloc.get_tree_size();
+    vfun_table = my_obj_alloc.get_vfun_table();
+    my_obj_alloc.create_table();
 
     // Run PageRank for some iter. TO: convergence determination
     double timer6 = gettime();

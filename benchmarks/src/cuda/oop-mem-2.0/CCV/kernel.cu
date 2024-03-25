@@ -284,8 +284,9 @@ __global__ void kern_initOutEdge(VirtVertex<int, int> **vertex,
     }
 }
 
-__managed__ range_tree_node *range_tree;
-__managed__ unsigned tree_size_g;
+// __managed__ range_tree_node *range_tree;
+// __managed__ unsigned tree_size_g;
+__managed__ obj_info_tuble *vfun_table;
 __managed__ void *temp_copyBack;
 __managed__ void *temp_CC;
 
@@ -349,11 +350,11 @@ __global__ void ConnectedComponent(VirtVertex<int, int> **vertex,
 __global__ void copyBack(VirtVertex<int, int> **vertex,
                          GraphChiContext *context, int *cc) {
     int tid = blockDim.x * blockIdx.x + threadIdx.x;
-    unsigned tree_size = tree_size_g;
+
     void **vtable;
-    range_tree_node *table = range_tree;
+
     if (tid < context->getNumVertices()) {
-        vtable = get_vfunc(vertex[tid], table, tree_size);
+        vtable = get_vfunc_type(vertex[tid], vfun_table);;
         temp_copyBack = vtable[1];
         cc[tid] = vertex[tid]->getValue();
     }

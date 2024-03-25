@@ -269,8 +269,9 @@ __global__ void vptrPatch_Edge(ChiVertex<int, int> *vertex, int n) {
         else
             vertex[tid].vptrPatch(obj, 1);
 }
-__managed__ range_tree_node *range_tree;
-__managed__ unsigned tree_size_g;
+// __managed__ range_tree_node *range_tree;
+// __managed__ unsigned tree_size_g;
+__managed__ obj_info_tuble *vfun_table;
 __managed__ void *temp_copyBack;
 __managed__ void *temp_Bfs;
 
@@ -319,30 +320,30 @@ __global__ void BFS(VirtVertex<int, int> **vertex, GraphChiContext *context,
     }
 }
 
-__managed__ void *temp_vfun;
-__global__ void vfunCheck(VirtVertex<int, int> *vertex) {
-    void **vtable;
-    unsigned tree_size = tree_size_g;
-    int tid = blockDim.x * blockIdx.x + threadIdx.x;
-    vtable = get_vfunc(&vertex[tid], range_tree, tree_size);
-    temp_vfun = vtable[1];
-    vertex[tid].setId(155);
-    temp_vfun = vtable[0];
-    printf("%d\n", vertex[tid].getId());
+// __managed__ void *temp_vfun;
+// __global__ void vfunCheck(VirtVertex<int, int> *vertex) {
+//     void **vtable;
+//     unsigned tree_size = tree_size_g;
+//     int tid = blockDim.x * blockIdx.x + threadIdx.x;
+//     vtable = get_vfunc(&vertex[tid], range_tree, tree_size);
+//     temp_vfun = vtable[1];
+//     vertex[tid].setId(155);
+//     temp_vfun = vtable[0];
+//     printf("%d\n", vertex[tid].getId());
 
-    temp_vfun = vtable[3];
-    vertex[tid].setValue(999);
-    temp_vfun = vtable[2];
-    printf("%d\n", vertex[tid].getValue());
-    temp_vfun = vtable[4];
-    printf("%d\n", vertex[tid].numInEdges());
-    temp_vfun = vtable[5];
-    printf("%d\n", vertex[tid].numOutEdges());
-    temp_vfun = vtable[6];
-    printf("%p\n", vertex[tid].getInEdge(0));
-    temp_vfun = vtable[7];
-    printf("%p\n", vertex[tid].getOutEdge(0));
-}
+//     temp_vfun = vtable[3];
+//     vertex[tid].setValue(999);
+//     temp_vfun = vtable[2];
+//     printf("%d\n", vertex[tid].getValue());
+//     temp_vfun = vtable[4];
+//     printf("%d\n", vertex[tid].numInEdges());
+//     temp_vfun = vtable[5];
+//     printf("%d\n", vertex[tid].numOutEdges());
+//     temp_vfun = vtable[6];
+//     printf("%p\n", vertex[tid].getInEdge(0));
+//     temp_vfun = vtable[7];
+//     printf("%p\n", vertex[tid].getOutEdge(0));
+// }
 
 void BFS_cpu(VirtVertex<int, int> *vertex, GraphChiContext *context) {
     int tid = 0;
@@ -393,7 +394,6 @@ void BFS_cpu(VirtVertex<int, int> *vertex, GraphChiContext *context) {
 __global__ void copyBack(VirtVertex<int, int> **vertex,
                          GraphChiContext *context, int *index) {
     int tid = blockDim.x * blockIdx.x + threadIdx.x;
-    unsigned tree_size = tree_size_g;
     // ChiVertex<int, int> *obj;
     // obj = new (buf2) ChiVertex<int, int>();
     // long ***mVtable = (long ***)&vertex[tid];
@@ -403,7 +403,7 @@ __global__ void copyBack(VirtVertex<int, int> **vertex,
     // *mVtable=*mVtable2;
     // printf("[%d]after obj %p vert %p\n",tid,*mVtable2,*mVtable);
     if (tid < context->getNumVertices()) {
-        void **vtable = get_vfunc(vertex[tid], range_tree, tree_size);
+        void **vtable = get_vfunc_type(vertex[tid], vfun_table);
         temp_copyBack = vtable[2];
         // printf("%d\n",index[tid]);
         index[tid] = vertex[tid]->getValue();

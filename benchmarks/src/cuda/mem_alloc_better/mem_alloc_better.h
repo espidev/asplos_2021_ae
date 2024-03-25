@@ -7,6 +7,7 @@
 #include <chrono>
 #include <iostream>
 #include <list>
+#include <unordered_map>
 
 #include <iterator>
 #include <map>
@@ -15,6 +16,7 @@
 using namespace std::chrono;
 using namespace std;
 #define DEBUG 0
+// #define GETTYPE(ptr) (unsigned long long)ptr >> 48
 unsigned long CALLOC_NUM = 2 * 2097152;
 typedef char ALIGN[16];
 
@@ -269,6 +271,7 @@ class TypeContainer {
     void *gpu_vptr;
     void *cpu_vptr;
     unsigned long num_of_objs;
+    unsigned long long type;
 
     TypeContainer(mem_alloc *_mem, obj_alloc *_obj_alloc) {
         this->type_bucket_list = new list<range_bucket *>();
@@ -365,35 +368,37 @@ class TypeContainer {
     }
 };
 typedef std::map<uint32_t, TypeContainer *> MAP;
+// typedef std::unordered_map<void *, obj_info_tuble *> VFUNC_MAP;
 
 __global__ void vptrPatch(void *array, void *vPtr, unsigned sizeofType, int n) {
     int tid = threadIdx.x + blockIdx.x * blockDim.x;
     if (tid < n) memcpy((char *)array + tid * sizeofType, vPtr, sizeof(void *));
 }
-class range_tree_node {
-  public:
-    void *range_start;
-    void *range_end;
-    void *mid;
-    obj_info_tuble *tuble;
-    int size;
-    int size2;
-    void set_range(void *start, void *end) {
-        range_start = start;
-        range_end = end;
-        unsigned long long _start, _end;
-        memcpy(&_start, &range_start, sizeof(void *));
-        memcpy(&_end, &range_end, sizeof(void *));
-        mid = (void *)((unsigned long long)((_start + _end) / 2));
-    }
-};
+// class range_tree_node {
+//   public:
+//     void *range_start;
+//     void *range_end;
+//     void *mid;
+//     obj_info_tuble *tuble;
+//     int size;
+//     int size2;
+//     void set_range(void *start, void *end) {
+//         range_start = start;
+//         range_end = end;
+//         unsigned long long _start, _end;
+//         memcpy(&_start, &range_start, sizeof(void *));
+//         memcpy(&_end, &range_end, sizeof(void *));
+//         mid = (void *)((unsigned long long)((_start + _end) / 2));
+//     }
+// };
 class obj_alloc {
     mem_alloc *mem;
     MAP type_map;
     unsigned num_of_ranges;
     obj_info_tuble *table;
-    range_tree_node *range_tree;
-    unsigned tree_size;
+    // range_tree_node *range_tree;
+    // VFUNC_MAP *vfunc_map; // pointer -> obj_info_tuble
+    // unsigned tree_size;
 
   public:
     ~obj_alloc() {
@@ -419,14 +424,17 @@ class obj_alloc {
         mem = _mem;
         num_of_ranges = 0;
         table = NULL;
-        range_tree = NULL;
+        // range_tree = NULL;
+        // vfunc_map = new VFUNC_MAP();
         CALLOC_NUM = num;
     }
-    range_tree_node *get_range_tree() { return range_tree; }
+    // give ref, avoid copy
+    obj_info_tuble *get_vfun_table() { return table; }
+    // range_tree_node *get_range_tree() { return range_tree; }
     bool is_new_type(uint32_t hash) {
         return type_map.find(hash) == type_map.end();
     }
-    unsigned get_tree_size() { return tree_size; }
+    // unsigned get_tree_size() { return tree_size; }
     void inc_num_of_ranges() { num_of_ranges++; }
     inline uint32_t hash_str_uint32(const char *str) {
         uint32_t hash = 0x811c9dc5;
@@ -449,6 +457,7 @@ class obj_alloc {
             if (DEBUG)
                 printf("class was not FOUND %s ---\n", typeid(myType).name());
             type_map[hash] = TypeContainer::create<myType>(this->mem, this);
+            type_map[hash]->type = type_map.size() ;
 
         } else {
             // found
@@ -483,14 +492,18 @@ class obj_alloc {
         unsigned i;
         for (it = type_map.begin(), i = 0; it != type_map.end(); it++) {
             i += get_type_tubles_frm_list(&table[i], it->second);
-            printf("%p ----%d-----func-\n", table[0].func[0], i);
+            // printf("%p ----%d-----func-\n", table[0].func[0], i);
         }
         return i;
     }
     void create_table() {
+        // not really a table, just basically an array of all the types
         this->table =
             (obj_info_tuble *)mem->calloc<obj_info_tuble>(num_of_ranges);
         create_table(this->table);
+
+        // TODO: do we need sorting? maybe implement binary search
+        // sort_table();
 
         for (int i = 0; i < this->num_of_ranges; i++) {
             printf("%d: %p %p   \n", i, this->table[i].range_start,
@@ -499,82 +512,109 @@ class obj_alloc {
         printf("#############\n");
     }
 
-    void sort_table() {
-        int min;
-        int size = this->num_of_ranges;
-        obj_info_tuble temp;
-        for (int i = 0; i < size; i++) {
-            min = i;
+    // unsigned create_table(obj_info_tuble *table) {
+    //     MAP::iterator it;
+    //     unsigned i;
+    //     for (it = type_map.begin(), i = 0; it != type_map.end(); it++) {
+    //         // memcpy(&(table[it->second->type].func[0]), &it->second->vtable[0],
+    //         //        sizeof(void *) * FUNC_LEN);
 
-            for (int j = i + 1; j < size; j++) {
-                if (table[min].range_start > table[j].range_start) {
-                    min = j;
-                }
-            }
+    //         // add range
+    //         table[i].
 
-            memcpy(&temp, &table[i], sizeof(obj_info_tuble));
-            memcpy(&table[i], &table[min], sizeof(obj_info_tuble));
-            memcpy(&table[min], &temp, sizeof(obj_info_tuble));
-        }
-    }
+    //         // copy function
+    //         memcpy(&(table[i]).func[0], &it->second->vtable[0], sizeof(void *) * FUNC_LEN);
+    //     }
+    //     return i;
+    // }
+    // void create_table() {
+    //     this->table =
+    //         (obj_info_tuble *)mem->calloc<obj_info_tuble>(type_map.size()+1);
+    //     create_table(this->table);
 
-    void create_tree(int level, unsigned start, unsigned end) {
-        if (level == -1) return;
-        for (int i = start; i < end; i++) {
-            if (this->range_tree[2 * i + 2].range_end)
-                this->range_tree[i].set_range(
-                    this->range_tree[2 * i + 1].range_start,
-                    this->range_tree[2 * i + 2].range_end);
-            else
-                this->range_tree[i].set_range(
-                    this->range_tree[2 * i + 1].range_start,
-                    this->range_tree[2 * i + 1].range_end);
-        }
-        create_tree(level - 1, (1 << (level - 1)) - 1, start);
-    }
-    void create_tree() {
-        unsigned tree_depth = (unsigned)ceil(log2(num_of_ranges));
-        unsigned power2 = ((1 << (tree_depth)));
-        unsigned level = tree_depth;
-        unsigned tree_alloc_size = ((1 << (tree_depth + 1))) - 1;
-        this->tree_size = power2 + num_of_ranges - 1;
-        this->range_tree =
-            (range_tree_node *)mem->calloc<range_tree_node>(tree_alloc_size);
+    //     for (int i = 0; i < this->type_map.size()+1; i++) {
+    //         printf("Type%d:  %p   \n", i, this->table[i].func[0]);
+    //     }
+    //     printf("#############\n");
+    // }
 
-        if (1)
-            printf("tree %d number or ranges %d   alloc_size %d\n", tree_size,
-                   num_of_ranges, tree_alloc_size);
-        create_table();
-        sort_table();
-        range_tree[tree_size - 1].size = power2 - 1;
-        range_tree[tree_size - 1].size2 = power2 + num_of_ranges - 1;
-        int j = 0;
-        for (int i = power2 - 1; i < power2 + num_of_ranges - 1; j++, i++) {
-            range_tree[i].set_range(this->table[j].range_start,
-                                    this->table[j].range_end);
-            range_tree[i].tuble = &(this->table[j]);
-        }
+    // void sort_table() {
+    //     int min;
+    //     int size = this->num_of_ranges;
+    //     obj_info_tuble temp;
+    //     for (int i = 0; i < size; i++) {
+    //         min = i;
 
-        int mm = power2 + num_of_ranges - 2;
-        unsigned sizeoflast = ((char *)(range_tree[mm].range_end) -
-                               (char *)(range_tree[mm].range_start));
-        for (int i = power2 + num_of_ranges - 1; i < tree_size; j++, i++) {
-            // printf("%d\n", i);
-            range_tree[i].set_range(
-                range_tree[i - 1].range_end,
-                (char *)range_tree[i - 1].range_end + sizeoflast);
-            range_tree[i].mid = 0;
-            range_tree[i].tuble = (0);
-        }
-        j = 0;
-        create_tree(level - 1, (1 << (level - 1)) - 1,
-                    (1 << (level - 1)) - 1 + (1 << (level - 1)));
-        if (1)
-            for (int i = 0; i < tree_size; i++) {
-                printf("%d: %p %p %p  \n", i, this->range_tree[i].range_start,
-                       this->range_tree[i].range_end, this->range_tree[i].mid);
-            }
-    }
+    //         for (int j = i + 1; j < size; j++) {
+    //             if (table[min].range_start > table[j].range_start) {
+    //                 min = j;
+    //             }
+    //         }
+
+    //         memcpy(&temp, &table[i], sizeof(obj_info_tuble));
+    //         memcpy(&table[i], &table[min], sizeof(obj_info_tuble));
+    //         memcpy(&table[min], &temp, sizeof(obj_info_tuble));
+    //     }
+    // }
+
+    // TODO: removed old tree implementation
+    // void create_tree(int level, unsigned start, unsigned end) {
+    //     if (level == -1) return;
+    //     for (int i = start; i < end; i++) {
+    //         if (this->range_tree[2 * i + 2].range_end)
+    //             this->range_tree[i].set_range(
+    //                 this->range_tree[2 * i + 1].range_start,
+    //                 this->range_tree[2 * i + 2].range_end);
+    //         else
+    //             this->range_tree[i].set_range(
+    //                 this->range_tree[2 * i + 1].range_start,
+    //                 this->range_tree[2 * i + 1].range_end);
+    //     }
+    //     create_tree(level - 1, (1 << (level - 1)) - 1, start);
+    // }
+    // void create_tree() {
+    //     unsigned tree_depth = (unsigned)ceil(log2(num_of_ranges));
+    //     unsigned power2 = ((1 << (tree_depth)));
+    //     unsigned level = tree_depth;
+    //     unsigned tree_alloc_size = ((1 << (tree_depth + 1))) - 1;
+    //     this->tree_size = power2 + num_of_ranges - 1;
+    //     this->range_tree =
+    //         (range_tree_node *)mem->calloc<range_tree_node>(tree_alloc_size);
+
+    //     if (1)
+    //         printf("tree %d number or ranges %d   alloc_size %d\n", tree_size,
+    //                num_of_ranges, tree_alloc_size);
+    //     create_table();
+    //     sort_table();
+    //     range_tree[tree_size - 1].size = power2 - 1;
+    //     range_tree[tree_size - 1].size2 = power2 + num_of_ranges - 1;
+    //     int j = 0;
+    //     for (int i = power2 - 1; i < power2 + num_of_ranges - 1; j++, i++) {
+    //         range_tree[i].set_range(this->table[j].range_start,
+    //                                 this->table[j].range_end);
+    //         range_tree[i].tuble = &(this->table[j]);
+    //     }
+
+    //     int mm = power2 + num_of_ranges - 2;
+    //     unsigned sizeoflast = ((char *)(range_tree[mm].range_end) -
+    //                            (char *)(range_tree[mm].range_start));
+    //     for (int i = power2 + num_of_ranges - 1; i < tree_size; j++, i++) {
+    //         // printf("%d\n", i);
+    //         range_tree[i].set_range(
+    //             range_tree[i - 1].range_end,
+    //             (char *)range_tree[i - 1].range_end + sizeoflast);
+    //         range_tree[i].mid = 0;
+    //         range_tree[i].tuble = (0);
+    //     }
+    //     j = 0;
+    //     create_tree(level - 1, (1 << (level - 1)) - 1,
+    //                 (1 << (level - 1)) - 1 + (1 << (level - 1)));
+    //     if (1)
+    //         for (int i = 0; i < tree_size; i++) {
+    //             printf("%d: %p %p %p  \n", i, this->range_tree[i].range_start,
+    //                    this->range_tree[i].range_end, this->range_tree[i].mid);
+    //         }
+    // }
     // i don't think this is used anywhere
     // __host__ __device__ void **get_vfunc(void *obj) {
     //     unsigned ptr = 0;
@@ -624,14 +664,15 @@ class obj_alloc {
     }
 };
 
-__host__ __device__ bool inRange(void *obj, range_tree_node *range_tree,
-                                 unsigned ptr) {
-    if (1) {
-        return obj >= range_tree[ptr].range_start &&
-               obj <= range_tree[ptr].range_end;
-    }
-    return false;
-}
+// TODO: removed from old impl
+// __host__ __device__ bool inRange(void *obj, range_tree_node *range_tree,
+//                                  unsigned ptr) {
+//     if (1) {
+//         return obj >= range_tree[ptr].range_start &&
+//                obj <= range_tree[ptr].range_end;
+//     }
+//     return false;
+// }
 
 // i don't think this is necessary
 // __host__ __device__ void **get_vfunc_tree(void *obj,
@@ -660,63 +701,93 @@ __host__ __device__ bool inRange(void *obj, range_tree_node *range_tree,
 // }
 
 // TODO: unused, is from original sharedoa implementation
-__host__ __device__ void **get_vfunc_tree_2(void *obj,
-                                            range_tree_node *range_tree,
-                                            unsigned tree_size) {
-    unsigned ptr = 0;
-    unsigned next_ptr = 0;
-    // binary search for the correct range
-    while (true) {
-        // printf("looking %p ----- %d %d\n", obj, ptr , next_ptr);
-        next_ptr = 2 * ptr + 1;
-        if (next_ptr >= tree_size) {
-            // printf("Found %p ----- %d %d\n", obj, ptr, next_ptr);
-            return &(range_tree[ptr].tuble->func[0]);
-        }
-        if (!inRange(obj, range_tree, 2 * ptr + 1)) next_ptr = 2 * ptr + 2;
+// __host__ __device__ void **get_vfunc_tree_2(void *obj,
+//                                             range_tree_node *range_tree,
+//                                             unsigned tree_size) {
+//     unsigned ptr = 0;
+//     unsigned next_ptr = 0;
+//     // binary search for the correct range
+//     while (true) {
+//         // printf("looking %p ----- %d %d\n", obj, ptr , next_ptr);
+//         next_ptr = 2 * ptr + 1;
+//         if (next_ptr >= tree_size) {
+//             // printf("Found %p ----- %d %d\n", obj, ptr, next_ptr);
+//             return &(range_tree[ptr].tuble->func[0]);
+//         }
+//         if (!inRange(obj, range_tree, 2 * ptr + 1)) next_ptr = 2 * ptr + 2;
 
-        if (DEBUG)
-            printf("mid %p %d %d tree : %d \n", range_tree[ptr].mid, ptr,
-                   next_ptr, tree_size);
-        ptr = next_ptr;
-    }
-}
+//         if (DEBUG)
+//             printf("mid %p %d %d tree : %d \n", range_tree[ptr].mid, ptr,
+//                    next_ptr, tree_size);
+//         ptr = next_ptr;
+//     }
+// }
 
 // TODO: unused, not sure what it's for, just loop through i guess?
-__device__ void **get_vfunc_itr(void *obj, range_tree_node *range_tree,
-                                unsigned tree_size) {
-    int idx = range_tree[tree_size - 1].size;
-    int lim = range_tree[tree_size - 1].size2;
+// __device__ void **get_vfunc_itr(void *obj, range_tree_node *range_tree,
+//                                 unsigned tree_size) {
+//     int idx = range_tree[tree_size - 1].size;
+//     int lim = range_tree[tree_size - 1].size2;
 
-    // assert(idx>2);
-    for (int i = idx; i < lim; i++) {
-        if (inRange(obj, range_tree, i)) {
-            // if (tid == 0)
-            //     printf("Found %p ----- %d  %p %p\n", obj, i,
-            //            &range_tree[i].tuble->func[0],
-            //            range_tree[i].tuble->func[2]);
-            assert(range_tree[i].mid != NULL);
+//     // assert(idx>2);
+//     for (int i = idx; i < lim; i++) {
+//         if (inRange(obj, range_tree, i)) {
+//             // if (tid == 0)
+//             //     printf("Found %p ----- %d  %p %p\n", obj, i,
+//             //            &range_tree[i].tuble->func[0],
+//             //            range_tree[i].tuble->func[2]);
+//             assert(range_tree[i].mid != NULL);
 
-            return &(range_tree[i].tuble->func[0]);
+//             return &(range_tree[i].tuble->func[0]);
+//         }
+//     }
+//     // printf("not Found %p ----- \n", obj);
+//     assert(false);
+//     return NULL;
+// }
+
+__device__ void **get_vfunc_type(void *obj, obj_info_tuble *vfun_table) {
+    // unsigned long type;
+
+    // type = GETTYPE(obj);
+    // return &(vfun_table[type].func[0]);
+
+    // just loop over all the types
+    // HACK: we assume that we will find the object...
+
+    printf("THIS IS A TEST2 <<<<<<<<<<<<<<<<<<<<<<<<<<<<<< \n");
+
+    int i = 0;
+    while (i < 100) { // TODO
+        printf("URP\n");
+        printf("%p: [%p - %p] ?\n", obj, vfun_table[i].range_start, vfun_table[i].range_end);
+        if (obj >= vfun_table[i].range_start && 
+            obj <= vfun_table[i].range_end) {
+            printf("FOUND\n");
+            return &(vfun_table[i].func[0]);
         }
+        i++;
     }
-    // printf("not Found %p ----- \n", obj);
-    assert(false);
+
+    printf("OOPS\n");
     return NULL;
 }
 
-// TODO: our implementation!
-// -> try to just use a hashmap from pointer -> allocated parts in the tree
-__device__ void **get_vfunc_map(void *obj, range_tree_node *range_tree, unsigned tree_size){
+// // TODO: our implementation!
+// // -> try to just use a hashmap from pointer -> allocated parts in the tree
+// __device__ void **get_vfunc_map(void *obj, VFUNC_MAP *vfunc_map){
 
+//     auto it = vfunc_map->find(obj);
+//     if (it != vfunc_map->end()) {
+//         return &(it->second->func[0]);
+//     }
 
-    return NULL;
-}
+//     return NULL;
+// }
 
-// TODO: our new implementation changes this
-__device__ void **get_vfunc(void *obj, range_tree_node *range_tree,
-                            unsigned tree_size) {
-    // return get_vfunc_tree_2(obj, range_tree, tree_size);
-    // return get_vfunc_itr(obj, range_tree, tree_size);
-    return get_vfunc_map(obj, range_tree, tree_size);
-}
+// // TODO: our new implementation changes this
+// __device__ void **get_vfunc(void *obj, VFUNC_MAP *vfunc_map) {
+//     // return get_vfunc_tree_2(obj, range_tree, tree_size);
+//     // return get_vfunc_itr(obj, range_tree, tree_size);
+//     return get_vfunc_map(obj, vfunc_map);
+// }

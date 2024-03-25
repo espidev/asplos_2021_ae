@@ -196,8 +196,9 @@ __global__ void initOutEdge(VirtVertex<float, float> **vertex,
         }
     }
 }
-__managed__ range_tree_node *range_tree;
-__managed__ unsigned tree_size_g;
+// __managed__ range_tree_node *range_tree;
+// __managed__ unsigned tree_size_g;
+__managed__ obj_info_tuble *vfun_table;
 __managed__ void *temp_copyBack;
 __managed__ void *temp_PR;
 

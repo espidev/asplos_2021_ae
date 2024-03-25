@@ -8,6 +8,7 @@
 - util/coal_header_gen - actually does the insertion of sharedoa into vfunc calls
   - inserts vtable = get_vfunc(ptr, range_tree, tree_size)
   - note: range_tree and tree_size are defined in all of the benchmarks
+- TODO we can add -p to disable nvprof and use nsight
 
 ##### Replicated results:
 

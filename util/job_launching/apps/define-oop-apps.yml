@@ -114,6 +114,7 @@ oo-mem-2:
             - ./data/pannotia/pagerank/data/coAuthorsDBLP.graph 1 2397152
         - PRV_MEM_2:
             - ./data/pannotia/pagerank/data/coAuthorsDBLP.graph 1 2397152
+        # Disable RAY for now due to compile errors
         # - RAY_MEM_2:
         #     - 64 64 1000 2397152
 
@@ -286,6 +287,8 @@ oo-get-stat:
         # - RAY_TP:
         #     - 64 64 1000 2397152
         # our custom ones
+        - BFS_MEM_2:
+            - ./data/pannotia/pagerank/data/coAuthorsDBLP.graph 1 2397152
         - CC_MEM_2:
             - ./data/pannotia/pagerank/data/coAuthorsDBLP.graph 1 2397152
         - PR_MEM_2:
@@ -296,8 +299,8 @@ oo-get-stat:
             - ./data/pannotia/pagerank/data/coAuthorsDBLP.graph 1 2397152
         - PRV_MEM_2:
             - ./data/pannotia/pagerank/data/coAuthorsDBLP.graph 1 2397152
-        - RAY_MEM_2:
-            - 64 64 1000 2397152
+        # - RAY_MEM_2:
+        #     - 64 64 1000 2397152
 
 oo-tp-hw:
     exec_dir: "../../benchmarks/bin/$CUDA_VERSION/release/"

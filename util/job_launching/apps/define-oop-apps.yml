@@ -86,6 +86,7 @@ oo-mem:
             - ./data/pannotia/pagerank/data/coAuthorsDBLP.graph 1 2397152
         - PRV_MEM:
             - ./data/pannotia/pagerank/data/coAuthorsDBLP.graph 1 2397152
+        # Disabled
         # - RAY_MEM:
         #     - 64 64 1000 2397152
 
@@ -93,15 +94,14 @@ oo-mem-2:
     exec_dir: "../../benchmarks/bin/$CUDA_VERSION/release/"
     data_dirs: "../../benchmarks/data_dirs/"
     execs:
-        # We don't have these implemented yet...
-        # - trafficV_MEM_2:
-        #     - 2397152
-        # - game-of-life_MEM_2:
-        #    - ./data/tm.pgm 2397152
-        # - structureV_MEM_2:
-        #     - 2397152
-        # - generationV_MEM_2:
-        #     - 2397152
+        - trafficV_MEM_2:
+            - 2397152
+        - game-of-life_MEM_2:
+           - ./data/tm.pgm 2397152
+        - structureV_MEM_2:
+            - 2397152
+        - generationV_MEM_2:
+            - 2397152
         - BFS_MEM_2:
             - ./data/pannotia/pagerank/data/coAuthorsDBLP.graph 1 2397152
         - CC_MEM_2:
@@ -287,6 +287,14 @@ oo-get-stat:
         # - RAY_TP:
         #     - 64 64 1000 2397152
         # our custom ones
+        - trafficV_MEM:
+            - 2397152
+        - game-of-life_MEM_2:
+           - ./data/tm.pgm 2397152
+        - structureV_MEM_2:
+            - 2397152
+        - generationV_MEM_2:
+            - 2397152
         - BFS_MEM_2:
             - ./data/pannotia/pagerank/data/coAuthorsDBLP.graph 1 2397152
         - CC_MEM_2:

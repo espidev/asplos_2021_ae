@@ -237,6 +237,11 @@ class obj_info_tuble {
     void *func[FUNC_LEN];
 };
 
+struct vfunc_table {
+    obj_info_tuble *table;
+    unsigned size;
+};
+
 __managed__ __align__(16) char buf5[128];
 template <class myType>
 __global__ void dump_vtable(void **vtable, void **gpu_ptr) {
@@ -396,6 +401,7 @@ class obj_alloc {
     MAP type_map;
     unsigned num_of_ranges;
     obj_info_tuble *table;
+    vfunc_table *vfunc_table_obj;
     // range_tree_node *range_tree;
     // VFUNC_MAP *vfunc_map; // pointer -> obj_info_tuble
     // unsigned tree_size;
@@ -424,12 +430,13 @@ class obj_alloc {
         mem = _mem;
         num_of_ranges = 0;
         table = NULL;
+        vfunc_table_obj = NULL;
         // range_tree = NULL;
         // vfunc_map = new VFUNC_MAP();
         CALLOC_NUM = num;
     }
     // give ref, avoid copy
-    obj_info_tuble *get_vfun_table() { return table; }
+    vfunc_table *get_vfun_table() { return vfunc_table_obj; }
     // range_tree_node *get_range_tree() { return range_tree; }
     bool is_new_type(uint32_t hash) {
         return type_map.find(hash) == type_map.end();
@@ -501,6 +508,11 @@ class obj_alloc {
         this->table =
             (obj_info_tuble *)mem->calloc<obj_info_tuble>(num_of_ranges);
         create_table(this->table);
+
+        // wrap the function table with a size
+        vfunc_table_obj = new vfunc_table();
+        vfunc_table_obj->table = this->table;
+        vfunc_table_obj->size = this->num_of_ranges;
 
         // TODO: do we need sorting? maybe implement binary search
         // sort_table();
@@ -746,7 +758,7 @@ class obj_alloc {
 //     return NULL;
 // }
 
-__device__ void **get_vfunc_type(void *obj, obj_info_tuble *vfun_table) {
+__device__ void **get_vfunc_type(void *obj, vfunc_table *vfunc_table_obj) {
     // unsigned long type;
 
     // type = GETTYPE(obj);
@@ -755,18 +767,16 @@ __device__ void **get_vfunc_type(void *obj, obj_info_tuble *vfun_table) {
     // just loop over all the types
     // HACK: we assume that we will find the object...
 
-    printf("THIS IS A TEST2 <<<<<<<<<<<<<<<<<<<<<<<<<<<<<< \n");
+    // printf("THIS IS A TEST2 <<<<<<<<<<<<<<<<<<<<<<<<<<<<<< \n");
 
-    int i = 0;
-    while (i < 100) { // TODO
-        printf("URP\n");
-        printf("%p: [%p - %p] ?\n", obj, vfun_table[i].range_start, vfun_table[i].range_end);
-        if (obj >= vfun_table[i].range_start && 
-            obj <= vfun_table[i].range_end) {
-            printf("FOUND\n");
-            return &(vfun_table[i].func[0]);
+    for (int i = 0; i < vfunc_table_obj->size; i++) { // TODO
+        obj_info_tuble &element = vfunc_table_obj->table[i];
+        // printf("URP\n");
+        // printf("%p: [%p - %p] ?\n", obj, element.range_start, element.range_end);
+        if (obj >= element.range_start && obj <= element.range_end) {
+            // printf("FOUND\n");
+            return &(element.func[0]);
         }
-        i++;
     }
 
     printf("OOPS\n");

@@ -250,11 +250,11 @@ int main(int argc, char **argv) {
     printf("init time = %lf ms\n", (timer5 - timer3) * 1000);
     printf("Fixing pointers \n");
 
-    my_obj_alloc.create_tree();
-    range_tree = my_obj_alloc.get_range_tree();
-    tree_size_g = my_obj_alloc.get_tree_size();
-    // vfun_table = my_obj_alloc.get_vfun_table();
-    // my_obj_alloc.create_table();
+    // my_obj_alloc.create_tree();
+    // range_tree = my_obj_alloc.get_range_tree();
+    // tree_size_g = my_obj_alloc.get_tree_size();
+    vfun_table = my_obj_alloc.get_vfun_table();
+    my_obj_alloc.create_table();
 
     // Run BFS for some iter. TO: convergence determination
     double timer6 = gettime();

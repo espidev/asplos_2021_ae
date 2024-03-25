@@ -271,7 +271,7 @@ __global__ void vptrPatch_Edge(ChiVertex<int, int> *vertex, int n) {
 }
 // __managed__ range_tree_node *range_tree;
 // __managed__ unsigned tree_size_g;
-__managed__ obj_info_tuble *vfun_table;
+__managed__ vfunc_table *vfun_table;
 __managed__ void *temp_copyBack;
 __managed__ void *temp_Bfs;
 

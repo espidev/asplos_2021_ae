@@ -18,6 +18,7 @@ using namespace std;
 #define DEBUG 0
 // #define GETTYPE(ptr) (unsigned long long)ptr >> 48
 unsigned long CALLOC_NUM = 2 * 2097152;
+unsigned long INITIAL_CONTAINER_SIZE = 1;
 typedef char ALIGN[16];
 
 union header {
@@ -240,6 +241,7 @@ class obj_info_tuble {
 struct vfunc_table {
     obj_info_tuble *table;
     unsigned size;
+    unsigned container_size; // doubles
 };
 
 __managed__ __align__(16) char buf5[128];
@@ -302,7 +304,7 @@ class TypeContainer {
                              _mem->calloc<myType>(INIT_CHUNK_SIZE));
         ptr->type_bucket_list->push_front(bucket);
         ptr->typeSize = sizeof(myType);
-        _obj_alloc->inc_num_of_ranges();
+        _obj_alloc->inc_num_of_ranges(ptr, bucket);
 
         return ptr;
     }
@@ -338,7 +340,7 @@ class TypeContainer {
 
         type_bucket_list->push_front(bucket);
 
-        obj_alloctor->inc_num_of_ranges();
+        obj_alloctor->inc_num_of_ranges(this, bucket);
         if (1)
 
             printf("range [%s] mem: %p\n", typeid(myType).name(),
@@ -400,10 +402,9 @@ class obj_alloc {
     mem_alloc *mem;
     MAP type_map;
     unsigned num_of_ranges;
-    obj_info_tuble *table;
+    // obj_info_tuble *table;
     vfunc_table *vfunc_table_obj;
     // range_tree_node *range_tree;
-    // VFUNC_MAP *vfunc_map; // pointer -> obj_info_tuble
     // unsigned tree_size;
 
   public:
@@ -429,11 +430,12 @@ class obj_alloc {
     obj_alloc(mem_alloc *_mem, unsigned long num = 512 * 1024) {
         mem = _mem;
         num_of_ranges = 0;
-        table = NULL;
+        // table = NULL;
         vfunc_table_obj = NULL;
         // range_tree = NULL;
-        // vfunc_map = new VFUNC_MAP();
         CALLOC_NUM = num;
+
+        init_table();
     }
     // give ref, avoid copy
     vfunc_table *get_vfun_table() { return vfunc_table_obj; }
@@ -442,7 +444,12 @@ class obj_alloc {
         return type_map.find(hash) == type_map.end();
     }
     // unsigned get_tree_size() { return tree_size; }
-    void inc_num_of_ranges() { num_of_ranges++; }
+    void inc_num_of_ranges(TypeContainer *type, range_bucket *bucket) { 
+        num_of_ranges++;
+
+        // whenever the number of ranges goes up, we add a range to the vfunc table
+        add_bucket_to_vfunc_table(type, bucket);
+    }
     inline uint32_t hash_str_uint32(const char *str) {
         uint32_t hash = 0x811c9dc5;
         uint32_t prime = 0x1000193;
@@ -479,71 +486,127 @@ class obj_alloc {
         return (void *)mem->calloc<myType>(num);
     }
 
-    unsigned get_type_tubles_frm_list(obj_info_tuble *table,
-                                      TypeContainer *type) {
-        list<range_bucket *>::iterator iter;
-        int i;
-        for (iter = type->type_bucket_list->begin(), i = 0;
-             iter != type->type_bucket_list->end(); ++iter, i++) {
-            table[i].range_start = (*iter)->get_range_start();
-            table[i].range_end = (*iter)->get_range_end();
-
-            memcpy(&(table[i].func[0]), &type->vtable[0],
-                   sizeof(void *) * FUNC_LEN);
-        }
-        return i;
-    }
-
-    unsigned create_table(obj_info_tuble *table) {
-        MAP::iterator it;
-        unsigned i;
-        for (it = type_map.begin(), i = 0; it != type_map.end(); it++) {
-            i += get_type_tubles_frm_list(&table[i], it->second);
-            // printf("%p ----%d-----func-\n", table[0].func[0], i);
-        }
-        return i;
-    }
-
-    void sort_table() {
-        int min;
-        int size = this->num_of_ranges;
-        obj_info_tuble temp;
-        for (int i = 0; i < size; i++) {
-            min = i;
-
-            for (int j = i + 1; j < size; j++) {
-                if (table[min].range_start > table[j].range_start) {
-                    min = j;
-                }
-            }
-
-            memcpy(&temp, &table[i], sizeof(obj_info_tuble));
-            memcpy(&table[i], &table[min], sizeof(obj_info_tuble));
-            memcpy(&table[min], &temp, sizeof(obj_info_tuble));
-        }
-    }
-
-    void create_table() {
-        // not really a table, just basically an array of all the types
-        this->table =
-            (obj_info_tuble *)mem->calloc<obj_info_tuble>(num_of_ranges);
-        create_table(this->table);
-
-        // TODO: do we need sorting? maybe implement binary search
-        sort_table();
-
+    // called by constructor, do not manually call
+    void init_table() {
         // wrap the function table with a size
         vfunc_table_obj = (vfunc_table *) mem->calloc<vfunc_table>(1);
-        vfunc_table_obj->table = this->table;
-        vfunc_table_obj->size = this->num_of_ranges;
+        vfunc_table_obj->table = (obj_info_tuble *) mem->calloc<obj_info_tuble>(INITIAL_CONTAINER_SIZE); // not really a table, just basically an array of all the types
+        vfunc_table_obj->size = 0;
+        vfunc_table_obj->container_size = INITIAL_CONTAINER_SIZE;
 
-        for (int i = 0; i < this->num_of_ranges; i++) {
-            printf("%d: %p %p   \n", i, this->table[i].range_start,
-                   this->table[i].func[0]);
-        }
+        // TODO: do we need sorting? maybe we can implement binary search
+        // sort_table();
+
         printf("vfunc table size: %d \n", vfunc_table_obj->size);
         printf("#############\n");
     }
+
+    // unsigned get_type_tubles_frm_list(obj_info_tuble *table,
+    //                                   TypeContainer *type) {
+    //     list<range_bucket *>::iterator iter;
+    //     int i;
+    //     for (iter = type->type_bucket_list->begin(), i = 0;
+    //          iter != type->type_bucket_list->end(); ++iter, i++) {
+    //         table[i].range_start = (*iter)->get_range_start();
+    //         table[i].range_end = (*iter)->get_range_end();
+
+    //         memcpy(&(table[i].func[0]), &type->vtable[0],
+    //                sizeof(void *) * FUNC_LEN);
+    //     }
+    //     return i;
+    // }
+
+    // unsigned create_table(obj_info_tuble *table) {
+    //     MAP::iterator it;
+    //     unsigned i;
+    //     for (it = type_map.begin(), i = 0; it != type_map.end(); it++) {
+    //         i += get_type_tubles_frm_list(&table[i], it->second);
+    //         // printf("%p ----%d-----func-\n", table[0].func[0], i);
+    //     }
+    //     return i;
+    // }
+
+    // void sort_table() {
+    //     int min;
+    //     int size = this->num_of_ranges;
+    //     obj_info_tuble temp;
+    //     for (int i = 0; i < size; i++) {
+    //         min = i;
+
+    //         for (int j = i + 1; j < size; j++) {
+    //             if (table[min].range_start > table[j].range_start) {
+    //                 min = j;
+    //             }
+    //         }
+
+    //         memcpy(&temp, &table[i], sizeof(obj_info_tuble));
+    //         memcpy(&table[i], &table[min], sizeof(obj_info_tuble));
+    //         memcpy(&table[min], &temp, sizeof(obj_info_tuble));
+    //     }
+    // }
+
+    // every time a new type container is added, or we have a new bucket in an existing type, we insert to table
+    void add_bucket_to_vfunc_table(TypeContainer *type, range_bucket *bucket) {
+        // TODO: do we need to lock this function??
+        // if we have parallel allocations
+
+        printf("Add bucket to vfunc_table, current size %d\n", vfunc_table_obj->size);
+
+        // if we need to double the size of the container
+        if (vfunc_table_obj->size == vfunc_table_obj->container_size) {
+            vfunc_table_obj->container_size *= 2;
+
+            printf("Double vfunc_table container size to %d\n", vfunc_table_obj->container_size);
+
+            // reallocate with double the size
+            obj_info_tuble *new_table = (obj_info_tuble *) mem->calloc<obj_info_tuble>(vfunc_table_obj->container_size);
+
+            // copy old table data to new table
+            memcpy(new_table, vfunc_table_obj->table, sizeof(obj_info_tuble) * vfunc_table_obj->size);
+
+            // TODO deallocate old table
+            // mem->custom_free(vfunc_table_obj->table);
+
+            // replace old table
+            vfunc_table_obj->table = new_table;
+        }
+
+        // copy bucket & type info into table
+        int new_index = vfunc_table_obj->size;
+        vfunc_table_obj->table[new_index].range_start = bucket->get_range_start();
+        vfunc_table_obj->table[new_index].range_end = bucket->get_range_end();
+        memcpy(&(vfunc_table_obj->table[new_index].func[0]), &type->vtable[0], sizeof(void *) * FUNC_LEN);
+
+        // increment # of table entries
+        vfunc_table_obj->size++;
+
+        printf("Added\n");
+    }
+
+    // TODO remove dummy
+    void create_table() {}
+
+    // void create_table() {
+    //     // not really a table, just basically an array of all the types
+    //     this->table =
+    //         (obj_info_tuble *)mem->calloc<obj_info_tuble>(num_of_ranges);
+    //     create_table(this->table);
+
+    //     // TODO: do we need sorting? maybe we can implement binary search
+    //     // sort_table();
+
+    //     // wrap the function table with a size
+    //     vfunc_table_obj = (vfunc_table *) mem->calloc<vfunc_table>(1);
+    //     vfunc_table_obj->table = this->table;
+    //     vfunc_table_obj->size = this->num_of_ranges;
+
+    //     for (int i = 0; i < this->num_of_ranges; i++) {
+    //         printf("%d: %p %p   \n", i, this->table[i].range_start,
+    //                this->table[i].func[0]);
+    //     }
+    //     printf("vfunc table size: %d \n", vfunc_table_obj->size);
+    //     printf("#############\n");
+    // }
 
     // unsigned create_table(obj_info_tuble *table) {
     //     MAP::iterator it;
@@ -776,7 +839,6 @@ __host__ __device__ void **get_vfunc_type(void *obj, vfunc_table *vfunc_table_ob
         obj_info_tuble &element = vfunc_table_obj->table[i];
         // printf("%p: [%p - %p] ?\n", obj, element.range_start, element.range_end);
         if (obj >= element.range_start && obj <= element.range_end) {
-            // printf("FOUND\n");
             return &(element.func[0]);
         }
     }

@@ -8,6 +8,13 @@
 #include <assert.h>
 #include "../../../mem_alloc_better/mem_alloc_better.h"
 
+#include "coal.h"
+
+// __managed__ range_tree_node *range_tree;
+// __managed__ unsigned tree_size;
+__managed__ vfunc_table *vfun_table;
+__managed__ void *temp_coal;
+
 
 
 
@@ -50,6 +57,9 @@ public:
   __device__ virtual bool isCandidate() = 0;
   __device__ virtual bool is_new() = 0;
   __device__ virtual void set_is_new(bool is_new) = 0;
+
+
+
   __device__ virtual void set_action(int action) = 0;
   __device__ virtual int get_action() = 0;
   __device__ virtual int cell_id() = 0;

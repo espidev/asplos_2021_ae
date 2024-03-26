@@ -6,7 +6,7 @@
 #include "../dataset_loader.h"
 #include "generation.h"
 //#include "../rendering.h"
-
+#include "coal.h"
 #define gpuErrchk(ans) \
     { gpuAssert((ans), __FILE__, __LINE__); }
 
@@ -18,13 +18,6 @@ inline void gpuAssert(cudaError_t code, const char *file, int line,
         if (abort) exit(code);
     }
 }
-#ifdef OPTION_RENDER
-// Rendering array.
-// TODO: Fix variable names.
-__device__ int *device_render_cells;
-int *host_render_cells;
-int *d_device_render_cells;
-#endif  // OPTION_RENDER
 
 // Dataset.
 __device__ int SIZE_X;
@@ -32,9 +25,15 @@ __device__ int SIZE_Y;
 __managed__ CellV **cells;
 __managed__ Cell *cells2;
 dataset_t dataset;
+// __managed__ range_tree_node *range_tree;
+// __managed__ unsigned tree_size;
+__managed__ vfunc_table *vfun_table;
+__managed__ void *temp_coal;
 
 // Only count alive agents in state 0.
 __device__ int num_alive_neighbors(AgentV *ptr) {
+    void **vtable;
+
     int cell_x = ptr->cell_id_ % SIZE_X;
     int cell_y = ptr->cell_id_ / SIZE_X;
     int result = 0;
@@ -45,13 +44,17 @@ __device__ int num_alive_neighbors(AgentV *ptr) {
             int ny = cell_y + dy;
 
             if (nx > -1 && nx < SIZE_X && ny > -1 && ny < SIZE_Y) {
+                COAL_CellV_agent(cells[ny * SIZE_X + nx])
                 AgentV *ptr = cells[ny * SIZE_X + nx]->agent();
                 AgentV *alive = nullptr;
-                if (ptr)
-                    if (ptr->isAlive())
-
+                if (ptr) {
+                    COAL_AgentV_isAlive(ptr)
+                    if (ptr->isAlive()) {
+                        COAL_CellV_agent(cells[ny * SIZE_X + nx])
                         alive = cells[ny * SIZE_X + nx]->agent();
-
+                    }
+                }
+                COAL_AgentV_is_state_equal(alive)
                 if (alive != nullptr && alive->is_state_equal(0)) {
                     result++;
                 }
@@ -63,6 +66,8 @@ __device__ int num_alive_neighbors(AgentV *ptr) {
 }
 
 __device__ void create_candidates(AgentV *ptr) {
+    void **vtable;
+    COAL_AgentV_is_new(ptr)
     assert(ptr->is_new());
 
     // TODO: Consolidate with Agent::num_alive_neighbors().
@@ -76,8 +81,10 @@ __device__ void create_candidates(AgentV *ptr) {
 
             if (nx > -1 && nx < SIZE_X && ny > -1 && ny < SIZE_Y) {
                 auto cid = ny * SIZE_X + nx;
+                COAL_CellV_is_empty(cells[cid])
                 if (cells[cid]->is_empty()) {
                     if (atomicCAS(&cells[cid]->reserved, 0, 1) == 0) {
+                        COAL_CellV_set_agent(cells[cid])
                         cells[cid]->set_agent(cid, AgentType::isCandidate);
                     }
                 }
@@ -131,35 +138,18 @@ __device__ void alive_update_2(int i) {
         }
 }
 
-__global__ void update() {
-    for (int i = threadIdx.x + blockDim.x * blockIdx.x; i < SIZE_X * SIZE_Y;
-         i += blockDim.x * gridDim.x) {
-        AgentV *ptr = cells[i]->agent();
-        if (ptr)
-            if (ptr->isCandidate()) {
-                int cid = ptr->cell_id_;
-
-                if (ptr->get_action() == kActionSpawnAlive) {
-                    cells[cid]->set_agent(cid, AgentType::isAlive);
-                    // delete this;
-                } else if (ptr->get_action() == kActionDie) {
-                    cells[cid]->delete_agent();
-                    cells[cid]->reserved = 0;
-                    // delete this;
-                }
-            }
-        // alive_update_2(i);
-    }
-}
-
 __global__ void prepare() {
+    void **vtable;
     for (int i = threadIdx.x + blockDim.x * blockIdx.x; i < SIZE_X * SIZE_Y;
          i += blockDim.x * gridDim.x) {
+        COAL_CellV_agent(cells[i])
         AgentV *ptr = cells[i]->agent();
-        if (ptr)
-
+        if (ptr) {
+           COAL_AgentV_isAlive(ptr)
             if (ptr->isAlive()) {
+                COAL_AgentV_is_state_equal(ptr)
                 if (ptr->is_state_equal(0)) {
+                    COAL_AgentV_set_is_new(ptr)
                     ptr->set_is_new(false);
 
                     // Also counts this object itself.
@@ -167,22 +157,102 @@ __global__ void prepare() {
 
                     const bool stay_alive_param[9] = kStayAlive;
                     if (!stay_alive_param[alive_neighbors]) {
+                        COAL_AgentV_set_action(ptr)
                         ptr->set_action(kActionDie);
                     }
                 }
             }
-        ptr = cells[i]->agent();
-        if (ptr)
+        }
+        if (ptr) {
+            COAL_AgentV_isCandidate(ptr)
             if (ptr->isCandidate()) {
                 int alive_neighbors = num_alive_neighbors(ptr);
                 const bool spawn_param[9] = kSpawnNew;
 
                 if (spawn_param[alive_neighbors]) {
+                    COAL_AgentV_set_action(ptr)
                     ptr->set_action(kActionSpawnAlive);
                 } else if (alive_neighbors == 0) {
+                    COAL_AgentV_set_action(ptr)
+
                     ptr->set_action(kActionDie);
                 }
             }
+        }
+    }
+}
+__global__ void update() {
+    void **vtable;
+
+    for (int i = threadIdx.x + blockDim.x * blockIdx.x; i < SIZE_X * SIZE_Y;
+         i += blockDim.x * gridDim.x) {
+        COAL_CellV_agent(cells[i])
+        AgentV *ptr = cells[i]->agent();
+        if (ptr) {
+            COAL_AgentV_isCandidate(ptr)
+            if (ptr->isCandidate()) {
+                int cid = ptr->cell_id_;
+                COAL_AgentV_get_action(ptr)
+                if (ptr->get_action() == kActionSpawnAlive) {
+                    COAL_CellV_set_agent(cells[cid])
+                    cells[cid]->set_agent(cid, AgentType::isAlive);
+                    // delete this;
+                } else if (ptr->get_action() == kActionDie) {
+                    COAL_CellV_delete_agent(cells[cid])
+                    cells[cid]->delete_agent();
+                    cells[cid]->reserved = 0;
+                    // delete this;
+                }
+            }
+        }
+        // alive_update_2(i);
+    }
+}
+__global__ void alive_update() {
+    void **vtable;
+    for (int i = threadIdx.x + blockDim.x * blockIdx.x; i < SIZE_X * SIZE_Y;
+         i += blockDim.x * gridDim.x) {
+        COAL_CellV_agent(cells[i])
+        AgentV *ptr = cells[i]->agent();
+        if (ptr) {
+            COAL_AgentV_isAlive(ptr)
+            if (ptr->isAlive()) {
+                int cid = ptr->cell_id_;
+                COAL_AgentV_is_new(ptr)
+                // TODO: Consider splitting in two classes for less divergence.
+                if (ptr->is_new()) {
+                    // Create candidates in neighborhood.
+                    create_candidates(ptr);
+                } else {
+                    COAL_AgentV_get_action(ptr)
+                    bool flag1 = ptr->get_action() == kActionDie;
+
+                    COAL_AgentV_is_state_equal(ptr)
+                    flag1 = flag1 && ptr->is_state_equal(0);
+
+                    COAL_AgentV_is_state_in_range(ptr)
+                    bool flag2 = ptr->is_state_in_range(0, kNumStates);
+                    COAL_AgentV_is_state_equal(ptr)
+                    bool flag3 = ptr->is_state_equal(kNumStates);
+                    if (flag1) {
+                        // Increment state. If reached max. state, replace with
+                        // Candidate.
+                        COAL_AgentV_inc_state(ptr)
+                        ptr->inc_state();
+                        COAL_AgentV_set_action(ptr)
+                        ptr->set_action(kActionNone);
+                    } else if (flag2) {
+                        COAL_AgentV_inc_state(ptr)
+                        ptr->inc_state();
+                    } else if (flag3) {
+                        // Replace with Candidate.
+                        COAL_CellV_set_agent(cells[cid])
+                        cells[cid]->set_agent(cid, AgentType::isCandidate);
+                        // delete this;
+                    }
+                }
+            }
+        }
     }
 }
 
@@ -191,46 +261,6 @@ __global__ void update_checksum() {
          i += blockDim.x * gridDim.x) {
         AgentV *ptr = cells[i]->agent();
         if (ptr) ptr->update_checksum();
-    }
-}
-
-__global__ void alive_update() {
-    for (int i = threadIdx.x + blockDim.x * blockIdx.x; i < SIZE_X * SIZE_Y;
-         i += blockDim.x * gridDim.x) {
-        AgentV *ptr = cells[i]->agent();
-        if (ptr)
-            if (ptr->isAlive()) {
-                int cid = ptr->cell_id_;
-
-                // TODO: Consider splitting in two classes for less divergence.
-                if (ptr->is_new()) {
-                    // Create candidates in neighborhood.
-                    create_candidates(ptr);
-                } else {
-                    bool flag1 = ptr->get_action() == kActionDie;
-
-                    flag1 = flag1 && ptr->is_state_equal(0);
-
-                    bool flag2 = ptr->is_state_in_range(0, kNumStates);
-
-                    bool flag3 = ptr->is_state_equal(kNumStates);
-                    if (flag1) {
-                        // Increment state. If reached max. state, replace with
-                        // Candidate.
-
-                        ptr->inc_state();
-
-                        ptr->set_action(kActionNone);
-                    } else if (flag2) {
-                        ptr->inc_state();
-                    } else if (flag3) {
-                        // Replace with Candidate.
-
-                        cells[cid]->set_agent(cid, AgentType::isCandidate);
-                        // delete this;
-                    }
-                }
-            }
     }
 }
 
@@ -283,7 +313,7 @@ int checksum() {
     return host_checksum + host_num_candidates;
 }
 
-int main(int /*argc*/, char ** argv) {
+int main(int argc, char ** argv) {
     // Load data set.
     dataset = load_burst();
 
@@ -303,24 +333,17 @@ int main(int /*argc*/, char ** argv) {
     obj_alloc my_obj_alloc(&shared_mem, atoll(argv[1]));
     // cudaMalloc(&cells, sizeof(Cell *) * dataset.x * dataset.y);
     // cudaMalloc(&cells2, sizeof(Cell) * dataset.x * dataset.y);
-    high_resolution_clock::time_point t1 = high_resolution_clock::now();
-
     cells = (CellV **)my_obj_alloc.calloc<CellV *>(dataset.x * dataset.y);
     for (int i = 0; i < dataset.x * dataset.y; i++) {
         cells[i] = (Cell *)my_obj_alloc.my_new<Cell>();
         cells[i]->inst_cell(&my_obj_alloc);
         // assert(cells[i] != nullptr);
     }
-    high_resolution_clock::time_point t2 = high_resolution_clock::now();
-
     my_obj_alloc.toDevice();
-    high_resolution_clock::time_point t3 = high_resolution_clock::now();
-    duration<double> alloc_time = duration_cast<duration<double>>(t2 - t1);
-    duration<double> vptr_time = duration_cast<duration<double>>(t3 - t2);
-  
-    printf("alloc_time : %f \nvptr patching : %f \n",alloc_time.count(),vptr_time.count() );
-    printf("number of objs:%d\n", dataset.x * dataset.y);
-
+    // my_obj_alloc.create_tree();
+    // range_tree = my_obj_alloc.get_range_tree();
+    // tree_size = my_obj_alloc.get_tree_size();
+    vfun_table = my_obj_alloc.get_vfun_table();
     // Initialize cells.
     // create_cells<<<1024, 1024>>>();
     gpuErrchk(cudaDeviceSynchronize());

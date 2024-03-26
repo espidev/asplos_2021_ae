@@ -3,10 +3,15 @@
 #include <curand_kernel.h>
 #include <limits>
 #include <stdio.h>
-#define ALL __noinline__ __host__ __device__
+#include "coal.h"
 #include "../configuration.h"
 #include "../dataset.h"
 #include "../../../mem_alloc_better/mem_alloc_better.h"
+#define ALL __noinline__ __host__ __device__
+// __managed__ range_tree_node *range_tree;
+// __managed__ unsigned tree_size;
+__managed__ vfunc_table *vfun_table;
+__managed__ void *temp_coal;
 class SpringBase;
 class NodeBase {
 public:
@@ -22,7 +27,7 @@ public:
   ALL virtual SpringBase *spring(unsigned i) = 0;
   ALL virtual void pull() = 0;
   ALL virtual float distance_to(NodeBase *other) = 0;
-  __noinline__  __device__ virtual void remove_spring(SpringBase *spring) = 0;
+  __device__ __noinline__ virtual void remove_spring(SpringBase *spring) = 0;
   ALL virtual float unit_x(NodeBase *other, float dist) = 0;
   ALL virtual float unit_y(NodeBase *other, float dist) = 0;
   ALL virtual void update_vel_x(float force_x) = 0;
@@ -46,7 +51,7 @@ public:
     float dist_sq = dx * dx + dy * dy;
     return sqrt(dist_sq);
   }
-  __noinline__  __device__ void remove_spring(SpringBase *spring) {
+  __device__ __noinline__ void remove_spring(SpringBase *spring) {
 
     for (int i = 0; i < kMaxDegree; ++i) {
       if (this->springs[i] == spring) {
@@ -101,8 +106,8 @@ public:
   NodeBase *p1;
   NodeBase *p2;
   bool delete_flag;
-  ALL virtual void  deactivate() = 0 ;
-  ALL virtual void  update_force(float displacement) = 0;
+  ALL virtual void deactivate() =0 ;
+  ALL virtual void update_force(float displacement) =0 ;
   ALL virtual float get_force() = 0;
   ALL virtual float get_init_len()  = 0;
   ALL virtual bool get_is_active()  = 0;

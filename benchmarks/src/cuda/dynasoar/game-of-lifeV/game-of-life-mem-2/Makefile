@@ -11,6 +11,7 @@ GENCODE_SM70 ?= -gencode=arch=compute_70,code=\"sm_70,compute_70\"
 CPPSRC = 
 CUSRC =
 BASEEXE = game-of-life_MEM_2
+PTX_GEN =  ../../../../../../util/ptx_transform_2/
 
 VARIANT ?= DEFAULT
 # CUDA source files (compiled with cudacc)
@@ -24,10 +25,21 @@ LIBS = -L$(NVIDIA_COMPUTE_SDK_LOCATION)/../4.2/C/lib -lcudart
 OBJS = $(notdir $(CPPSRC:.cpp=.o))
 
 all: $(OBJS)
-	nvcc   $(NVOPTS) $(OPTS) $(CUOPTS) $(CUSRC)  $(INC) -o $(EXECUTABLE) $(LIBS) 
-	# cp generation.ptx_coal generation.ptx
-	# sh dryrun.sh
-	# rm -f *cpp* *fatbin* *cudafe*  *cubin* *.o *.module_id *dlink*
+	# Generate dryrun file
+	nvcc --dryrun --keep $(NVOPTS) $(OPTS) $(CUOPTS) $(CUSRC)  $(INC) -o $(EXECUTABLE) $(LIBS) 2> dryrun.sh
+	# Remove all lines before/including cicc
+	sed -i '1,/cicc /d' dryrun.sh
+	sed -i '/cicc /d' dryrun.sh
+	# Remove rm line
+	sed -i '/rm/d' dryrun.sh
+	# Remove leading comment
+	cut -c 3- dryrun.sh > dryrun1.sh
+	mv dryrun1.sh dryrun.sh 
+	nvcc  --keep  $(NVOPTS) $(OPTS) $(CUOPTS) $(CUSRC)  $(INC) -o $(EXECUTABLE) $(LIBS) 
+	$(PTX_GEN)/generator.py gol.ptx
+	cp gol.ptx_coal gol.ptx
+	sh dryrun.sh
+	rm -f *cpp* *fatbin* *cudafe*  *cubin* *.o *.module_id *dlink*
 
 $(OBJS):
 	g++ -c $(CPPSRC) $(OPTS)

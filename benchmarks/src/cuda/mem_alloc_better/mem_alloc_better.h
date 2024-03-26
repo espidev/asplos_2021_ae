@@ -843,7 +843,7 @@ __host__ __device__ void **get_vfunc_type(void *obj, vfunc_table *vfunc_table_ob
         }
     }
 
-    printf("OOPS\n");
+    // printf("OOPS\n");
     return NULL;
 }
 

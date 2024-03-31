@@ -16,7 +16,7 @@ We dumped the output from `cs450/get.sh` into files (ex. results3.txt).
 
 Then used `process.py` to generate a bar chart.
 
-!(chart)[/Figure_1.png]
+![](/Figure_1.png)
 
 
 
